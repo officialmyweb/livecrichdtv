@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram-Live-Cric-Hd</title>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+</head>
+<body>
+
+    <h2>M3U8 Player</h2>
+    <video id="video" controls width="640" height="360"></video>
+
+    <script>
+          if (confirm("Join Our Telegram Channel @livecrichdofficial")) {window.location.href = "https://telegram.me/livecrichdofficial";}
+        
+      // Define your M3U8 links here
+        const streams = {
+            "m1": "https://livecrichdm3u8player.pages.dev/?dtv=https://prod-sports-eng-gm.jiocinema.com/hls/live/2100307/hd_akamai_merged_avc_eng_cricket_m4_300125/master.m3u8",
+            "m2": "https://livecrichdm3u8player.pages.dev/?dtv=https://prod-sports-eng-gm.jiocinema.com/hls/live/2100306/hd_akamai_merged_avc_eng_cricket_m3_300125/master.m3u8",
+            "m3": "https://livecrichdm3u8player.pages.dev/?dtv=https://prod-sports-eng-gm.jiocinema.com/hls/live/2100306/hd_akamai_merged_avc_eng_cricket_m1_300125/master.m3u8",
+            "m4": "https://livecrichdm3u8player.pages.dev/?dtv=https://prod-sports-eng-gm.jiocinema.com/hls/live/2100306/hd_akamai_merged_avc_eng_cricket_m2_300125/master.m3u8",
+            "5": "https://livecrichdm3u8player.pages.dev/?dtv=link5.m3u8",
+            "6": "https://livecrichdm3u8player.pages.dev/?dtv=link6.m3u8"
+        };
+
+        // Function to get URL parameters
+        function getUrlParameter(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        // Get ID from URL
+        const streamId = getUrlParameter("id");
+
+        // Check if the stream ID exists in the list
+        if (streams[streamId]) {
+            const video = document.getElementById("video");
+            const videoSrc = streams[streamId];
+
+            if (Hls.isSupported()) {
+                const hls = new Hls();
+                hls.loadSource(videoSrc);
+                hls.attachMedia(video);
+                hls.on(Hls.Events.MANIFEST_PARSED, function () {
+                    video.play();
+                });
+            } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+                video.src = videoSrc;
+                video.play();
+            }
+        } else {
+            alert("Invalid ID or no stream found.");
+        }
+    </script>
+
+</body>
+</html>
