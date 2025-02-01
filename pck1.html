@@ -4,32 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Telegram-Live-Cric-Hd</title>
-    <style>
-        body {
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f0f0f0;
-        }
-        iframe {
-            width: 90%;
-            height: 90vh;
-            border: none;
-        }
-    </style>
-</head>
-<body>
-    <div id="iframe-container"></div>
-
-    <script>
+        <script>
           if (confirm("Join Our Telegram Channel @livecrichdofficial")) {window.location.href = "https://telegram.me/livecrichdofficial";}
       
-        let iframe = document.createElement("iframe");
-        iframe.src = "https://streamtp2.com/global1.php?stream=peacock1"; 
-        iframe.allowFullscreen = true;
-        document.getElementById("iframe-container").appendChild(iframe);
+        document.addEventListener("DOMContentLoaded", function () {
+            let iframe = document.createElement("iframe");
+            iframe.src = "https://streamtp2.com/global1.php?stream=peacock1"; // Replace with your URL
+            iframe.style.position = "fixed";
+            iframe.style.top = "0";
+            iframe.style.left = "0";
+            iframe.style.width = "100vw";
+            iframe.style.height = "100vh";
+            iframe.style.border = "none";
+            document.body.appendChild(iframe);
+        });
     </script>
+</head>
+<body style="margin:0; overflow:hidden;">
 </body>
 </html>
