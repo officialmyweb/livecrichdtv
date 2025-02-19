@@ -1,1 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer">
+    <title>Shaka Instant Player</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.6/shaka-player.ui.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.6/controls.min.css" crossorigin="anonymous">
+    <style>
+        body { margin: 0; background: black; }
+        .shaka-video-container { width: 100vw; height: 100vh; }
+    </style>
+</head>
+<body>
+    <div data-shaka-player-container class="shaka-video-container">
+        <video autoplay playsinline data-shaka-player id="video"></video>
+    </div>
+
+<script>
+    const processedData = {
+        "mpd_url": "https://p-cdn1-a-cg14-linear-cbd46b77.movetv.com/clipslist/1514/20250219T000000Z/20250221T000000Z/spanning_ads.mpd",
+        "keyId": "4e9eae36fcb7486abb2458c4f2589a50",
+        "key": "f8f35e7ea2947a1c50c40a33e3c3b968"
+    };
+
+    async function initPlayer() {
+        const video = document.getElementById("video");
+        const ui = video["ui"];
+        const controls = ui.getControls();
+        const player = controls.getPlayer();
+
+        player.configure({
+            drm: {
+                clearKeys: { [processedData.keyId]: processedData.key }
+            }
+        });
+
+        try {
+            console.log("Loading MPD:", processedData.mpd_url);
+            await player.load(processedData.mpd_url);
+            console.log("Playback started successfully!");
+        } catch (error) {
+            console.error("Error loading video:", error);
+        }
+    }
+
+    document.addEventListener("shaka-ui-loaded", initPlayer);
+    document.addEventListener("shaka-ui-load-failed", () => console.error("Shaka UI failed to load!"));
+</script>
+</body>
+</html>
 
