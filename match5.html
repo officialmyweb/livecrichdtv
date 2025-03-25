@@ -1,1 +1,442 @@
-.
+<!DOCTYPE html>
+
+
+
+<html lang="en">
+
+
+
+<head>
+
+
+
+  <meta charset="UTF-8">
+
+
+
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+
+  <title>Telegram-Live-Cric-Hd</title>
+
+
+
+  <script src="https://content.jwplatform.com/libraries/KB5zFt7A.js"></script>
+
+
+
+  <style>
+
+
+
+    body {
+
+
+
+      margin: 0;
+
+
+
+    }
+
+
+
+
+
+
+
+    .jwplayer {
+
+
+
+      position: absolute !important;
+
+
+
+    }
+
+
+
+
+
+
+
+    #video-selector {
+
+
+
+      margin: 10px;
+
+
+
+    }
+
+
+
+
+
+
+
+    #language-switch {
+
+
+
+      padding: 10px 20px;
+
+
+
+      background-color: #007bff; /* Blue color, you can change this */
+
+
+
+      color: #fff; /* White text color */
+
+
+
+      border: none;
+
+
+
+      border-radius: 5px;
+
+
+
+      cursor: pointer;
+
+
+
+      margin: 10px;
+
+
+
+      transition: background-color 0.3s ease;
+
+
+
+    }
+
+
+
+
+
+
+
+    #language-switch:hover {
+
+
+
+      background-color: #0056b3; /* Darker blue on hover */
+
+
+
+    }
+
+
+
+  </style>
+
+
+
+</head>
+
+
+
+<body>
+
+
+
+  <br>
+
+
+
+  <select id="video-select">
+
+
+
+    <option value="Hindi" selected="">Hindi</option>
+
+
+
+    
+ 
+
+   
+
+
+
+
+
+    
+
+    
+  </select>
+
+
+
+
+
+
+
+  <button id="language-switch">Select Your Feed Here</button>
+
+
+
+
+
+
+
+  <div id="video"></div>
+
+
+
+
+
+
+
+  <script>if(confirm("Join Our Telegram Channel @livecrichdofficial")) { window.location.href = "https://telegram.me/livecrichdofficial" }
+
+
+
+    document.addEventListener("DOMContentLoaded", function() {
+
+
+
+      var videoSources = {
+
+"Englishp": "https://prod-sports-eng-gm.jiocinema.com/hls/live/2100307/hd_akamai_merged_avc_eng_cricket_m10_241224/master.m3u8",
+
+
+
+      "Hindip": "https://prod-sports-hin-gm.jiocinema.com/hls/live/2100322/hd_akamai_iosmob_avc_hin_indvsnz_031124/master.m3u8",
+
+
+
+      "Haryanvip": "https://prod-sports-south-gm.jiocinema.com/hls/live/2109699/hd_akamai_iosmob_avc_odia_indvsnz_031124/master.m3u8",
+
+
+
+      "Bhojpurip": "https://prod-sports-north-gm.jiocinema.com/hls/live/2109761/hd_akamai_iosmob_avc_bhoj_indvsnz_031124/master.m3u8",
+
+
+
+      "Telugup": "https://prod-sports-south-gm.jiocinema.com/hls/live/2109717/hd_akamai_iosmob_avc_tel_indvsnz_031124/master.m3u8",
+
+
+
+      "Tamilp": "https://prod-sports-south-gm.jiocinema.com/hls/live/2109711/hd_akamai_iosmob_avc_tam_indvsnz_031124/master.m3u8",
+
+
+
+      "Bengalip": "https://prod-sports-north-gm.jiocinema.com/hls/live/2109773/hd_akamai_iosmob_avc_ben_indvsnz_031124/master.m3u8",
+
+
+
+      "Kannadap": "https://prod-sports-south-gm.jiocinema.com/hls/live/2109723/hd_akamai_iosmob_avc_kan_indvsnz_031124/master.m3u8",
+
+
+      "Hindi": "https://mtsft.ruscfd.lat/720p.m3u8",
+
+
+
+      "English": "https://prod-sports-eng-gm.jiocinema.com/hls/live/2100307/hd_akamai_merged_avc_eng_cricket_m10_241224/master.m3u8",
+
+
+
+      "Haryanvi": "https://prod-sports-south-cf.jiocinema.com/hls/live/2109514/uhd__akamai__ctv__avc__ssaispot__indvssa__odia__m1__151124__c8e9cc1b-eb9a-47bc-b525-e56767798c21/master.m3u8",
+
+
+
+      "Bhojpuri": "https://prod-sports-north-gm.jiocinema.com/hls/live/2109729/uhd__akamai__ctv__avc__ssaispot__indvssa__bhoj__m1__151124__c8e9cc1b-eb9a-47bc-b525-e56767798c21/master.m3u8",
+
+
+
+      "Telugu": "https://prod-sports-south-gm.jiocinema.com/hls/live/2109716/uhd_akamai_ctv_avc_tel_ipl_auction_251124/master.m3u8",
+
+
+
+      "Tamil": "https://prod-sports-south-gm.jiocinema.com/hls/live/2109710/uhd_akamai_ctv_avc_tam_ipl_auction_251124/master.m3u8",
+
+
+
+      "Bengali": "https://prod-sports-north-gm.jiocinema.com/hls/live/2109772/uhd_akamai_ctv_avc_ben_ipl_auction_251124/master.m3u8",
+
+
+
+      "Kannada": "https://prod-sports-south-cf.jiocinema.com/hls/live/2109722/uhd_akamai_ctv_avc_kan_ipl_auction_251124/master.m3u8",
+
+
+
+       };
+
+
+
+
+
+
+
+      var playerInstance = jwplayer("video");
+
+
+
+
+
+
+
+      document.getElementById("video-select").addEventListener("change", function() {
+
+
+
+        var selectedValue = this.value;
+
+
+
+        var videoSource = videoSources[selectedValue];
+
+
+
+
+
+
+
+        playerInstance.load([{ file: videoSource }]);
+
+
+
+        playerInstance.play();
+
+
+
+      });
+
+
+
+
+
+
+
+      document.getElementById("language-switch").addEventListener("click", function() {
+
+
+
+        var selectedValue = document.getElementById("video-select").value;
+
+
+
+        var currentIndex = Object.keys(videoSources).indexOf(selectedValue);
+
+
+
+        var nextIndex = (currentIndex + 1) % Object.keys(videoSources).length;
+
+
+
+        var nextLanguage = Object.keys(videoSources)[nextIndex];
+
+
+
+        document.getElementById("video-select").value = nextLanguage;
+
+
+
+
+
+
+
+        var videoSource = videoSources[nextLanguage];
+
+
+
+        playerInstance.load([{ file: videoSource }]);
+
+
+
+        playerInstance.play();
+
+
+
+      });
+
+
+
+
+
+
+
+      var selectedValue = document.getElementById("video-select").value;
+
+
+
+      var videoSource = videoSources[selectedValue];
+
+
+
+
+
+
+
+      playerInstance.setup({
+
+
+
+        autostart: true,
+
+
+
+        mute: false,
+
+
+
+        playlist: [{ file: videoSource }]
+
+
+
+      });
+
+
+
+    });
+
+
+
+  </script>
+
+
+
+
+
+
+
+  <div style="background-color: #0074d9; text-align: center; padding: 10px;">
+
+
+
+    <a href="https://telegram.me/livecrichdofficial" target="_blank">
+
+
+
+      <button id="joinTelegramButton" style="background-color: #fff; color: #0074d9; border: 2px solid #0074d9; padding: 5px 10px;">JOIN TELEGRAM</button>
+
+
+
+    </a>
+
+
+
+  </div>
+
+
+
+
+
+
+
+</body>
+
+
+
+</html>
