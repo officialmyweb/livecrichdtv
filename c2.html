@@ -30,7 +30,7 @@
 
         // Check if the ID exists and redirect to the URL
         if (streams[streamId]) {
-            const redirectUrl = `${encodeURIComponent(streams[streamId])}`;
+            const redirectUrl = `https://shz.al/Sffb/livecricplayer.html?dtv=${encodeURIComponent(streams[streamId])}`;
             window.location.href = redirectUrl;  // Redirects the user
         } else {
             alert("Invalid ID or no stream found.");
