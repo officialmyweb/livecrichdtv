@@ -11,7 +11,7 @@
     if (confirm("Join Our Telegram Channel @livecrichdofficial")) { window.location.href = "https://telegram.me/livecrichdofficial"; }
         // Define your M3U8 links
         const streams = {
-            "m1": "https://1a-1791.com/live/ol95fwjc/slot-5/hvlh-hqmq/chunklist.m3u8",
+            "m1": "https://livecrichdtv.pages.dev/sky.m3u8",
             "m2": "https://channel6.csports.tv/1529157792/index.m3u8",
             "m3": "https://prod-sports-eng-gm.jiocinema.com/hls/live/2100306/hd_akamai_merged_avc_eng_cricket_m1_110225/master.m3u8",
             "m4": "https://prod-sports-eng-gm.jiocinema.com/hls/live/2100306/hd_akamai_merged_avc_eng_cricket_m3_120225/master.m3u8",
@@ -30,7 +30,7 @@
 
         // Check if the ID exists and redirect to the URL
         if (streams[streamId]) {
-            const redirectUrl = `${encodeURIComponent(streams[streamId])}`;
+            const redirectUrl = `https://shz.al/Sffb/livecricplayer.html?dtv=${encodeURIComponent(streams[streamId])}`;
             window.location.href = redirectUrl;  // Redirects the user
         } else {
             alert("Invalid ID or no stream found.");
