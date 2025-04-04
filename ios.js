@@ -5,11 +5,7 @@ if (confirm("Join Our Telegram Channel @livecrichdofficial")) {
 document.addEventListener("DOMContentLoaded", function () {
   const links = [
     {
-      href: "https://ok.ru/videoembed/9496853028374?nochat=1",
-      text: "WORLDWIDE/OUT OF INDIA USERS",
-    },
-    {
-      href: "https://iframv3.embedxt.site/iframe/frame.php",
+      href: "https://s12.24cwc.com/",
       text: "WORLDWIDE/OUT OF INDIA USERS",
     },
     {
