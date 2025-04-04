@@ -6,11 +6,11 @@ document.addEventListener("DOMContentLoaded", function () {
   const links = [
     {
       href: "https://ok.ru/videoembed/9496853028374?nochat=1",
-      text: "WORLDWIDE/OUT OF INDIA USERS - CLICK",
+      text: "WORLDWIDE/OUT OF INDIA USERS",
     },
     {
       href: "https://iframv3.embedxt.site/iframe/frame.php",
-      text: "WORLDWIDE/OUT OF INDIA USERS - CLICK",
+      text: "WORLDWIDE/OUT OF INDIA USERS",
     },
     {
       href: "https://shz.al/Sffb/livecricplayer.html?dtv=https://prod-ent-live-gm.jiocinema.com/bpk-tv/JS_M1_IPL25_ENG_IDC_MOB/Fallback/index.m3u8",
