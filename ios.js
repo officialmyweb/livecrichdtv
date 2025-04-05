@@ -5,7 +5,7 @@ if (confirm("Join Our Telegram Channel @livecrichdofficial")) {
 document.addEventListener("DOMContentLoaded", function () {
   const links = [
     {
-      href: "https://s12.24cwc.com/",
+      href: "https://ifarma.embedct.space/iframe/frame.php",
       text: "WORLDWIDE/OUT OF INDIA USERS",
     },
     {
