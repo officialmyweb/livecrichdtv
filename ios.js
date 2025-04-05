@@ -9,11 +9,11 @@ document.addEventListener("DOMContentLoaded", function () {
       text: "WORLDWIDE/OUT OF INDIA USERS",
     },
     {
-      href: "https://shz.al/Sffb/livecricplayer.html?dtv=https://prod-ent-live-gm.jiocinema.com/bpk-tv/JS_M1_IPL25_ENG_IDC_MOB/Fallback/index.m3u8",
+      href: "https://shz.al/Sffb/livecricplayer.html?dtv=https://prod-ent-live-cf.jiocinema.com/bpk-tv/JS_M1_IPL25_ENG_IDC_MOB/Fallback/index.m3u8",
       text: "ENGLISH - INDIAN USERS",
     },
     {
-      href: "https://shz.al/Sffb/livecricplayer.html?dtv=https://prod-ent-live-gm.jiocinema.com/bpk-tv/JS_M1_IPL25_HIN_IDC_MOB/Fallback/index.m3u8",
+      href: "https://shz.al/Sffb/livecricplayer.html?dtv=https://prod-ent-live-cf.jiocinema.com/bpk-tv/JS_M1_IPL25_HIN_IDC_MOB/Fallback/index.m3u8",
       text: "HINDI - INDIAN USERS",
     },
   ];
