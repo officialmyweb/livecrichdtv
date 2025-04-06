@@ -5,11 +5,11 @@ if (confirm("Join Our Telegram Channel @livecrichdofficial")) {
 document.addEventListener("DOMContentLoaded", function () {
   const links = [
     {
-      href: "https://ifarma.embedct.space/iframe/frame.php",
+      href: "https://shz.al/Sffb/livecricplayer.html?dtv=https://ee4ee8c03a26.eu-central-1.playback.live-video.net/api/video/v1/eu-central-1.755921704393.channel.LOohfipmCQDP.m3u8",
       text: "WORLDWIDE/OUT OF INDIA USERS",
     },
     {
-      href: "https://ifarma.embedct.space/iframe/frame.php",
+      href: "https://shz.al/Sffb/livecricplayer.html?dtv=https://ee4ee8c03a26.eu-central-1.playback.live-video.net/api/video/v1/eu-central-1.755921704393.channel.LOohfipmCQDP.m3u8",
       text: "HINDI - ALL USERS",
     },
   ];
