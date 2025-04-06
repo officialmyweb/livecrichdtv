@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
       text: "WORLDWIDE/OUT OF INDIA USERS",
     },
     {
-      href: "https://shz.al/Sffb/livecricplayer.html?dtv=https://v18tataplaysyndication.akamaized.net/bpk-tv/Sports18_1_HD_voot_MOB/output03/index.m3u8?hdnea=exp=1743867606~acl=/*~hmac=5cd5fa106cb6897076a95d3f165ca9306c14ae0b10b36f29a8630041f882664c",
+      href: "https://shz.al/Sffb/livecricplayer.html?dtv=https://dai.fancode.com/primary/122689_english_hls_5007ta-no/index.m3u8&__cf_chl_rt_tk=Ml2xc0i6_c3XLHxLoBzOMTG8aTnw_XazgiL7HI1UJ7o-1743946560-1.0.1.1-6HAyFqXiGLuaBFhQk8z2iOhLgQ4CKopRAhIiHOeV0e0",
       text: "HINDI - ALL USERS",
     },
   ];
