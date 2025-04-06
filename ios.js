@@ -5,11 +5,11 @@ if (confirm("Join Our Telegram Channel @livecrichdofficial")) {
 document.addEventListener("DOMContentLoaded", function () {
   const links = [
     {
-      href: "https://ifarma.embedct.space/iframe/frame.php",
+      href: "https://livecrichdtv.pages.dev/match",
       text: "WORLDWIDE/OUT OF INDIA USERS",
     },
     {
-      href: "https://shz.al/Sffb/livecricplayer.html?dtv=https://dai.fancode.com/primary/122689_english_hls_5007ta-no/index.m3u8&__cf_chl_rt_tk=Ml2xc0i6_c3XLHxLoBzOMTG8aTnw_XazgiL7HI1UJ7o-1743946560-1.0.1.1-6HAyFqXiGLuaBFhQk8z2iOhLgQ4CKopRAhIiHOeV0e0",
+      href: "https://livecrichdtv.pages.dev/match",
       text: "HINDI - ALL USERS",
     },
   ];
