@@ -5,11 +5,11 @@ if (confirm("Join Our Telegram Channel @livecrichdofficial")) {
 document.addEventListener("DOMContentLoaded", function () {
   const links = [
     {
-      href: "https://livecrichdtv.pages.dev/match",
+      href: "https://ifarma.embedct.space/iframe/frame.php",
       text: "WORLDWIDE/OUT OF INDIA USERS",
     },
     {
-      href: "https://livecrichdtv.pages.dev/match",
+      href: "https://ifarma.embedct.space/iframe/frame.php",
       text: "HINDI - ALL USERS",
     },
   ];
