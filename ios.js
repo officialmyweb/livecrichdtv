@@ -10,7 +10,15 @@ document.addEventListener("DOMContentLoaded", function () {
     },
     {
       href: "https://ifarma.embedct.space/iframe/frame.php",
-      text: "HINDI - ALL USERS",
+      text: "HINDI - ALL USERS - S1",
+    },
+    {
+      href: "https://shz.al/Sffb/livecricplayer.html?dtv=https://ee4ee8c03a26.eu-central-1.playback.live-video.net/api/video/v1/eu-central-1.755921704393.channel.LOohfipmCQDP.m3u8",
+      text: "WORLDWIDE/OUT OF INDIA USERS - S2",
+    },
+    {
+      href: "https://shz.al/Sffb/livecricplayer.html?dtv=https://ee4ee8c03a26.eu-central-1.playback.live-video.net/api/video/v1/eu-central-1.755921704393.channel.LOohfipmCQDP.m3u8",
+      text: "HINDI - ALL USERS - S2",
     },
   ];
 
