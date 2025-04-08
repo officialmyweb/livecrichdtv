@@ -12,14 +12,6 @@ document.addEventListener("DOMContentLoaded", function () {
       href: "#",
       text: "HINDI ALL USERS - S2",
     },
-    {
-      href: "https://ifarma.embedct.space/iframe/frame.php",
-      text: "HINDI ALL USERS - S3",
-    },
-    {
-      href: "#",
-      text: "FOX CRICKET - MOBILE USERS ",
-    },
   ];
 
   const container = document.getElementById("link-container");
