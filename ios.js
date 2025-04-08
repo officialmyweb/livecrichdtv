@@ -5,20 +5,16 @@ if (confirm("Join Our Telegram Channel @livecrichdofficial")) {
 document.addEventListener("DOMContentLoaded", function () {
   const links = [
     {
-      href: "#",
-      text: "WORLDWIDE/OUT OF INDIA USERS - S2",
+      href: "https://shz.al/Sffb/livecricplayer.html?dtv=https://v18tataplaysyndication.akamaized.net/bpk-tv/Sports18_1_HD_voot_MOB/output03/index.m3u8?hdnea=exp=1744106458~acl=/*~hmac=de35bcd3e813a8ac7b21279eacbcc707f601e4fc986b52325122082e6c22eacc",
+      text: "HINDI ALL USERS - S1",
     },
     {
       href: "#",
-      text: "HINDI - ALL USERS - S2",
+      text: "HINDI ALL USERS - S2",
     },
     {
       href: "https://ifarma.embedct.space/iframe/frame.php",
-      text: "WORLDWIDE/OUT OF INDIA USERS - S1",
-    },
-    {
-      href: "https://ifarma.embedct.space/iframe/frame.php",
-      text: "HINDI - ALL USERS - S1",
+      text: "HINDI ALL USERS - S3",
     },
     {
       href: "#",
