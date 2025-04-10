@@ -9,11 +9,11 @@ document.addEventListener("DOMContentLoaded", function () {
       text: "WORLDWIDE - OUT OF INDIA USERS",
     },
     {
-      href: "https://shz.al/Sffb/livecricplayer.html?dtv=https://prod-sports-eng-fa.jiocinema.com/hls/live/2117030/inallow-ipl-2025/eng/1540040243/15mindvrm01f15d6223ccd742da93085a408526bb9c09april2025/master.m3u8",
+      href: "https://shz.al/Sffb/livecricplayer.html?dtv=https://prod-sports-eng-fa.jiocinema.com/hls/live/2117030/inallow-ipl-2025/eng/1540040246/15mindvrm0153748b1625e24a9ebc935a7faca3fe7810april2025/master_apm.m3u8",
       text: "ENGLISH - INDIAN USERS",
     },
         {
-      href: "https://shz.al/Sffb/livecricplayer.html?dtv=https://prod-sports-hin-fa.jiocinema.com/hls/live/2117033/inallow-ipl-2025/hin/1540040243/15mindvrm01f15d6223ccd742da93085a408526bb9c09april2025/master.m3u8",
+      href: "https://shz.al/Sffb/livecricplayer.html?dtv=https://prod-sports-hin-fa.jiocinema.com/hls/live/2117033/inallow-ipl-2025/hin/1540040246/15mindvrm0153748b1625e24a9ebc935a7faca3fe7810april2025/master.m3u8",
       text: "HINDI - INDIAN USERS",
     },
   ];
