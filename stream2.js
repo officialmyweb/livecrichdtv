@@ -4,18 +4,18 @@ if (confirm("Join Our Telegram Channel @livecrichdofficial")) {
 
     document.addEventListener("DOMContentLoaded", function () {
       const videoSources = {
-        English: "https://prod-sports-eng-fa.jiocinema.com/hls/live/2117030/inallow-ipl-2025/eng/1540040243/15mindvrm01f15d6223ccd742da93085a408526bb9c09april2025/master.m3u8",
-        Hindi: "https://prod-sports-hin-fa.jiocinema.com/hls/live/2117033/inallow-ipl-2025/hin/1540040243/15mindvrm01f15d6223ccd742da93085a408526bb9c09april2025/master.m3u8",
-        Gujarati: "https://prod-sports-eng-fa.jiocinema.com/hls/live/2117030/inallow-ipl-2025/eng/1540040243/15mindvrm01f15d6223ccd742da93085a408526bb9c09april2025/master.m3u8",
-        Telugu: "https://prod-sports-hin-fa.jiocinema.com/hls/live/2117033/inallow-ipl-2025/hin/1540040243/15mindvrm01f15d6223ccd742da93085a408526bb9c09april2025/master.m3u8",
-        Tamil: "https://prod-sports-eng-fa.jiocinema.com/hls/live/2117030/inallow-ipl-2025/eng/1540040243/15mindvrm01f15d6223ccd742da93085a408526bb9c09april2025/master.m3u8",
-        Marathi: "https://prod-sports-hin-fa.jiocinema.com/hls/live/2117033/inallow-ipl-2025/hin/1540040243/15mindvrm01f15d6223ccd742da93085a408526bb9c09april2025/master.m3u8",
-        Bengali: "https://prod-sports-eng-fa.jiocinema.com/hls/live/2117030/inallow-ipl-2025/eng/1540040243/15mindvrm01f15d6223ccd742da93085a408526bb9c09april2025/master.m3u8",
-        Kannada: "https://prod-sports-hin-fa.jiocinema.com/hls/live/2117033/inallow-ipl-2025/hin/1540040243/15mindvrm01f15d6223ccd742da93085a408526bb9c09april2025/master.m3u8",
-        Bhojpuri: "https://prod-sports-eng-fa.jiocinema.com/hls/live/2117030/inallow-ipl-2025/eng/1540040243/15mindvrm01f15d6223ccd742da93085a408526bb9c09april2025/master.m3u8",
-        Punjabi: "https://prod-sports-hin-fa.jiocinema.com/hls/live/2117033/inallow-ipl-2025/hin/1540040243/15mindvrm01f15d6223ccd742da93085a408526bb9c09april2025/master.m3u8",
-        Haryanvi: "https://prod-sports-eng-fa.jiocinema.com/hls/live/2117030/inallow-ipl-2025/eng/1540040243/15mindvrm01f15d6223ccd742da93085a408526bb9c09april2025/master.m3u8",
-        Malyalam: "https://prod-sports-hin-fa.jiocinema.com/hls/live/2117033/inallow-ipl-2025/hin/1540040243/15mindvrm01f15d6223ccd742da93085a408526bb9c09april2025/master.m3u8",
+        English: "https://prod-sports-eng-fa.jiocinema.com/hls/live/2117030/inallow-ipl-2025/eng/1540040246/15mindvrm0153748b1625e24a9ebc935a7faca3fe7810april2025/master_apm.m3u8",
+        Hindi: "https://prod-sports-hin-fa.jiocinema.com/hls/live/2117033/inallow-ipl-2025/hin/1540040246/15mindvrm0153748b1625e24a9ebc935a7faca3fe7810april2025/master.m3u8",
+        Gujarati: "https://prod-sports-eng-fa.jiocinema.com/hls/live/2117030/inallow-ipl-2025/eng/1540040246/15mindvrm0153748b1625e24a9ebc935a7faca3fe7810april2025/master_apm.m3u8",
+        Telugu: "https://prod-sports-hin-fa.jiocinema.com/hls/live/2117033/inallow-ipl-2025/hin/1540040246/15mindvrm0153748b1625e24a9ebc935a7faca3fe7810april2025/master.m3u8",
+        Tamil: "https://prod-sports-eng-fa.jiocinema.com/hls/live/2117030/inallow-ipl-2025/eng/1540040246/15mindvrm0153748b1625e24a9ebc935a7faca3fe7810april2025/master_apm.m3u8",
+        Marathi: "https://prod-sports-hin-fa.jiocinema.com/hls/live/2117033/inallow-ipl-2025/hin/1540040246/15mindvrm0153748b1625e24a9ebc935a7faca3fe7810april2025/master.m3u8",
+        Bengali: "https://prod-sports-eng-fa.jiocinema.com/hls/live/2117030/inallow-ipl-2025/eng/1540040246/15mindvrm0153748b1625e24a9ebc935a7faca3fe7810april2025/master_apm.m3u8",
+        Kannada: "https://prod-sports-hin-fa.jiocinema.com/hls/live/2117033/inallow-ipl-2025/hin/1540040246/15mindvrm0153748b1625e24a9ebc935a7faca3fe7810april2025/master.m3u8",
+        Bhojpuri: "https://prod-sports-eng-fa.jiocinema.com/hls/live/2117030/inallow-ipl-2025/eng/1540040246/15mindvrm0153748b1625e24a9ebc935a7faca3fe7810april2025/master_apm.m3u8",
+        Punjabi: "https://prod-sports-hin-fa.jiocinema.com/hls/live/2117033/inallow-ipl-2025/hin/1540040246/15mindvrm0153748b1625e24a9ebc935a7faca3fe7810april2025/master.m3u8",
+        Haryanvi: "https://prod-sports-eng-fa.jiocinema.com/hls/live/2117030/inallow-ipl-2025/eng/1540040246/15mindvrm0153748b1625e24a9ebc935a7faca3fe7810april2025/master_apm.m3u8",
+        Malyalam: "https://prod-sports-hin-fa.jiocinema.com/hls/live/2117033/inallow-ipl-2025/hin/1540040246/15mindvrm0153748b1625e24a9ebc935a7faca3fe7810april2025/master.m3u8",
     
       };
 
