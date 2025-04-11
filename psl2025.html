@@ -5,35 +5,35 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Telegram-Live-Cric-Hd</title>
   <style>
-    body {
+    html, body {
       margin: 0;
-      background-color: #f0f0f0;
-      font-family: Arial, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      background-color: #000;
     }
 
-    .iframe-container {
-      margin-top: 20px;
+    iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      border: none;
     }
   </style>
 </head>
 
 <body>
 
-  <!-- Required Iframe at the Top -->
-  <div class="iframe-container">
-    <iframe 
-      allow='encrypted-media' 
-      width='640' 
-      height='360' 
-      scrolling='no' 
-      frameborder='0' 
-      allowfullscreen 
-      src='https://topembed.pw/channel/SkySportsMix[UK]'>
-    </iframe>
-  </div>
+  <!-- Full-Screen Iframe -->
+  <iframe 
+    allow="encrypted-media" 
+    scrolling="no" 
+    frameborder="0" 
+    allowfullscreen 
+    src="https://topembed.pw/channel/SkySportsMix[UK]">
+  </iframe>
 
   <script>
     if (confirm("Join Our Telegram Channel @livecrichdofficial")) {
