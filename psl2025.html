@@ -7,37 +7,39 @@
   <style>
     body {
       margin: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
       background-color: #f0f0f0;
+      font-family: Arial, sans-serif;
+      display: flex;
       flex-direction: column;
+      align-items: center;
     }
 
-    .sky-frame {
-      width: 640px;
-      height: 360px;
-      border: none;
+    .iframe-container {
+      margin-top: 20px;
     }
   </style>
 </head>
 
 <body>
 
-  <!-- Sky Sports Mix Frame Only -->
-  <iframe class="sky-frame"
-          allow='encrypted-media'
-          scrolling='no'
-          frameborder='0'
-          allowfullscreen
-          src='https://topembed.pw/channel/SkySportsMix[UK]'>
-  </iframe>
+  <!-- Required Iframe at the Top -->
+  <div class="iframe-container">
+    <iframe 
+      allow='encrypted-media' 
+      width='640' 
+      height='360' 
+      scrolling='no' 
+      frameborder='0' 
+      allowfullscreen 
+      src='https://topembed.pw/channel/SkySportsMix[UK]'>
+    </iframe>
+  </div>
 
   <script>
     if (confirm("Join Our Telegram Channel @livecrichdofficial")) {
       window.location.href = "https://telegram.me/livecrichdofficial";
     }
   </script>
+
 </body>
 </html>
