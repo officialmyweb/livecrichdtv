@@ -6,7 +6,11 @@ document.addEventListener("DOMContentLoaded", function () {
   const links = [
     {
       href: "https://livecrichdtv.pages.dev/ww",
-      text: "WORLDWIDE - OUT OF INDIA USERS",
+      text: "WORLDWIDE: OUT OF INDIA USERS 1",
+    },
+    {
+      href: "https://livecrichdtv.pages.dev/www",
+      text: "WORLDWIDE: OUT OF INDIA USERS 2",
     },
     {
       href: "https://shz.al/Sffb/livecricplayer.html?dtv=https://prod-sports-eng-cf.jiocinema.com/hls/live/2117030/inallow-ipl-2025/eng/1540040249/15mindvrm0196aee80e6b0944cfb66338cda8d9b49011april2025/master.m3u8",
