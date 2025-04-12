@@ -5,8 +5,12 @@ if (confirm("Join Our Telegram Channel @livecrichdofficial")) {
 document.addEventListener("DOMContentLoaded", function () {
   const links = [
     {
+      href: "https://shz.al/Sffb/livecricplayer.html?dtv=https://ee4ee8c03a26.eu-central-1.playback.live-video.net/api/video/v1/eu-central-1.755921704393.channel.LOohfipmCQDP.m3u8",
+      text: "HINDI HD - OUT + IN INDIA",
+    },
+    {
       href: "https://livecrichdtv.pages.dev/ww",
-      text: "HINDI HD - ALL USERS",
+      text: "HINDI HD - OUT + IN INDIA",
     },
     {
       href: "https://livecrichdtv.pages.dev/www",
