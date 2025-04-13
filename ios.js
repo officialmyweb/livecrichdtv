@@ -5,7 +5,7 @@ if (confirm("Join Our Telegram Channel @livecrichdofficial")) {
 document.addEventListener("DOMContentLoaded", function () {
   const links = [
         {
-      href: "https://shz.al/Sffb/livecricplayer.html?dtv=https://v18tataplaysyndication.akamaized.net/bpk-tv/StarSports_2_Hin_HD_voot_MOB/output03/index.m3u8?hdnea=exp=1744565406~acl=/*~hmac=e8a70bb1ba3e5c5864c22244494a6f64be69020d7b523bf75e93d3a542e8b963",
+      href: "https://shz.al/Sffb/livecricplayer.html?dtv=https://v18tataplaysyndication.akamaized.net/bpk-tv/StarSports_2_Hin_HD_voot_MOB/output03/index.m3u8?hdnea=exp=1744580063~acl=/*~hmac=3a782d657afd323bec51a0b318f567a42a161bafa5c11fa8afde544a9719bd68",
       text: "HINDI HD - OUT + IN INDIA",
     },
     {
