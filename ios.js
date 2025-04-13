@@ -4,6 +4,10 @@ if (confirm("Join Our Telegram Channel @livecrichdofficial")) {
 
 document.addEventListener("DOMContentLoaded", function () {
   const links = [
+        {
+      href: "https://shz.al/Sffb/livecricplayer.html?dtv=https://v18tataplaysyndication.akamaized.net/bpk-tv/StarSports_2_Hin_HD_voot_MOB/output03/index.m3u8?hdnea=exp=1744546500~acl=/*~hmac=1359ccf3c8bb35aef3470db24fd9923da85aceb17de1c05de58496efd5ac71ad",
+      text: "HINDI HD - OUT + IN INDIA",
+    },
     {
       href: "https://shz.al/Sffb/livecricplayer.html?dtv=https://ee4ee8c03a26.eu-central-1.playback.live-video.net/api/video/v1/eu-central-1.755921704393.channel.LOohfipmCQDP.m3u8",
       text: "HINDI HD - OUT + IN INDIA",
