@@ -1,46 +1,34 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Telegram-Live-Cric-Hd</title>
-    <style>
-        body {
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f0f0f0;
-        }
-
-        .iframe-wrapper {
-            width: 100%;
-            height: 100%;
-            overflow: hidden; /* Hides the top portion of the iframe */
-        }
-
-        #contentFrame {
-            width: 100%;
-            height: 70%;
-            border: none;
-            margin-top: -10px; /* Adjusts how much of the iframe to cut from the top */
-        }
-    </style>
+  <meta charset="utf-8">
+  <title>Clappr DASH DRM Player</title>
+  <script src="https://cdn.jsdelivr.net/npm/clappr@latest/dist/clappr.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/clappr-dash@latest/dist/clappr-dash.min.js"></script>
 </head>
-
 <body>
-    <div class="iframe-wrapper">
-        <iframe id="contentFrame">
-        </iframe>
-    </div>
+  <div id="player"></div>
 
-    <script>
-document.getElementById("contentFrame").src = "https://streamtp4.com/global1.php?stream=peacock1";
+  <script>
+    const mpdUrl = 'https://otte.live.fly.ww.aiv-cdn.net/pdx-nitro/live/clients/dash/enc/fg5nk2nauv/out/v1/37fe96ef48a74ac78bc598fa12caa8bd/cenc.mpd';
 
-        if (confirm("Join Our Telegram Channel @livecrichdofficial")) {
-            window.location.href = "https://telegram.me/livecrichdofficial";
+    // ClearKey format: { keyId: key }
+    const clearKeys = {
+      'f912fa528f10ba46e035c5fb6f988744': '8080b1f738fd62d6d692c7db101c4fbf'
+    };
+
+    const player = new Clappr.Player({
+      parentId: '#player',
+      source: mpdUrl,
+      autoPlay: true,
+      plugins: [ClapprDash],
+      mimeType: 'application/dash+xml',
+      shakaConfiguration: {
+        drm: {
+          clearKeys: clearKeys
         }
-    </script>
+      }
+    });
+  </script>
 </body>
 </html>
