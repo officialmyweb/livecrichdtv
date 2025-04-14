@@ -4,14 +4,6 @@ if (confirm("Join Our Telegram Channel @livecrichdofficial")) {
 
 document.addEventListener("DOMContentLoaded", function () {
   const links = [
-        {
-      href: "#",
-      text: "HINDI HD - OUT + IN INDIA",
-    },
-    {
-      href: "#",
-      text: "HINDI HD - OUT + IN INDIA",
-    },
     {
       href: "https://livecrichdtv.pages.dev/ww",
       text: "HINDI HD - OUT + IN INDIA",
