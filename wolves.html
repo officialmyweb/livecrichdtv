@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Clappr DASH DRM Player</title>
+  <title>Clappr DASH ClearKey DRM</title>
   <script src="https://cdn.jsdelivr.net/npm/clappr@latest/dist/clappr.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/clappr-dash@latest/dist/clappr-dash.min.js"></script>
 </head>
@@ -10,22 +10,17 @@
   <div id="player"></div>
 
   <script>
-    const mpdUrl = 'https://otte.live.fly.ww.aiv-cdn.net/pdx-nitro/live/clients/dash/enc/fg5nk2nauv/out/v1/37fe96ef48a74ac78bc598fa12caa8bd/cenc.mpd';
-
-    // ClearKey format: { keyId: key }
-    const clearKeys = {
-      'f912fa528f10ba46e035c5fb6f988744': '8080b1f738fd62d6d692c7db101c4fbf'
-    };
-
     const player = new Clappr.Player({
       parentId: '#player',
-      source: mpdUrl,
+      source: 'https://otte.live.fly.ww.aiv-cdn.net/pdx-nitro/live/clients/dash/enc/fg5nk2nauv/out/v1/37fe96ef48a74ac78bc598fa12caa8bd/cenc.mpd',
       autoPlay: true,
-      plugins: [ClapprDash],
       mimeType: 'application/dash+xml',
+      plugins: [ClapprDash],
       shakaConfiguration: {
         drm: {
-          clearKeys: clearKeys
+          clearKeys: {
+            'f912fa528f10ba46e035c5fb6f988744': '8080b1f738fd62d6d692c7db101c4fbf'
+          }
         }
       }
     });
