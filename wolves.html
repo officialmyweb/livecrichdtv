@@ -2,23 +2,34 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>dash.js ClearKey Example</title>
+  <title>Video.js ClearKey DRM</title>
+  <link href="https://vjs.zencdn.net/8.5.2/video-js.css" rel="stylesheet" />
+  <script src="https://vjs.zencdn.net/8.5.2/video.min.js"></script>
   <script src="https://cdn.dashjs.org/latest/dash.all.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/videojs-contrib-dash@2/dash.min.js"></script>
 </head>
 <body>
-  <video id="videoPlayer" controls width="800" autoplay></video>
+  <video-js id="videoPlayer" class="video-js vjs-default-skin" controls autoplay width="800"></video-js>
 
   <script>
-    const url = 'https://otte.live.fly.ww.aiv-cdn.net/pdx-nitro/live/clients/dash/enc/fg5nk2nauv/out/v1/37fe96ef48a74ac78bc598fa12caa8bd/cenc.mpd';
-    const player = dashjs.MediaPlayer().create();
-    player.initialize(document.querySelector("#videoPlayer"), url, true);
+    const player = videojs('videoPlayer');
 
-    player.setProtectionData({
-      "org.w3.clearkey": {
-        "clearkeys": {
-          "f912fa528f10ba46e035c5fb6f988744": "8080b1f738fd62d6d692c7db101c4fbf"
+    player.ready(function () {
+      const tech = player.tech({ IWillNotUseThisInPlugins: true });
+      const dashjsPlayer = tech.el_.dash;
+
+      dashjsPlayer.setProtectionData({
+        'org.w3.clearkey': {
+          clearkeys: {
+            'f912fa528f10ba46e035c5fb6f988744': '8080b1f738fd62d6d692c7db101c4fbf'
+          }
         }
-      }
+      });
+
+      player.src({
+        src: 'https://otte.live.fly.ww.aiv-cdn.net/pdx-nitro/live/clients/dash/enc/fg5nk2nauv/out/v1/37fe96ef48a74ac78bc598fa12caa8bd/cenc.mpd',
+        type: 'application/dash+xml'
+      });
     });
   </script>
 </body>
