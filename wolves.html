@@ -2,34 +2,44 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Video.js ClearKey DRM</title>
-  <link href="https://vjs.zencdn.net/8.5.2/video-js.css" rel="stylesheet" />
-  <script src="https://vjs.zencdn.net/8.5.2/video.min.js"></script>
+  <title>dash.js ClearKey Player</title>
   <script src="https://cdn.dashjs.org/latest/dash.all.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/videojs-contrib-dash@2/dash.min.js"></script>
+  <style>
+    body { background: #000; display: flex; justify-content: center; align-items: center; height: 100vh; }
+    video { width: 90%; max-width: 1000px; }
+  </style>
 </head>
 <body>
-  <video-js id="videoPlayer" class="video-js vjs-default-skin" controls autoplay width="800"></video-js>
+  <video id="videoPlayer" controls autoplay></video>
 
   <script>
-    const player = videojs('videoPlayer');
+    const url = 'https://otte.live.fly.ww.aiv-cdn.net/pdx-nitro/live/clients/dash/enc/fg5nk2nauv/out/v1/37fe96ef48a74ac78bc598fa12caa8bd/cenc.mpd';
+    const player = dashjs.MediaPlayer().create();
+    player.initialize(document.querySelector("#videoPlayer"), url, true);
 
-    player.ready(function () {
-      const tech = player.tech({ IWillNotUseThisInPlugins: true });
-      const dashjsPlayer = tech.el_.dash;
-
-      dashjsPlayer.setProtectionData({
-        'org.w3.clearkey': {
-          clearkeys: {
-            'f912fa528f10ba46e035c5fb6f988744': '8080b1f738fd62d6d692c7db101c4fbf'
-          }
+    player.setProtectionData({
+      "org.w3.clearkey": {
+        "clearkeys": {
+          "f912fa528f10ba46e035c5fb6f988744": "8080b1f738fd62d6d692c7db101c4fbf"
         }
-      });
+      }
+    });
 
-      player.src({
-        src: 'https://otte.live.fly.ww.aiv-cdn.net/pdx-nitro/live/clients/dash/enc/fg5nk2nauv/out/v1/37fe96ef48a74ac78bc598fa12caa8bd/cenc.mpd',
-        type: 'application/dash+xml'
-      });
+    // Performance tweak: enable fast switching & buffer control
+    player.updateSettings({
+      streaming: {
+        buffer: {
+          fastSwitchEnabled: true,
+          stableBufferTime: 12,
+          bufferTimeAtTopQuality: 20
+        },
+        abr: {
+          autoSwitchBitrate: {
+            video: true
+          },
+          useDefaultABRRules: true
+        }
+      }
     });
   </script>
 </body>
