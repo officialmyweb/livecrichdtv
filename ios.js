@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const links = [
     {
       href: "https://livecrichdtv.pages.dev/ww",
-      text: "HINDI HD - OUT + IN INDIA",
+      text: "HIN + ENG - OUT + IN INDIA",
     },
     {
       href: "https://livecrichdtv.pages.dev/www",
