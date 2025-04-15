@@ -9,6 +9,10 @@ document.addEventListener("DOMContentLoaded", function () {
       text: "HIN + ENG - OUT + IN INDIA",
     },
     {
+      href: "https://s13.24cwc.com/",
+      text: "ALL DEVICE WORKING - INDIA + OUT OF INDIA ALSO",
+    },
+    {
       href: "https://livecrichdtv.pages.dev/www",
       text: "OUT OF INDIA USERS - S2",
     },
