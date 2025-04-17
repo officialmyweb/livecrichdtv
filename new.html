@@ -29,21 +29,17 @@
     window.location.href = "https://telegram.me/livecrichdofficial";
   }
 
+  // Updated Manifest URI and DRM keys
   const manifestUri = "https://otte.live.fly.ww.aiv-cdn.net/pdx-nitro/live/clients/dash/enc/tftudkctiy/out/v1/21d351e17f284d56ba835597fcac3e3c/cenc.mpd";
   const drmKeys = {
     "c5baabaaf817abc314702e6fc615571f": "35f6b737c5b2c3d657a37b2bff894916"
   };
 
-  let player;
-  let video;
-  let lastTime = 0;
-  let stuckCount = 0;
-
   async function initPlayer() {
-    video = document.getElementById("video");
+    const video = document.getElementById("video");
     const ui = video["ui"];
     const controls = ui.getControls();
-    player = controls.getPlayer();
+    const player = controls.getPlayer();
 
     ui.configure({
       controlPanelElements: ["play_pause", "mute", "spacer", "time_and_duration", "quality", "fullscreen", "picture_in_picture", "overflow_menu"],
@@ -53,75 +49,40 @@
     player.configure({
       drm: { clearKeys: drmKeys },
       streaming: {
-        lowLatencyMode: true,
-        rebufferingGoal: 10,
-        bufferingGoal: 15,
-        liveSyncDuration: 10,
         jumpLargeGaps: true,
+        smallGapLimit: 0.5,
+        lowLatencyMode: true,
         inaccurateManifestTolerance: 5,
-        startAtSegmentBoundary: true
-      },
-      abr: { enabled: false } // force HD
+        rebufferingGoal: 10,
+        bufferingGoal: 20,
+        liveSyncDuration: 10,  // Faster live synchronization
+        alwaysStreamText: true,
+        startAtSegmentBoundary: false,  // Make stream sync flexible
+        startTime: 0  // Begin from the most recent segment to make it live
+      }
     });
 
     player.addEventListener("error", e => console.error("Player error", e.detail));
     controls.addEventListener("error", e => console.error("UI error", e.detail));
 
-    await loadStream();
-    setupStuckDetector();
-  }
-
-  async function loadStream() {
     try {
       await player.load(manifestUri);
-      const liveEdge = player.seekRange().end;
-      video.currentTime = liveEdge;
-
-      // Lock HD track
-      const tracks = player.getVariantTracks();
-      const hdTrack = tracks.find(t => t.height === 1080) || tracks.find(t => t.height === 720);
-      if (hdTrack) {
-        player.selectVariantTrack(hdTrack, true);
-        console.log("HD Locked at", hdTrack.height);
-      }
+      console.log("Video loaded successfully!");
     } catch (err) {
       console.error("Error loading video:", err);
     }
-  }
 
-  function setupStuckDetector() {
-    setInterval(async () => {
-      if (video.paused || video.readyState < 2) return;
+    // Ensuring smooth playback without stalling
+    setInterval(() => {
+      const currentTime = video.currentTime;
+      const duration = video.duration;
 
-      // Track stuck situation
-      if (Math.abs(video.currentTime - lastTime) < 0.01) {
-        stuckCount++;
-      } else {
-        stuckCount = 0;
+      if (currentTime >= duration - 1) {
+        console.log("Live stream issue detected. Rebuffering...");
+        // Prevent stalling by adjusting the time slightly
+        video.currentTime = currentTime - 2;
       }
-
-      lastTime = video.currentTime;
-
-      if (stuckCount >= 4) { // ~4-6 seconds stuck
-        console.warn("Detected stuck playback. Soft reloading player...");
-
-        // Temporarily unload and reload source quickly (no full reload needed)
-        await player.unload();
-        await loadStream();
-        
-        // Reset to live position after reloading
-        video.currentTime = player.seekRange().end;
-
-        // Re-lock quality to HD
-        const tracks = player.getVariantTracks();
-        const hdTrack = tracks.find(t => t.height === 1080) || tracks.find(t => t.height === 720);
-        if (hdTrack) {
-          player.selectVariantTrack(hdTrack, true);
-        }
-
-        stuckCount = 0; // Reset stuck count
-      }
-    }, 2000); // Check every 2 seconds
+    }, 3000);  // Check every 3 seconds for smooth recovery
   }
 
   function configureLogo() {
@@ -132,6 +93,7 @@
     logo.addEventListener("click", () => {
       window.location.href = "https://telegram.me/livecrichdofficial";
     });
+
     document.querySelector(".shaka-video-container").appendChild(logo);
   }
 
