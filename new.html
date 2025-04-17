@@ -13,7 +13,7 @@
 <body>
 <div id="player-container">
   <div data-shaka-player-container class="shaka-video-container">
-    <video autoplay data-shaka-player id="video" poster="https://i.ibb.co/wzxpfcC/IMG-20240601-170942.jpg"></video>
+    <video autoplay data-shaka-player id="video" poster="#"></video>
   </div>
 </div>
 
@@ -72,17 +72,20 @@
       console.error("Error loading video:", err);
     }
 
-    // Buffering and live stream handling: prevent getting stuck at the end of the over
+    // Watch for segment changes to ensure smooth transition between overs
     setInterval(() => {
       const currentTime = video.currentTime;
       const duration = video.duration;
 
-      if (currentTime >= duration - 1) {
-        console.log("Live stream issue detected. Rebuffering...");
-        // If we're near the end, force a small buffer adjustment to keep the stream smooth
-        video.currentTime = currentTime - 2;  // Adjust time back slightly to avoid stalling
+      // Check if we're near the end of the current segment (end of the over)
+      if (currentTime >= duration - 2) {
+        console.log("Segment nearing end, ensuring smooth transition...");
+        
+        // If we're close to the end, force a small buffer adjustment to avoid freezing
+        video.currentTime = currentTime + 0.5;  // Slightly advance time to trigger new segment loading
       }
-    }, 3000);  // Check every 3 seconds for buffer adjustments
+    }, 2000);  // Check every 2 seconds for segment adjustments
+
   }
 
   function configureLogo() {
