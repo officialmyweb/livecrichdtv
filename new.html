@@ -49,13 +49,14 @@
       drm: { clearKeys: drmKeys },
       streaming: {
         lowLatencyMode: true,
-        rebufferingGoal: 15,
-        bufferingGoal: 30,
-        liveSyncDuration: 20,
+        rebufferingGoal: 10,
+        bufferingGoal: 15,
+        liveSyncDuration: 10,
         jumpLargeGaps: true,
-        startAtSegmentBoundary: false
+        inaccurateManifestTolerance: 5,
+        startAtSegmentBoundary: true
       },
-      abr: { enabled: false } // Manual quality only
+      abr: { enabled: false } // force manual quality
     });
 
     player.addEventListener("error", e => console.error("Player error", e.detail));
@@ -63,32 +64,34 @@
 
     try {
       await player.load(manifestUri);
-      console.log("Video loaded!");
-
-      // Jump to live edge
       const liveEdge = player.seekRange().end;
       video.currentTime = liveEdge;
       console.log("Jumped to live edge at", liveEdge);
 
-      // Force HD quality
       const tracks = player.getVariantTracks();
       const hdTrack = tracks.find(t => t.height === 1080) || tracks.find(t => t.height === 720);
       if (hdTrack) {
         player.selectVariantTrack(hdTrack, true);
         console.log("Forced HD quality:", hdTrack.height);
       }
-
     } catch (err) {
       console.error("Error loading video:", err);
     }
 
-    // Smart recovery if playback stalls
+    // Monitor if stuck at end of segment & recover
     setInterval(() => {
-      if (video.readyState < 2 && !video.paused) {
-        console.warn("Playback stuck, nudging...");
-        video.currentTime += 0.5;
+      if (video.readyState < 2 || video.paused) return;
+
+      const buffered = video.buffered;
+      const end = buffered.length ? buffered.end(0) : 0;
+      const diff = end - video.currentTime;
+
+      if (diff < 0.5 || video.currentTime < player.seekRange().end - 10) {
+        console.warn("Stuck or drifted behind live. Re-jumping to live edge...");
+        const liveEdge = player.seekRange().end;
+        video.currentTime = liveEdge;
       }
-    }, 6000);
+    }, 8000);
   }
 
   function configureLogo() {
