@@ -36,6 +36,8 @@
 
   let player;
   let video;
+  let lastTime = 0;
+  let stuckCount = 0;
 
   async function initPlayer() {
     video = document.getElementById("video");
@@ -82,19 +84,16 @@
         player.selectVariantTrack(hdTrack, true);
         console.log("HD Locked at", hdTrack.height);
       }
-
     } catch (err) {
       console.error("Error loading video:", err);
     }
   }
 
   function setupStuckDetector() {
-    let lastTime = 0;
-    let stuckCount = 0;
-
     setInterval(async () => {
       if (video.paused || video.readyState < 2) return;
 
+      // Track stuck situation
       if (Math.abs(video.currentTime - lastTime) < 0.01) {
         stuckCount++;
       } else {
@@ -103,30 +102,26 @@
 
       lastTime = video.currentTime;
 
-      if (stuckCount >= 4) { // ~8-10 seconds stuck
+      if (stuckCount >= 4) { // ~4-6 seconds stuck
         console.warn("Detected stuck playback. Soft reloading player...");
 
-        const currentTrack = player.getVariantTracks().find(t => t.active);
-        const currentQuality = currentTrack ? currentTrack.height : null;
-
+        // Temporarily unload and reload source quickly (no full reload needed)
         await player.unload();
-        await player.load(manifestUri);
-
-        // Jump to live again
+        await loadStream();
+        
+        // Reset to live position after reloading
         video.currentTime = player.seekRange().end;
 
-        // Re-lock quality if needed
-        if (currentQuality) {
-          const newTrack = player.getVariantTracks().find(t => t.height === currentQuality);
-          if (newTrack) {
-            player.selectVariantTrack(newTrack, true);
-            console.log("Restored quality:", newTrack.height);
-          }
+        // Re-lock quality to HD
+        const tracks = player.getVariantTracks();
+        const hdTrack = tracks.find(t => t.height === 1080) || tracks.find(t => t.height === 720);
+        if (hdTrack) {
+          player.selectVariantTrack(hdTrack, true);
         }
 
-        stuckCount = 0;
+        stuckCount = 0; // Reset stuck count
       }
-    }, 2000);
+    }, 2000); // Check every 2 seconds
   }
 
   function configureLogo() {
