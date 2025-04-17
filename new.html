@@ -3,115 +3,88 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="referrer" content="no-referrer" />
-  <title>Telegram-Live-Cric-Hd</title>
+  <title>Live Cricket Stream</title>
 
   <!-- Shaka Player 4.12.6 -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.12.6/shaka-player.ui.min.js" crossorigin="anonymous"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.12.6/controls.min.css" crossorigin="anonymous" />
-  <link rel="stylesheet" href="https://livecrichdofficial.pages.dev/livecrichd2.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.12.6/shaka-player.ui.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.12.6/controls.min.css" />
+
   <style>
-    .logo {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      height: 40px;
-      cursor: pointer;
-      z-index: 10;
+    html, body {
+      margin: 0;
+      padding: 0;
+      background-color: black;
+      height: 100%;
+      overflow: hidden;
+    }
+    .shaka-video-container {
+      width: 100vw;
+      height: 100vh;
+    }
+    video {
+      width: 100%;
+      height: 100%;
     }
   </style>
 </head>
 <body>
-  <div id="player-container">
-    <div data-shaka-player-container class="shaka-video-container">
-      <video autoplay data-shaka-player id="video" poster="https://i.ibb.co/wzxpfcC/IMG-20240601-170942.jpg"></video>
-    </div>
+  <div data-shaka-player-container class="shaka-video-container">
+    <video data-shaka-player id="video" autoplay muted></video>
   </div>
 
   <script>
     const manifestUri = "https://otte.live.fly.ww.aiv-cdn.net/pdx-nitro/live/clients/dash/enc/tftudkctiy/out/v1/21d351e17f284d56ba835597fcac3e3c/cenc.mpd";
-    const drmKeys = {
+    const clearKeys = {
       "c5baabaaf817abc314702e6fc615571f": "35f6b737c5b2c3d657a37b2bff894916"
     };
 
-    async function initPlayer() {
+    document.addEventListener("shaka-ui-loaded", async () => {
       const video = document.getElementById("video");
       const ui = video["ui"];
       const controls = ui.getControls();
       const player = controls.getPlayer();
 
+      // UI Configuration
       ui.configure({
-        controlPanelElements: ["play_pause", "mute", "spacer", "time_and_duration", "quality", "fullscreen", "picture_in_picture", "overflow_menu"],
-        overflowMenuButtons: ["captions", "cast", "quality", "language"]
+        controlPanelElements: [
+          "play_pause", "mute", "time_and_duration", "spacer",
+          "quality", "fullscreen", "overflow_menu"
+        ],
+        overflowMenuButtons: ["quality", "language"]
       });
 
+      // Player Configuration
       player.configure({
-        drm: {
-          clearKeys: drmKeys
-        },
+        drm: { clearKeys },
         streaming: {
           jumpLargeGaps: true,
-          smallGapLimit: 2,
+          rebufferingGoal: 10,
+          bufferingGoal: 30,
           lowLatencyMode: true,
-          autoLowLatencyMode: true,
-          liveSyncDuration: 15,
-          rebufferingGoal: 8,
-          bufferingGoal: 20,
-          inaccurateManifestTolerance: 5,
-          forceTransmuxTS: true,
-          startAtSegmentBoundary: true
+          inaccurateManifestTolerance: 5
+        },
+        manifest: {
+          defaultPresentationDelay: 10
         }
       });
-
-      player.addEventListener("error", e => console.error("Player error", e.detail));
-      controls.addEventListener("error", e => console.error("UI error", e.detail));
 
       try {
         await player.load(manifestUri);
         console.log("Video loaded successfully!");
-      } catch (err) {
-        console.error("Error loading video:", err);
+      } catch (e) {
+        console.error("Error loading video", e);
       }
 
-      // Live edge jump
+      // Recovery Mechanism
       setInterval(() => {
-        if (!player.isLive()) return;
-        const current = video.currentTime;
-        const edge = player.seekRange().end;
-        if (edge - current > 10) {
-          console.warn("Behind live, skipping ahead");
-          video.currentTime = edge - 2;
+        if (player.isLive() && player.isBuffering()) {
+          const liveEdge = player.seekRange().end;
+          if (liveEdge) {
+            player.seekTo(liveEdge - 1);
+            console.log("Auto-recovered to live edge");
+          }
         }
       }, 10000);
-    }
-
-    // Logo
-    function addLogo() {
-      const logo = document.createElement("img");
-      logo.src = "https://i.ibb.co/7VF2dfy/1000000077-removebg-preview.png";
-      logo.className = "logo";
-      logo.onclick = () => {
-        window.location.href = "https://telegram.me/livecrichdofficial";
-      };
-      document.querySelector(".shaka-video-container").appendChild(logo);
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      if (window.top !== window.self || window.location.hostname !== "livecrichdtv.pages.dev") {
-        window.top.location.href = "https://telegram.me/livecrichdofficial";
-      }
-      if (confirm("Join Our Telegram Channel @livecrichdofficial")) {
-        window.location.href = "https://telegram.me/livecrichdofficial";
-      }
-    });
-
-    document.addEventListener("shaka-ui-loaded", () => {
-      initPlayer();
-      addLogo();
-    });
-
-    document.addEventListener("shaka-ui-load-failed", () => {
-      console.error("Shaka UI failed to load.");
     });
   </script>
 </body>
