@@ -34,11 +34,14 @@
     "c5baabaaf817abc314702e6fc615571f": "35f6b737c5b2c3d657a37b2bff894916"
   };
 
+  let player;
+  let video;
+
   async function initPlayer() {
-    const video = document.getElementById("video");
+    video = document.getElementById("video");
     const ui = video["ui"];
     const controls = ui.getControls();
-    const player = controls.getPlayer();
+    player = controls.getPlayer();
 
     ui.configure({
       controlPanelElements: ["play_pause", "mute", "spacer", "time_and_duration", "quality", "fullscreen", "picture_in_picture", "overflow_menu"],
@@ -56,42 +59,74 @@
         inaccurateManifestTolerance: 5,
         startAtSegmentBoundary: true
       },
-      abr: { enabled: false } // force manual quality
+      abr: { enabled: false } // force HD
     });
 
     player.addEventListener("error", e => console.error("Player error", e.detail));
     controls.addEventListener("error", e => console.error("UI error", e.detail));
 
+    await loadStream();
+    setupStuckDetector();
+  }
+
+  async function loadStream() {
     try {
       await player.load(manifestUri);
       const liveEdge = player.seekRange().end;
       video.currentTime = liveEdge;
-      console.log("Jumped to live edge at", liveEdge);
 
+      // Lock HD track
       const tracks = player.getVariantTracks();
       const hdTrack = tracks.find(t => t.height === 1080) || tracks.find(t => t.height === 720);
       if (hdTrack) {
         player.selectVariantTrack(hdTrack, true);
-        console.log("Forced HD quality:", hdTrack.height);
+        console.log("HD Locked at", hdTrack.height);
       }
+
     } catch (err) {
       console.error("Error loading video:", err);
     }
+  }
 
-    // Monitor if stuck at end of segment & recover
-    setInterval(() => {
-      if (video.readyState < 2 || video.paused) return;
+  function setupStuckDetector() {
+    let lastTime = 0;
+    let stuckCount = 0;
 
-      const buffered = video.buffered;
-      const end = buffered.length ? buffered.end(0) : 0;
-      const diff = end - video.currentTime;
+    setInterval(async () => {
+      if (video.paused || video.readyState < 2) return;
 
-      if (diff < 0.5 || video.currentTime < player.seekRange().end - 10) {
-        console.warn("Stuck or drifted behind live. Re-jumping to live edge...");
-        const liveEdge = player.seekRange().end;
-        video.currentTime = liveEdge;
+      if (Math.abs(video.currentTime - lastTime) < 0.01) {
+        stuckCount++;
+      } else {
+        stuckCount = 0;
       }
-    }, 8000);
+
+      lastTime = video.currentTime;
+
+      if (stuckCount >= 4) { // ~8-10 seconds stuck
+        console.warn("Detected stuck playback. Soft reloading player...");
+
+        const currentTrack = player.getVariantTracks().find(t => t.active);
+        const currentQuality = currentTrack ? currentTrack.height : null;
+
+        await player.unload();
+        await player.load(manifestUri);
+
+        // Jump to live again
+        video.currentTime = player.seekRange().end;
+
+        // Re-lock quality if needed
+        if (currentQuality) {
+          const newTrack = player.getVariantTracks().find(t => t.height === currentQuality);
+          if (newTrack) {
+            player.selectVariantTrack(newTrack, true);
+            console.log("Restored quality:", newTrack.height);
+          }
+        }
+
+        stuckCount = 0;
+      }
+    }, 2000);
   }
 
   function configureLogo() {
