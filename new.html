@@ -2,101 +2,110 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Live Cricket Stream</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="referrer" content="no-referrer" />
+  <title>Telegram-Live-Cric-Hd</title>
 
-  <!-- Shaka Player UI -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.12.6/shaka-player.ui.min.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.12.6/controls.min.css"/>
-
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      background-color: black;
-      height: 100%;
-      overflow: hidden;
-    }
-    #video-container {
-      width: 100vw;
-      height: 100vh;
-    }
-    .shaka-video-container video {
-      width: 100%;
-      height: 100%;
-    }
-  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.12.6/shaka-player.ui.min.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.12.6/controls.min.css" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://livecrichdofficial.pages.dev/livecrichd2.css" />
 </head>
 <body>
-  <div id="video-container">
-    <div data-shaka-player-container class="shaka-video-container">
-      <video id="video" data-shaka-player autoplay muted></video>
-    </div>
+<div id="player-container">
+  <div data-shaka-player-container class="shaka-video-container">
+    <video autoplay data-shaka-player id="video" poster="https://i.ibb.co/wzxpfcC/IMG-20240601-170942.jpg"></video>
   </div>
+</div>
 
-  <script>
-    async function initPlayer() {
-      const manifestUri = "https://otte.live.fly.ww.aiv-cdn.net/pdx-nitro/live/clients/dash/enc/tftudkctiy/out/v1/21d351e17f284d56ba835597fcac3e3c/cenc.mpd";
-      const clearKeys = {
-        "c5baabaaf817abc314702e6fc615571f": "35f6b737c5b2c3d657a37b2bff894916"
-      };
+<script defer src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js"></script>
 
-      const video = document.getElementById("video");
-      const ui = video["ui"];
-      const controls = ui.getControls();
-      const player = controls.getPlayer();
+<script>
+  const allowedDomain = "livecrichdtv.pages.dev";
+  if (window.top !== window.self || window.location.hostname !== allowedDomain) {
+    window.top.location.href = "https://telegram.me/livecrichdofficial";
+  }
 
-      // UI Configuration
-      ui.configure({
-        controlPanelElements: [
-          "play_pause", "mute", "time_and_duration", "spacer", "quality", "fullscreen", "overflow_menu"
-        ],
-        overflowMenuButtons: ["quality", "language"]
-      });
+  if (confirm("Join Our Telegram Channel @livecrichdofficial")) {
+    window.location.href = "https://telegram.me/livecrichdofficial";
+  }
 
-      // Player Configuration
-      player.configure({
-        drm: { clearKeys },
-        streaming: {
-          jumpLargeGaps: true,
-          rebufferingGoal: 10,
-          bufferingGoal: 30,
-          lowLatencyMode: true,
-          inaccurateManifestTolerance: 5
-        },
-        manifest: {
-          defaultPresentationDelay: 10
-        }
-      });
+  const manifestUri = "https://otte.live.fly.ww.aiv-cdn.net/pdx-nitro/live/clients/dash/enc/tftudkctiy/out/v1/21d351e17f284d56ba835597fcac3e3c/cenc.mpd";
+  const drmKeys = {
+    "c5baabaaf817abc314702e6fc615571f": "35f6b737c5b2c3d657a37b2bff894916"
+  };
 
-      // Load stream
-      try {
-        await player.load(manifestUri);
-        console.log("Stream loaded");
-      } catch (e) {
-        console.error("Failed to load stream:", e);
-      }
+  async function initPlayer() {
+    const video = document.getElementById("video");
+    const ui = video["ui"];
+    const controls = ui.getControls();
+    const player = controls.getPlayer();
 
-      // Buffering recovery logic
-      setInterval(() => {
-        if (player.isLive() && player.isBuffering()) {
-          const liveEdge = player.seekRange().end;
-          if (liveEdge && !video.paused) {
-            player.seekTo(liveEdge - 1);
-            console.log("Auto-recovered to live");
-          }
-        }
-      }, 10000);
-    }
+    ui.configure({
+      controlPanelElements: ["play_pause", "mute", "spacer", "time_and_duration", "quality", "fullscreen", "picture_in_picture", "overflow_menu"],
+      overflowMenuButtons: ["captions", "cast", "quality", "language"]
+    });
 
-    document.addEventListener('DOMContentLoaded', () => {
-      shaka.polyfill.installAll();
-      if (shaka.Player.isBrowserSupported()) {
-        initPlayer();
-      } else {
-        console.error('Browser not supported!');
+    player.configure({
+      drm: { clearKeys: drmKeys },
+      streaming: {
+        jumpLargeGaps: true,
+        smallGapLimit: 0.5,
+        lowLatencyMode: true,
+        inaccurateManifestTolerance: 5,
+        rebufferingGoal: 10,
+        bufferingGoal: 20,
+        liveSyncDuration: 20,
+        alwaysStreamText: true,
+        startAtSegmentBoundary: true
       }
     });
-  </script>
+
+    player.addEventListener("error", e => console.error("Player error", e.detail));
+    controls.addEventListener("error", e => console.error("UI error", e.detail));
+
+    try {
+      await player.load(manifestUri);
+      console.log("Video loaded successfully!");
+    } catch (err) {
+      console.error("Error loading video:", err);
+    }
+
+    // Playback recovery if stuck near buffer end
+    setInterval(() => {
+      const buffered = video.buffered;
+      if (buffered.length && video.currentTime >= buffered.end(0) - 0.5) {
+        console.warn("Near end of buffer, nudging playback...");
+        video.currentTime += 0.3;
+      }
+    }, 5000);
+
+    // Soft reload stream every 60 seconds to prevent stuck
+    setInterval(() => {
+      console.log("Soft reload triggered");
+      player.unload().then(() => player.load(manifestUri));
+    }, 60000);
+  }
+
+  function configureLogo() {
+    const logo = document.createElement("img");
+    logo.src = "https://i.ibb.co/7VF2dfy/1000000077-removebg-preview.png";
+    logo.alt = "Logo";
+    logo.className = "logo";
+    logo.addEventListener("click", () => {
+      window.location.href = "https://telegram.me/livecrichdofficial";
+    });
+
+    document.querySelector(".shaka-video-container").appendChild(logo);
+  }
+
+  document.addEventListener("shaka-ui-loaded", () => {
+    initPlayer();
+    configureLogo();
+  });
+
+  document.addEventListener("shaka-ui-load-failed", () => {
+    console.error("Unable to load the Shaka UI!");
+  });
+</script>
 </body>
 </html>
