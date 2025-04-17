@@ -29,6 +29,7 @@
     window.location.href = "https://telegram.me/livecrichdofficial";
   }
 
+  // Updated Manifest URI and DRM keys
   const manifestUri = "https://otte.live.fly.ww.aiv-cdn.net/pdx-nitro/live/clients/dash/enc/tftudkctiy/out/v1/21d351e17f284d56ba835597fcac3e3c/cenc.mpd";
   const drmKeys = {
     "c5baabaaf817abc314702e6fc615571f": "35f6b737c5b2c3d657a37b2bff894916"
@@ -70,25 +71,18 @@
       console.error("Error loading video:", err);
     }
 
-    // Detect when stuck near the end of an over (or segment boundary)
-    setInterval(() => {
-      const buffered = video.buffered;
-      if (buffered.length && video.currentTime >= buffered.end(0) - 0.5) {
-        console.warn("Near end of buffer, ensuring smooth transition...");
-        // Preload next segment or adjust buffering behavior
-        player.getVideoElement().play();  // Ensure playback keeps moving
-      }
-    }, 3000);  // Check every 3 seconds for buffer state
-
-    // Soft recovery after each over (or segment)
+    // Buffering and live stream handling: prevent getting stuck at end of the over
     setInterval(() => {
       const currentTime = video.currentTime;
       const duration = video.duration;
-      if (currentTime >= duration - 1) {  // When it's near the end of an over
-        console.log("Buffering or reloading for smooth transition...");
-        video.currentTime = currentTime - 2;  // Slightly backtrack to avoid stuck
+
+      if (currentTime >= duration - 1) {
+        console.log("Live stream issue detected. Rebuffering...");
+        // If we're near the end, force a small buffer adjustment to keep the stream smooth
+        video.currentTime = currentTime - 2;  // Adjust time back slightly to avoid stalling
       }
-    }, 5000);  // Check every 5 seconds for smooth transition
+    }, 3000);  // Check every 3 seconds for buffer adjustments
+
   }
 
   function configureLogo() {
