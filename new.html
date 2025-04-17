@@ -13,7 +13,7 @@
 <body>
 <div id="player-container">
   <div data-shaka-player-container class="shaka-video-container">
-    <video autoplay data-shaka-player id="video" poster="#"></video>
+    <video autoplay data-shaka-player id="video" poster="https://i.ibb.co/wzxpfcC/IMG-20240601-170942.jpg"></video>
   </div>
 </div>
 
@@ -29,7 +29,6 @@
     window.location.href = "https://telegram.me/livecrichdofficial";
   }
 
-  // Updated Manifest URI and DRM keys
   const manifestUri = "https://otte.live.fly.ww.aiv-cdn.net/pdx-nitro/live/clients/dash/enc/tftudkctiy/out/v1/21d351e17f284d56ba835597fcac3e3c/cenc.mpd";
   const drmKeys = {
     "c5baabaaf817abc314702e6fc615571f": "35f6b737c5b2c3d657a37b2bff894916"
@@ -49,17 +48,14 @@
     player.configure({
       drm: { clearKeys: drmKeys },
       streaming: {
-        jumpLargeGaps: true,
-        smallGapLimit: 0.5,
         lowLatencyMode: true,
-        inaccurateManifestTolerance: 5,
-        rebufferingGoal: 10,
-        bufferingGoal: 20,
-        liveSyncDuration: 15, // Reducing live sync duration to make it more responsive
-        alwaysStreamText: true,
-        startAtSegmentBoundary: false, // Ensuring live sync is more flexible
-        startTime: 0 // Starting from the most recent segment for live content
-      }
+        rebufferingGoal: 15,
+        bufferingGoal: 30,
+        liveSyncDuration: 20,
+        jumpLargeGaps: true,
+        startAtSegmentBoundary: false
+      },
+      abr: { enabled: false }
     });
 
     player.addEventListener("error", e => console.error("Player error", e.detail));
@@ -67,25 +63,26 @@
 
     try {
       await player.load(manifestUri);
-      console.log("Video loaded successfully!");
+      console.log("Video loaded!");
+
+      const tracks = player.getVariantTracks();
+      const hdTrack = tracks.find(t => t.height === 1080) || tracks.find(t => t.height === 720);
+      if (hdTrack) {
+        player.selectVariantTrack(hdTrack, true);
+        console.log("Forced HD quality:", hdTrack.height);
+      }
+
     } catch (err) {
       console.error("Error loading video:", err);
     }
 
-    // Watch for segment changes to ensure smooth transition between overs
+    // Playback nudge if stuck
     setInterval(() => {
-      const currentTime = video.currentTime;
-      const duration = video.duration;
-
-      // Check if we're near the end of the current segment (end of the over)
-      if (currentTime >= duration - 2) {
-        console.log("Segment nearing end, ensuring smooth transition...");
-        
-        // If we're close to the end, force a small buffer adjustment to avoid freezing
-        video.currentTime = currentTime + 0.5;  // Slightly advance time to trigger new segment loading
+      if (video.readyState < 2 && !video.paused) {
+        console.warn("Stuck? Nudging playback...");
+        video.currentTime += 0.5;
       }
-    }, 2000);  // Check every 2 seconds for segment adjustments
-
+    }, 6000);
   }
 
   function configureLogo() {
@@ -96,7 +93,6 @@
     logo.addEventListener("click", () => {
       window.location.href = "https://telegram.me/livecrichdofficial";
     });
-
     document.querySelector(".shaka-video-container").appendChild(logo);
   }
 
