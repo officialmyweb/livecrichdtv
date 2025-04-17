@@ -70,20 +70,25 @@
       console.error("Error loading video:", err);
     }
 
-    // Playback recovery if stuck near buffer end
+    // Detect when stuck near the end of an over (or segment boundary)
     setInterval(() => {
       const buffered = video.buffered;
       if (buffered.length && video.currentTime >= buffered.end(0) - 0.5) {
-        console.warn("Near end of buffer, nudging playback...");
-        video.currentTime += 0.3;
+        console.warn("Near end of buffer, ensuring smooth transition...");
+        // Preload next segment or adjust buffering behavior
+        player.getVideoElement().play();  // Ensure playback keeps moving
       }
-    }, 5000);
+    }, 3000);  // Check every 3 seconds for buffer state
 
-    // Soft reload stream every 60 seconds to prevent stuck
+    // Soft recovery after each over (or segment)
     setInterval(() => {
-      console.log("Soft reload triggered");
-      player.unload().then(() => player.load(manifestUri));
-    }, 60000);
+      const currentTime = video.currentTime;
+      const duration = video.duration;
+      if (currentTime >= duration - 1) {  // When it's near the end of an over
+        console.log("Buffering or reloading for smooth transition...");
+        video.currentTime = currentTime - 2;  // Slightly backtrack to avoid stuck
+      }
+    }, 5000);  // Check every 5 seconds for smooth transition
   }
 
   function configureLogo() {
