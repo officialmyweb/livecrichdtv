@@ -6,7 +6,7 @@
   <meta name="referrer" content="no-referrer" />
   <title>Telegram-Live-Cric-Hd</title>
 
-  <!-- Shaka Player UI -->
+  <!-- Latest Shaka Player UI -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.12.6/shaka-player.ui.min.js" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.12.6/controls.min.css" crossorigin="anonymous">
   <link rel="stylesheet" href="https://livecrichdofficial.pages.dev/livecrichd2.css" />
@@ -52,12 +52,15 @@
       },
       streaming: {
         jumpLargeGaps: true,
-        smallGapLimit: 1,
+        smallGapLimit: 2,
         lowLatencyMode: true,
-        inaccurateManifestTolerance: 2,
-        rebufferingGoal: 10,
-        bufferingGoal: 30,
-        liveSyncDuration: 15
+        autoLowLatencyMode: true,
+        liveSyncDuration: 15,
+        rebufferingGoal: 8,
+        bufferingGoal: 20,
+        inaccurateManifestTolerance: 5,
+        forceTransmuxTS: true,
+        startAtSegmentBoundary: true
       }
     });
 
@@ -71,13 +74,24 @@
       console.error("Error loading video:", err);
     }
 
-    // Refresh MPD every 30 seconds to stay in sync
+    // Periodic manifest refresh to prevent freeze
     setInterval(() => {
       player.reload();
     }, 30000);
+
+    // Live edge time correction to fix stuck segments
+    setInterval(() => {
+      if (!player.isLive()) return;
+      const videoTime = video.currentTime;
+      const liveEdge = player.seekRange().end;
+      if (liveEdge - videoTime > 10) {
+        console.warn("Playback behind live — seeking to live");
+        video.currentTime = liveEdge - 2;
+      }
+    }, 10000);
   }
 
-  // Add logo overlay
+  // Add logo
   function configureLogo() {
     const logo = document.createElement("img");
     logo.src = "https://i.ibb.co/7VF2dfy/1000000077-removebg-preview.png";
@@ -86,7 +100,6 @@
     logo.addEventListener("click", () => {
       window.location.href = "https://telegram.me/livecrichdofficial";
     });
-
     document.querySelector(".shaka-video-container").appendChild(logo);
   }
 
