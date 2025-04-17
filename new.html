@@ -55,9 +55,10 @@
         inaccurateManifestTolerance: 5,
         rebufferingGoal: 10,
         bufferingGoal: 20,
-        liveSyncDuration: 20,
+        liveSyncDuration: 15, // Reducing live sync duration to make it more responsive
         alwaysStreamText: true,
-        startAtSegmentBoundary: true
+        startAtSegmentBoundary: false, // Ensuring live sync is more flexible
+        startTime: 0 // Starting from the most recent segment for live content
       }
     });
 
@@ -71,7 +72,7 @@
       console.error("Error loading video:", err);
     }
 
-    // Buffering and live stream handling: prevent getting stuck at end of the over
+    // Buffering and live stream handling: prevent getting stuck at the end of the over
     setInterval(() => {
       const currentTime = video.currentTime;
       const duration = video.duration;
@@ -82,7 +83,6 @@
         video.currentTime = currentTime - 2;  // Adjust time back slightly to avoid stalling
       }
     }, 3000);  // Check every 3 seconds for buffer adjustments
-
   }
 
   function configureLogo() {
