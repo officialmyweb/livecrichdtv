@@ -6,111 +6,113 @@
   <meta name="referrer" content="no-referrer" />
   <title>Telegram-Live-Cric-Hd</title>
 
-  <!-- Latest Shaka Player UI -->
+  <!-- Shaka Player 4.12.6 -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.12.6/shaka-player.ui.min.js" crossorigin="anonymous"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.12.6/controls.min.css" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.12.6/controls.min.css" crossorigin="anonymous" />
   <link rel="stylesheet" href="https://livecrichdofficial.pages.dev/livecrichd2.css" />
+  <style>
+    .logo {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      height: 40px;
+      cursor: pointer;
+      z-index: 10;
+    }
+  </style>
 </head>
 <body>
-<div id="player-container">
-  <div data-shaka-player-container class="shaka-video-container">
-    <video autoplay data-shaka-player id="video" poster="https://i.ibb.co/wzxpfcC/IMG-20240601-170942.jpg"></video>
+  <div id="player-container">
+    <div data-shaka-player-container class="shaka-video-container">
+      <video autoplay data-shaka-player id="video" poster="https://i.ibb.co/wzxpfcC/IMG-20240601-170942.jpg"></video>
+    </div>
   </div>
-</div>
 
-<script defer src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js"></script>
+  <script>
+    const manifestUri = "https://otte.live.fly.ww.aiv-cdn.net/pdx-nitro/live/clients/dash/enc/tftudkctiy/out/v1/21d351e17f284d56ba835597fcac3e3c/cenc.mpd";
+    const drmKeys = {
+      "c5baabaaf817abc314702e6fc615571f": "35f6b737c5b2c3d657a37b2bff894916"
+    };
 
-<script>
-  const allowedDomain = "livecrichdtv.pages.dev";
-  if (window.top !== window.self || window.location.hostname !== allowedDomain) {
-    window.top.location.href = "https://telegram.me/livecrichdofficial";
-  }
+    async function initPlayer() {
+      const video = document.getElementById("video");
+      const ui = video["ui"];
+      const controls = ui.getControls();
+      const player = controls.getPlayer();
 
-  if (confirm("Join Our Telegram Channel @livecrichdofficial")) {
-    window.location.href = "https://telegram.me/livecrichdofficial";
-  }
+      ui.configure({
+        controlPanelElements: ["play_pause", "mute", "spacer", "time_and_duration", "quality", "fullscreen", "picture_in_picture", "overflow_menu"],
+        overflowMenuButtons: ["captions", "cast", "quality", "language"]
+      });
 
-  const manifestUri = "https://otte.live.fly.ww.aiv-cdn.net/pdx-nitro/live/clients/dash/enc/tftudkctiy/out/v1/21d351e17f284d56ba835597fcac3e3c/cenc.mpd";
-  const drmKeys = {
-    "c5baabaaf817abc314702e6fc615571f": "35f6b737c5b2c3d657a37b2bff894916"
-  };
+      player.configure({
+        drm: {
+          clearKeys: drmKeys
+        },
+        streaming: {
+          jumpLargeGaps: true,
+          smallGapLimit: 2,
+          lowLatencyMode: true,
+          autoLowLatencyMode: true,
+          liveSyncDuration: 15,
+          rebufferingGoal: 8,
+          bufferingGoal: 20,
+          inaccurateManifestTolerance: 5,
+          forceTransmuxTS: true,
+          startAtSegmentBoundary: true
+        }
+      });
 
-  async function initPlayer() {
-    const video = document.getElementById("video");
-    const ui = video["ui"];
-    const controls = ui.getControls();
-    const player = controls.getPlayer();
+      player.addEventListener("error", e => console.error("Player error", e.detail));
+      controls.addEventListener("error", e => console.error("UI error", e.detail));
 
-    ui.configure({
-      controlPanelElements: ["play_pause", "mute", "spacer", "time_and_duration", "quality", "fullscreen", "picture_in_picture", "overflow_menu"],
-      overflowMenuButtons: ["captions", "cast", "quality", "language"]
-    });
-
-    player.configure({
-      drm: {
-        clearKeys: drmKeys
-      },
-      streaming: {
-        jumpLargeGaps: true,
-        smallGapLimit: 2,
-        lowLatencyMode: true,
-        autoLowLatencyMode: true,
-        liveSyncDuration: 15,
-        rebufferingGoal: 8,
-        bufferingGoal: 20,
-        inaccurateManifestTolerance: 5,
-        forceTransmuxTS: true,
-        startAtSegmentBoundary: true
+      try {
+        await player.load(manifestUri);
+        console.log("Video loaded successfully!");
+      } catch (err) {
+        console.error("Error loading video:", err);
       }
-    });
 
-    player.addEventListener("error", e => console.error("Player error", e.detail));
-    controls.addEventListener("error", e => console.error("UI error", e.detail));
-
-    try {
-      await player.load(manifestUri);
-      console.log("Video loaded successfully!");
-    } catch (err) {
-      console.error("Error loading video:", err);
+      // Live edge jump
+      setInterval(() => {
+        if (!player.isLive()) return;
+        const current = video.currentTime;
+        const edge = player.seekRange().end;
+        if (edge - current > 10) {
+          console.warn("Behind live, skipping ahead");
+          video.currentTime = edge - 2;
+        }
+      }, 10000);
     }
 
-    // Periodic manifest refresh to prevent freeze
-    setInterval(() => {
-      player.reload();
-    }, 30000);
+    // Logo
+    function addLogo() {
+      const logo = document.createElement("img");
+      logo.src = "https://i.ibb.co/7VF2dfy/1000000077-removebg-preview.png";
+      logo.className = "logo";
+      logo.onclick = () => {
+        window.location.href = "https://telegram.me/livecrichdofficial";
+      };
+      document.querySelector(".shaka-video-container").appendChild(logo);
+    }
 
-    // Live edge time correction to fix stuck segments
-    setInterval(() => {
-      if (!player.isLive()) return;
-      const videoTime = video.currentTime;
-      const liveEdge = player.seekRange().end;
-      if (liveEdge - videoTime > 10) {
-        console.warn("Playback behind live — seeking to live");
-        video.currentTime = liveEdge - 2;
+    document.addEventListener("DOMContentLoaded", () => {
+      if (window.top !== window.self || window.location.hostname !== "livecrichdtv.pages.dev") {
+        window.top.location.href = "https://telegram.me/livecrichdofficial";
       }
-    }, 10000);
-  }
-
-  // Add logo
-  function configureLogo() {
-    const logo = document.createElement("img");
-    logo.src = "https://i.ibb.co/7VF2dfy/1000000077-removebg-preview.png";
-    logo.alt = "Logo";
-    logo.className = "logo";
-    logo.addEventListener("click", () => {
-      window.location.href = "https://telegram.me/livecrichdofficial";
+      if (confirm("Join Our Telegram Channel @livecrichdofficial")) {
+        window.location.href = "https://telegram.me/livecrichdofficial";
+      }
     });
-    document.querySelector(".shaka-video-container").appendChild(logo);
-  }
 
-  document.addEventListener("shaka-ui-loaded", () => {
-    initPlayer();
-    configureLogo();
-  });
+    document.addEventListener("shaka-ui-loaded", () => {
+      initPlayer();
+      addLogo();
+    });
 
-  document.addEventListener("shaka-ui-load-failed", () => {
-    console.error("Unable to load the Shaka UI!");
-  });
-</script>
+    document.addEventListener("shaka-ui-load-failed", () => {
+      console.error("Shaka UI failed to load.");
+    });
+  </script>
 </body>
 </html>
