@@ -5,6 +5,10 @@ if (confirm("Join Our Telegram Channel @livecrichdofficial")) {
 document.addEventListener("DOMContentLoaded", function () {
   const links = [
     {
+      href: "https://shz.al/Sffb/livecricplayer.html?dtv=https://v18tataplaysyndication.akamaized.net/bpk-tv/StarSports_2_Hin_HD_voot_MOB/output03/index.m3u8?hdnea=exp=1745059359~acl=/*~hmac=6070bf809ebc387c3289f56e105148680d71091f465a3d723b3b250d01dfa767",
+      text: "HIN - WORLDWIDE",
+    },
+    {
       href: "https://livecrichdtv.pages.dev/ww",
       text: "HIN + ENG - WORLDWIDE",
     },
