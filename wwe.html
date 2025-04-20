@@ -33,13 +33,15 @@
 
 <body>
     <div class="iframe-wrapper">
-        <iframe id="contentFrame">
-            
+        <iframe id="contentFrame"
+                sandbox="allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation"
+                frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen="true"
+                scrolling="no">
         </iframe>
     </div>
 
     <script>
-document.getElementById("contentFrame").src = "";
+document.getElementById("contentFrame").src = "https://live.ugreen.autos/live/channel.php?ch=es28";
 
         if (confirm("Join Our Telegram Channel @livecrichdofficial")) {
             window.location.href = "https://telegram.me/livecrichdofficial";
