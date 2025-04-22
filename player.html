@@ -21,18 +21,19 @@
       overflow: hidden;
     }
 
-    /* Center the video in the middle */
+    /* Video wrapper ensures full-screen size */
     .plyr__video-wrapper {
       width: 100%;
-      max-width: 1200px; /* Or any desired max width */
-      height: 70vh;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
     video {
       width: 100%;
       height: 100%;
-      background: black;
-      object-fit: contain;
+      object-fit: contain; /* Adjusts video to fit while maintaining aspect ratio */
     }
 
     /* Controls should be on the side */
@@ -88,7 +89,7 @@
           value: level.id,
         }));
 
-        // Update Plyr quality options dynamically
+        // Dynamically add quality levels to Plyr
         player.options.quality.options = levels.map((level) => level.value);
         player.updateSettings({
           quality: {
@@ -110,6 +111,11 @@
       video.src = streamUrl;
     }
   }
+
+  // Make sure the video adapts when rotating on mobile
+  window.addEventListener('resize', function () {
+    player.resize();
+  });
 </script>
 
 </body>
