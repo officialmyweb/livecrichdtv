@@ -5,12 +5,11 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex,nofollow" />
-  <link rel="shortcut icon" type="image/x-icon" href="https://i.ibb.co/37fVLxB/f4027915ec9335046755d489a14472f2.png">
-  <title>R HLS Player</title>
+  <title>Live HLS Player</title>
 
-  <!-- Plyr CSS (Latest Version) -->
+  <link rel="shortcut icon" href="https://i.ibb.co/37fVLxB/f4027915ec9335046755d489a14472f2.png" type="image/x-icon" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plyr@3.6.2/dist/plyr.css" />
-  
+
   <style>
     html, body {
       margin: 0;
@@ -18,127 +17,106 @@
       background: black;
       height: 100%;
       width: 100%;
+      overflow: hidden;
       display: flex;
       justify-content: center;
       align-items: center;
-      flex-direction: column; /* Stack elements vertically */
-      overflow: hidden;
     }
 
-    .plyr__video-wrapper {
+    #player-wrapper {
       width: 100%;
-      max-width: 1200px; /* Or any desired max width */
-      height: 70vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      max-width: 1000px;
+      aspect-ratio: 16 / 9;
+      position: relative;
     }
 
     video {
       width: 100%;
       height: 100%;
       object-fit: contain;
+      background: black;
     }
 
-    .plyr__controls {
+    #loading {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
       display: flex;
-      justify-content: space-between;
-      padding: 10px 20px;
-    }
-
-    .plyr__control {
+      justify-content: center;
+      align-items: center;
+      background: rgba(0,0,0,0.8);
       color: white;
-      margin: 0 5px;
-    }
-
-    /* Hide the default quality select, we will add it in custom player controls */
-    .plyr__control--quality {
-      display: none;
+      font-size: 1.5em;
+      z-index: 9;
     }
   </style>
 </head>
 <body>
 
-<!-- Video player container -->
-<div class="plyr__video-wrapper">
-  <video id="video" playsinline controls poster="https://i.ibb.co/y04C3RB/sample-poster.jpg"></video>
+<div id="player-wrapper">
+  <div id="loading">Loading stream...</div>
+  <video id="video" controls playsinline>
+    <source src="" type="application/x-mpegURL" />
+  </video>
 </div>
 
-<!-- Optional Section for Displaying Current Quality Below -->
-<div id="player-info" style="text-align: center; color: white;">
-  <p>Current Quality: <span id="current-quality">Default</span></p>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/plyr@3.6.2/dist/plyr.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.1.4/dist/hls.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
-<script src="livecrichd.js"></script> <!-- Your custom JS file for additional logic -->
+<script src="https://cdn.jsdelivr.net/npm/plyr@3.6.2/dist/plyr.min.js"></script>
 
 <script>
-  const video = document.getElementById('video');
-  const urlParams = new URLSearchParams(window.location.search);
-  const streamUrl = urlParams.get('url');
+  setTimeout(() => {
+    document.getElementById("loading").style.display = "none";
+  }, 1000);
 
-  if (!streamUrl) {
-    document.body.innerHTML = "<div style='color:red;text-align:center;margin-top:20px;'>Missing HLS stream URL</div>";
-  } else {
-    const player = new Plyr(video, {
-      controls: [
-        'play-large', 'play', 'progress', 'current-time', 'duration',
-        'mute', 'volume', 'settings', 'pip', 'airplay', 'fullscreen'
-      ],
-      settings: ['quality', 'speed', 'loop'],
-      quality: {
-        default: 0, // Default quality index (set to 0 for now)
-        options: [],  // Dynamically add quality levels
-        forced: true,
-      }
-    });
+  document.addEventListener("DOMContentLoaded", () => {
+    const video = document.getElementById("video");
+    const source = video.querySelector("source");
+
+    // Get stream URL from ?url=
+    const streamUrl = new URLSearchParams(window.location.search).get("url");
+
+    if (!streamUrl) {
+      alert("Missing ?url= parameter");
+      return;
+    }
+
+    source.src = streamUrl;
+
+    const plyrOptions = {};
 
     if (Hls.isSupported()) {
-      const hls = new Hls();
+      const hls = new Hls({ maxMaxBufferLength: 100 });
       hls.loadSource(streamUrl);
       hls.attachMedia(video);
 
-      hls.on(Hls.Events.MANIFEST_PARSED, () => {
-        const levels = hls.levels.map((level) => ({
-          label: `${level.height}p`,
-          value: level.id,
-        }));
+      hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
+        const qualities = hls.levels.map(lvl => lvl.height).filter((v, i, a) => a.indexOf(v) === i);
 
-        // Dynamically add quality levels to Plyr
-        player.options.quality.options = levels.map((level) => level.value);
-        player.updateSettings({
-          quality: {
-            options: levels.map((level) => level.value),
-          },
-        });
+        plyrOptions.quality = {
+          default: qualities[0],
+          options: qualities,
+          forced: true,
+          onChange: (newQuality) => {
+            hls.levels.forEach((level, index) => {
+              if (level.height === newQuality) {
+                hls.currentLevel = index;
+              }
+            });
+          }
+        };
 
-        // Set default quality to the first available level
-        if (levels.length > 0) {
-          player.setQuality(levels[0].value); // Set default quality on player start
-          document.getElementById('current-quality').textContent = `${levels[0].label}`;
-        }
-
-        // Allow switching quality
-        player.on('qualitychange', (event) => {
-          hls.currentLevel = event.detail.quality;
-          document.getElementById('current-quality').textContent = `${levels.find(level => level.value === event.detail.quality).label}`;
-        });
+        new Plyr(video, plyrOptions);
       });
 
-      hls.on(Hls.Events.ERROR, function (event, data) {
-        console.error("HLS.js error:", data);
-      });
-
+      window.hls = hls;
     } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
       video.src = streamUrl;
+      new Plyr(video);
+    } else {
+      alert("HLS not supported on this browser.");
     }
-  }
-
-  // Make sure the video adapts when rotating on mobile
-  window.addEventListener('resize', function () {
-    player.resize();
   });
 </script>
 
