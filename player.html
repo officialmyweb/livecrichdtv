@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <meta name="robots" content="noindex,nofollow" />
   <title>Live HLS Player</title>
 
-  <link rel="shortcut icon" href="https://i.ibb.co/37fVLxB/f4027915ec9335046755d489a14472f2.png" type="image/x-icon" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plyr@3.6.2/dist/plyr.css" />
+  <link rel="icon" href="https://i.ibb.co/37fVLxB/f4027915ec9335046755d489a14472f2.png" />
 
   <style>
     html, body {
@@ -18,16 +18,11 @@
       height: 100%;
       width: 100%;
       overflow: hidden;
-      display: flex;
-      justify-content: center;
-      align-items: center;
     }
 
     #player-wrapper {
-      width: 100%;
-      max-width: 1000px;
-      aspect-ratio: 16 / 9;
-      position: relative;
+      width: 100vw;
+      height: 100vh;
     }
 
     video {
@@ -37,27 +32,15 @@
       background: black;
     }
 
-    #loading {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: rgba(0,0,0,0.8);
-      color: white;
-      font-size: 1.5em;
-      z-index: 9;
+    .plyr__controls {
+      font-size: 14px;
     }
   </style>
 </head>
 <body>
 
 <div id="player-wrapper">
-  <div id="loading">Loading stream...</div>
-  <video id="video" controls playsinline>
+  <video id="video" controls playsinline poster="https://i.ibb.co/0C9DYkK/poster.jpg">
     <source src="" type="application/x-mpegURL" />
   </video>
 </div>
@@ -66,19 +49,13 @@
 <script src="https://cdn.jsdelivr.net/npm/plyr@3.6.2/dist/plyr.min.js"></script>
 
 <script>
-  setTimeout(() => {
-    document.getElementById("loading").style.display = "none";
-  }, 1000);
-
   document.addEventListener("DOMContentLoaded", () => {
     const video = document.getElementById("video");
     const source = video.querySelector("source");
 
-    // Get stream URL from ?url=
     const streamUrl = new URLSearchParams(window.location.search).get("url");
-
     if (!streamUrl) {
-      alert("Missing ?url= parameter");
+      alert("Missing ?url= stream");
       return;
     }
 
@@ -91,18 +68,17 @@
       hls.loadSource(streamUrl);
       hls.attachMedia(video);
 
-      hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
-        const qualities = hls.levels.map(lvl => lvl.height).filter((v, i, a) => a.indexOf(v) === i);
+      hls.on(Hls.Events.MANIFEST_PARSED, function (_e, data) {
+        const levels = hls.levels;
+        const resolutions = levels.map(l => l.height).filter((v, i, a) => a.indexOf(v) === i);
 
         plyrOptions.quality = {
-          default: qualities[0],
-          options: qualities,
+          default: resolutions[0],
+          options: resolutions,
           forced: true,
-          onChange: (newQuality) => {
-            hls.levels.forEach((level, index) => {
-              if (level.height === newQuality) {
-                hls.currentLevel = index;
-              }
+          onChange: (quality) => {
+            levels.forEach((level, index) => {
+              if (level.height === quality) hls.currentLevel = index;
             });
           }
         };
@@ -114,8 +90,6 @@
     } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
       video.src = streamUrl;
       new Plyr(video);
-    } else {
-      alert("HLS not supported on this browser.");
     }
   });
 </script>
