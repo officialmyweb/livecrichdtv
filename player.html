@@ -1,115 +1,74 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-  <meta name="robots" content="noindex,nofollow" />
-  <title>Live Player</title>
-
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plyr@3.6.2/dist/plyr.css" />
-  <link rel="icon" href="https://i.ibb.co/37fVLxB/f4027915ec9335046755d489a14472f2.png" />
-
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      overflow: hidden;
-    }
-
-    #player-wrapper {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: black;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    #video {
-      width: 100%;
-      height: 100%;
-      object-fit: cover; /* Ensure the video takes up the whole screen, cropping if needed */
-    }
-
-    /* Ensure controls occupy the entire width and are not hidden */
-    .plyr__controls {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      z-index: 10;
-      display: flex;
-      justify-content: space-between;
-      padding: 10px;
-    }
-
-    .plyr__control {
-      text-align: center;
-      padding: 5px;
-    }
-
-  </style>
-</head>
-<body>
-
-<div id="player-wrapper">
-  <video id="video" controls playsinline poster="https://i.ibb.co/0C9DYkK/poster.jpg">
-    <source src="" type="application/x-mpegURL" />
-  </video>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/hls.js@1.1.4/dist/hls.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/plyr@3.6.2/dist/plyr.min.js"></script>
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, maximum-scale=1.0, user-scalable=no">
+<meta name="author" content="LiveCricHd Embed">
+<meta name="designer" content="LiveCricHd">
+<meta name="description" content="Join Telegram Channel @livecrichdofficial">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<link rel="stylesheet" href="https://cdn.plyr.io/3.6.2/plyr.css">
+<link href="https://cdn.jsdelivr.net/gh/halfmoonui/halfmoon@1.0.4/css/halfmoon.min.css" rel="stylesheet">
+<title>LiveCricHd-Player</title>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+<script src="https://cdn.plyr.io/3.6.2/plyr.polyfilled.js"></script>
 <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const video = document.getElementById("video");
-    const source = video.querySelector("source");
+if (confirm("Join Our Telegram Channel @livecrichdofficial")) {
+  window.location.href = "https://telegram.me/livecrichdofficial";
+}
 
-    const streamUrl = new URLSearchParams(window.location.search).get("url");
-    if (!streamUrl) {
-      alert("Missing ?url= stream");
-      return;
-    }
+document.addEventListener("DOMContentLoaded", () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const streamUrl = urlParams.get("dtv");
 
-    source.src = streamUrl;
+  if (!streamUrl) {
+    console.error("No m3u8 URL provided");
+    return;
+  }
 
-    const plyrOptions = {};
+  const videoElement = document.querySelector("video");
+  const sourceElement = document.createElement("source");
+  sourceElement.src = streamUrl;
+  sourceElement.type = "application/x-mpegURL";
+  videoElement.appendChild(sourceElement);
 
-    if (Hls.isSupported()) {
-      const hls = new Hls({ maxMaxBufferLength: 100 });
-      hls.loadSource(streamUrl);
-      hls.attachMedia(video);
+  const playerOptions = {};
+  if (Hls.isSupported()) {
+    const hlsConfig = {
+      'maxMaxBufferLength': 100 // adjust this value for smoother streaming
+    };
+    const hls = new Hls(hlsConfig);
 
-      hls.on(Hls.Events.MANIFEST_PARSED, function (_e, data) {
-        const levels = hls.levels;
-        const resolutions = levels.map(l => l.height).filter((v, i, a) => a.indexOf(v) === i);
+    hls.loadSource(streamUrl);
+    hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
+      const qualities = data.levels.map(level => level.height);
+      playerOptions.quality = {
+        'default': qualities[0],
+        'options': qualities,
+        'forced': true,
+        'onChange': function(newQuality) {
+          hls.levels.forEach((level, index) => {
+            if (level.height === newQuality) {
+              hls.currentLevel = index;
+            }
+          });
+        }
+      };
 
-        plyrOptions.quality = {
-          default: resolutions[0],
-          options: resolutions,
-          forced: true,
-          onChange: (quality) => {
-            levels.forEach((level, index) => {
-              if (level.height === quality) hls.currentLevel = index;
-            });
-          }
-        };
+      new Plyr(videoElement, playerOptions);
+    });
+    hls.attachMedia(videoElement);
+    window.hls = hls;
+  } else {
+    new Plyr(videoElement, playerOptions);
+  }
+});
 
-        new Plyr(video, plyrOptions);
-      });
-
-      window.hls = hls;
-    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-      video.src = streamUrl;
-      new Plyr(video);
-    }
-  });
+var currentDomain = window.location.hostname;
+if (currentDomain !== "shz.al") {
+  window.location.href = "https://telegram.me/livecrichdofficial";
+}
 </script>
-
+</head>
+<body class="dark-mode with-custom-scrollbars with-custom-css-scrollbars">
+  <video id="player" controls preload="metadata" poster="https://i.ibb.co/mBgdw0v/IMG-20240610-184601.jpg" class="plyr">
+  </video>
 </body>
 </html>
