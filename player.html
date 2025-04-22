@@ -18,13 +18,15 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      flex-direction: column; /* Stack elements vertically */
       overflow: hidden;
     }
 
     /* Video wrapper ensures full-screen size */
     .plyr__video-wrapper {
       width: 100%;
-      height: 100%;
+      max-width: 1200px; /* Or any desired max width */
+      height: 70vh;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -52,7 +54,14 @@
 <body>
 
 <!-- Video player container -->
-<video id="video" playsinline controls poster="https://i.ibb.co/y04C3RB/sample-poster.jpg"></video>
+<div class="plyr__video-wrapper">
+  <video id="video" playsinline controls poster="https://i.ibb.co/y04C3RB/sample-poster.jpg"></video>
+</div>
+
+<!-- Optional Section for Additional Info or Controls (You can place it below the video) -->
+<div id="player-info" style="text-align: center; color: white;">
+  <p>Streaming in <span id="current-quality">Default</span> quality</p>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.1.4"></script>
 <script src="https://cdn.jsdelivr.net/npm/plyr@3.6.12"></script>
@@ -100,6 +109,7 @@
         // Allow switching quality
         player.on('qualitychange', (event) => {
           hls.currentLevel = event.detail.quality;
+          document.getElementById('current-quality').textContent = `${event.detail.quality}p`;
         });
       });
 
