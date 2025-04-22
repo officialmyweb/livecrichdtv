@@ -9,99 +9,6 @@
 
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plyr@3.6.2/dist/plyr.css" />
   <link rel="icon" href="https://i.ibb.co/37fVLxB/f4027915ec9335046755d489a14472f2.png" />
-</head>
-<body>
-
-  <div id="player-wrapper">
-    <video id="video" controls poster="https://i.ibb.co/0C9DYkK/poster.jpg">
-      <source src="" type="application/x-mpegURL" />
-    </video>
-    <button id="btn-fullscreen" style="
-      position: absolute;
-      bottom: 20px;
-      right: 20px;
-      z-index: 10;
-      background: rgba(0,0,0,0.5);
-      color: white;
-      border: none;
-      padding: 8px 12px;
-      border-radius: 4px;
-      font-size: 18px;
-    ">⛶</button>
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@1.1.4/dist/hls.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/plyr@3.6.2/dist/plyr.min.js"></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const video = document.getElementById("video");
-      const source = video.querySelector("source");
-      const wrapper = document.getElementById("player-wrapper");
-      const fsBtn = document.getElementById("btn-fullscreen");
-
-      // Load stream URL from query param
-      const streamUrl = new URLSearchParams(window.location.search).get("url");
-      if (!streamUrl) {
-        alert("Missing ?url= stream");
-        return;
-      }
-      source.src = streamUrl;
-
-      // Plyr + HLS setup
-      const plyrOptions = {};
-      if (Hls.isSupported()) {
-        const hls = new Hls({ maxMaxBufferLength: 100 });
-        hls.loadSource(streamUrl);
-        hls.attachMedia(video);
-
-        hls.on(Hls.Events.MANIFEST_PARSED, (_e, data) => {
-          const levels = hls.levels;
-          const resolutions = levels
-            .map(l => l.height)
-            .filter((v, i, a) => a.indexOf(v) === i);
-
-          plyrOptions.quality = {
-            default: resolutions[0],
-            options: resolutions,
-            forced: true,
-            onChange: (q) => {
-              levels.forEach((level, i) => {
-                if (level.height === q) hls.currentLevel = i;
-              });
-            }
-          };
-
-          new Plyr(video, plyrOptions);
-        });
-
-        window.hls = hls;
-      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-        video.src = streamUrl;
-        new Plyr(video);
-      }
-
-      // Fullscreen button handler
-      fsBtn.addEventListener('click', () => {
-        if (!document.fullscreenElement) {
-          if (wrapper.requestFullscreen) {
-            wrapper.requestFullscreen();
-          } else if (wrapper.webkitRequestFullscreen) {
-            wrapper.webkitRequestFullscreen();
-          } else if (wrapper.msRequestFullscreen) {
-            wrapper.msRequestFullscreen();
-          }
-        } else {
-          if (document.exitFullscreen) {
-            document.exitFullscreen();
-          } else if (document.webkitExitFullscreen) {
-            document.webkitExitFullscreen();
-          } else if (document.msExitFullscreen) {
-            document.msExitFullscreen();
-          }
-        }
-      });
-    });
-  </script>
 
   <style>
     html, body {
@@ -111,7 +18,7 @@
       overflow: hidden;
     }
 
-    #player-wrapper {
+    #video-wrapper {
       position: fixed;
       top: 0; left: 0;
       width: 100vw;
@@ -120,26 +27,89 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      overflow: hidden;
     }
 
-    #player-wrapper video {
+    #video {
       width: 100%;
       height: 100%;
-      object-fit: fit;
+      object-fit: contain; /* maintain aspect ratio */
     }
 
-    /* Fullscreen adjustments */
-    #player-wrapper:-webkit-full-screen,
-    #player-wrapper:fullscreen {
-      width: 100%;
-      height: 100%;
+    /* Ensure player controls fit within the screen */
+    .plyr__controls {
+      position: absolute;
+      bottom: 20px;
+      left: 0;
+      right: 0;
+      z-index: 10;
+      display: flex;
+      justify-content: space-between;
+      padding: 0 10px;
     }
-    #player-wrapper:-webkit-full-screen video,
-    #player-wrapper:fullscreen video {
-      width: 100%;
-      height: 100%;
+
+    .plyr__control {
+      flex: 1;
+      text-align: center;
     }
   </style>
+</head>
+<body>
+
+<div id="player-wrapper">
+  <video id="video" controls playsinline poster="https://i.ibb.co/0C9DYkK/poster.jpg">
+    <source src="" type="application/x-mpegURL" />
+  </video>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1.1.4/dist/hls.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/plyr@3.6.2/dist/plyr.min.js"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const video = document.getElementById("video");
+    const source = video.querySelector("source");
+
+    const streamUrl = new URLSearchParams(window.location.search).get("url");
+    if (!streamUrl) {
+      alert("Missing ?url= stream");
+      return;
+    }
+
+    source.src = streamUrl;
+
+    const plyrOptions = {};
+
+    if (Hls.isSupported()) {
+      const hls = new Hls({ maxMaxBufferLength: 100 });
+      hls.loadSource(streamUrl);
+      hls.attachMedia(video);
+
+      hls.on(Hls.Events.MANIFEST_PARSED, function (_e, data) {
+        const levels = hls.levels;
+        const resolutions = levels.map(l => l.height).filter((v, i, a) => a.indexOf(v) === i);
+
+        plyrOptions.quality = {
+          default: resolutions[0],
+          options: resolutions,
+          forced: true,
+          onChange: (quality) => {
+            levels.forEach((level, index) => {
+              if (level.height === quality) hls.currentLevel = index;
+            });
+          }
+        };
+
+        new Plyr(video, plyrOptions);
+      });
+
+      window.hls = hls;
+    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      video.src = streamUrl;
+      new Plyr(video);
+    }
+  });
+</script>
 
 </body>
 </html>
