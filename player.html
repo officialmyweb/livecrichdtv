@@ -5,9 +5,12 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex,nofollow" />
-  <title>Responsive HLS Player</title>
+  <link rel="shortcut icon" type="image/x-icon" href="https://i.ibb.co/37fVLxB/f4027915ec9335046755d489a14472f2.png">
+  <title>R HLS Player</title>
 
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plyr@3.6.12/dist/plyr.css" />
+  <!-- Plyr CSS (Latest Version) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plyr@3.6.2/dist/plyr.css" />
+  
   <style>
     html, body {
       margin: 0;
@@ -22,7 +25,6 @@
       overflow: hidden;
     }
 
-    /* Video wrapper ensures full-screen size */
     .plyr__video-wrapper {
       width: 100%;
       max-width: 1200px; /* Or any desired max width */
@@ -35,10 +37,9 @@
     video {
       width: 100%;
       height: 100%;
-      object-fit: contain; /* Adjusts video to fit while maintaining aspect ratio */
+      object-fit: contain;
     }
 
-    /* Controls should be on the side */
     .plyr__controls {
       display: flex;
       justify-content: space-between;
@@ -49,6 +50,11 @@
       color: white;
       margin: 0 5px;
     }
+
+    /* Hide the default quality select, we will add it in custom player controls */
+    .plyr__control--quality {
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -58,13 +64,15 @@
   <video id="video" playsinline controls poster="https://i.ibb.co/y04C3RB/sample-poster.jpg"></video>
 </div>
 
-<!-- Optional Section for Additional Info or Controls (You can place it below the video) -->
+<!-- Optional Section for Displaying Current Quality Below -->
 <div id="player-info" style="text-align: center; color: white;">
-  <p>Streaming in <span id="current-quality">Default</span> quality</p>
+  <p>Current Quality: <span id="current-quality">Default</span></p>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/hls.js@1.1.4"></script>
-<script src="https://cdn.jsdelivr.net/npm/plyr@3.6.12"></script>
+<script src="https://cdn.jsdelivr.net/npm/plyr@3.6.2/dist/plyr.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1.1.4/dist/hls.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+<script src="livecrichd.js"></script> <!-- Your custom JS file for additional logic -->
 
 <script>
   const video = document.getElementById('video');
@@ -81,7 +89,7 @@
       ],
       settings: ['quality', 'speed', 'loop'],
       quality: {
-        default: 0, // Set default quality
+        default: 0, // Default quality index (set to 0 for now)
         options: [],  // Dynamically add quality levels
         forced: true,
       }
@@ -106,10 +114,16 @@
           },
         });
 
+        // Set default quality to the first available level
+        if (levels.length > 0) {
+          player.setQuality(levels[0].value); // Set default quality on player start
+          document.getElementById('current-quality').textContent = `${levels[0].label}`;
+        }
+
         // Allow switching quality
         player.on('qualitychange', (event) => {
           hls.currentLevel = event.detail.quality;
-          document.getElementById('current-quality').textContent = `${event.detail.quality}p`;
+          document.getElementById('current-quality').textContent = `${levels.find(level => level.value === event.detail.quality).label}`;
         });
       });
 
