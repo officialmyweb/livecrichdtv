@@ -5,7 +5,7 @@ if (confirm("Join Our Telegram Channel @livecrichdofficial")) {
 document.addEventListener("DOMContentLoaded", function () {
   const links = [
     {
-      href: "https://s13.24cwc.com/",
+      href: "https://s14.24cwc.com/",
       text: "HIN -WORLDWIDE ",
     },
     {
