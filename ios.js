@@ -5,8 +5,12 @@ if (confirm("Join Our Telegram Channel @livecrichdofficial")) {
 document.addEventListener("DOMContentLoaded", function () {
   const links = [
     {
+      href: "https://user4587.ifrem.net/iframe/frame.php",
+      text: "HIN -WORLDWIDE S1 ",
+    },
+    {
       href: "https://s15.24cwc.com/",
-      text: "HIN -WORLDWIDE ",
+      text: "HIN -WORLDWIDE S2",
     },
     {
       href: "https://livecrichdtv.pages.dev/www",
