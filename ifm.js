@@ -4,7 +4,7 @@
 // Define your streams
 const streams = {
     m1: "https://streamtp4.com/global1.php?stream=espnplus1",
-    m2: "https://streamtp4.com/global1.php?stream=willowcricket",
+    m2: "https://givemereddit.org/soccer/barcelona.html",
     m3: "https://streamtp4.com/global1.php?stream=skysportscricket",
     m4: "https://streamtp4.com/global1.php?stream=starports1"
 };
