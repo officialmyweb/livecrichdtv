@@ -5,11 +5,11 @@ if (confirm("Join Our Telegram Channel @livecrichdofficial")) {
 document.addEventListener("DOMContentLoaded", function () {
   const links = [
     {
-      href: "https://user4587.ifrem.net/iframe/frame.php",
+      href: "https://shz.al/~livecrichd/livecrichdm3u8splayer.html?dtv=https://v18tataplaysyndication.akamaized.net/bpk-tv/StarSports_2_Hin_HD_voot_MOB/output03/index.m3u8?hdnea=exp=1745773819~acl=/*~hmac=a3945645188874b2a811e16fe9781e2941bb5159b9c24bc745128f585e8e469e",
       text: "HIN -WORLDWIDE S1 ",
     },
     {
-      href: "https://s15.24cwc.com/",
+      href: "https://user4591.ifrem.net/iframe/frame.php",
       text: "HIN -WORLDWIDE S2",
     },
     {
