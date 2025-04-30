@@ -5,7 +5,7 @@ if (confirm("Join Our Telegram Channel @livecrichdofficial")) {
 document.addEventListener("DOMContentLoaded", function () {
   const links = [
     {
-      href: "https://user4591.ifrem.net/iframe/frame.php",
+      href: "https://userrr4591.ifrem.net/iframe/frame.php",
       text: "HIN -WORLDWIDE S2",
     },
     {
