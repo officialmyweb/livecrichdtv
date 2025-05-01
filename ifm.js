@@ -5,7 +5,7 @@
 const streams = {
     m1: "https://streamtp4.com/global1.php?stream=paramount2",
     m2: "https://streamtp4.com/global1.php?stream=paramount1",
-    m3: "https://envivo1.com/canal.php?stream=paramount2",
+    m3: "https://streamtp4.com/global1.php?stream=paramount4",
     m4: "https://envivo1.com/canal.php?stream=paramount2"
 };
 
