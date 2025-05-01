@@ -5,8 +5,8 @@
 const streams = {
     m1: "https://envivo1.com/canal.php?stream=paramount2",
     m2: "https://envivo1.com/canal.php?stream=paramount1",
-    m3: "#",
-    m4: "#"
+    m3: "https://envivo1.com/canal.php?stream=paramount2",
+    m4: "https://envivo1.com/canal.php?stream=paramount2"
 };
 
 // Get the "id" parameter from URL
