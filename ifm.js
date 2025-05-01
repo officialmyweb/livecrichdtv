@@ -3,10 +3,10 @@
  }
 // Define your streams
 const streams = {
-    m1: "https://streamtp4.com/global1.php?stream=paramount1",
-    m2: "https://givemereddit.org/soccer/barcelona.html",
-    m3: "https://streamtp4.com/global1.php?stream=skysportscricket",
-    m4: "https://streamtp4.com/global1.php?stream=starports1"
+    m1: "https://envivo1.com/canal.php?stream=paramount2",
+    m2: "https://envivo1.com/canal.php?stream=paramount1",
+    m3: "#",
+    m4: "#"
 };
 
 // Get the "id" parameter from URL
