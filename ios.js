@@ -5,6 +5,10 @@ if (confirm("Join Our Telegram Channel @livecrichdofficial")) {
 document.addEventListener("DOMContentLoaded", function () {
   const links = [
     {
+      href: "https://fancode.govag55623.workers.dev/?dtv=https://starsporthindii.pages.dev/index.m3u8",
+      text: "HIN -WORLDWIDE S1",
+    },
+    {
       href: "https://userrr4591.ifrem.net/iframe/frame.php",
       text: "HIN -WORLDWIDE S2",
     },
