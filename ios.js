@@ -6,11 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const links = [
     {
       href: "https://userrr4591.ifrem.net/iframe/frame.php",
-      text: "HIN -WORLDWIDE S2 [Use VPN ANY IP]",
-    },
-    {
-      href: "https://livecrichdtv.pages.dev/www",
-      text: "ONLY WORLDWIDE - S2",
+      text: "HIN - [USE VPN ANY IP]",
     },
   ];
 
