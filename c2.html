@@ -11,7 +11,7 @@
     if (confirm("Join Our Telegram Channel @livecrichdofficial")) { window.location.href = "https://telegram.me/livecrichdofficial"; }
         // Define your M3U8 links
         const streams = {
-            "m1": "https://cors-anywhere.ammoapps.com/https://1a-1791.com/live/t5qc33px/slot-97/eeuz-402w_1080p/chunklist.m3u8",
+            "m1": "https://dai.fancode.com/primary/124042_english_hls_17436ta-di_h264/index.m3u8",
             "m2": "https://d2pa4pixqpqr09.cloudfront.net/out/v1/bd04c71d27564533b464a4b9d5ee6bc8/index.m3u8",
             "m3": "https://prod-sports-eng-gm.jiocinema.com/hls/live/2100306/hd_akamai_merged_avc_eng_cricket_m1_110225/master.m3u8",
             "m4": "https://prod-sports-eng-gm.jiocinema.com/hls/live/2100306/hd_akamai_merged_avc_eng_cricket_m3_120225/master.m3u8",
@@ -30,7 +30,7 @@
 
         // Check if the ID exists and redirect to the URL
         if (streams[streamId]) {
-            const redirectUrl = `https://livecricplayer.govag55623.workers.dev?dtv=${encodeURIComponent(streams[streamId])}`;
+            const redirectUrl = `https://p.apeiria.net/~player/fcplayer.html?dtv=${encodeURIComponent(streams[streamId])}`;
             window.location.href = redirectUrl;  // Redirects the user
         } else {
             alert("Invalid ID or no stream found.");
