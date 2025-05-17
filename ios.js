@@ -5,8 +5,8 @@ if (confirm("Join Our Telegram Channel @livecrichdofficial")) {
 document.addEventListener("DOMContentLoaded", function () {
   const links = [
     {
-      href: "https://userrr4591.ifrem.net/iframe/frame.php",
-      text: "HIN - [USE VPN ANY IP]",
+      href: "https://userr3536.ifrem.net/iframe/frame.php",
+      text: "HIN + ENG IOS WORKING",
     },
   ];
 
