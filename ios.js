@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const links = [
     {
       href: "https://userr3536.ifrem.net/iframe/frame.php",
-      text: "HIN + ENG IOS WORKING",
+      text: "HIN + ENG [USE ANY VPN IF NOT LOADING AT YOUR REGION]",
     },
   ];
 
