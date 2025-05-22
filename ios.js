@@ -5,7 +5,7 @@ if (confirm("Join Our Telegram Channel @livecrichdofficial")) {
 document.addEventListener("DOMContentLoaded", function () {
   const links = [
     {
-      href: "https://binge-player.pages.dev/p3?id=tsports",
+      href: "",
       text: "ENGLISH",
     },
     {
