@@ -1,25 +1,30 @@
 if (confirm("Join Our Telegram Channel @livecrichdofficial")) {
-  window.location.href = "https://telegram.me/livecrichdofficial";
-}
+    window.location.href = "https://telegram.me/livecrichdofficial";
+  }
 
-document.addEventListener("DOMContentLoaded", function () {
-  const links = [
-    {
-      href: "https://s18.24cwc.com/",
-      text: "WILLOW BY CRICBUZZ - HINDI",
-    },
-  ];
+  // Wait for DOM to load
+  document.addEventListener("DOMContentLoaded", function () {
+    const links = [
+      {
+        href: "https://s18.24cwc.com/",
+        text: "WILLOW BY CRICBUZZ - HINDI",
+      },
+    ];
 
-  const container = document.getElementById("link-container");
+    const container = document.getElementById("link-container");
 
-  links.forEach(link => {
-    const p = document.createElement("p");
-    const a = document.createElement("a");
-    a.href = link.href;
-    a.target = "_blank";
-    a.className = "link-box";
-    a.textContent = link.text;
-    p.appendChild(a);
-    container.appendChild(p);
+    if (container) {
+      links.forEach(link => {
+        const p = document.createElement("p");
+        const a = document.createElement("a");
+        a.href = link.href;
+        a.target = "_blank";
+        a.className = "link-box";
+        a.textContent = link.text;
+        p.appendChild(a);
+        container.appendChild(p);
+      });
+    } else {
+      console.warn("Element with ID 'link-container' not found.");
+    }
   });
-});
