@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
       text: "WILLOW BY CRICBUZZ - HINDI",
     },
     {
-      href: "https://p.apeiria.net/~player/fcplayer.html?dtv=https://cors-anywhere.ammoapps.com/https://hugh.cdn.rumble.cloud/live/mu10xuf3/slot-21/5vwh-487n_1080p/chunklist.m3u8",
+      href: "https://p.apeiria.net/~player/fcplayer.html?dtv=https://cors-anywhere.ammoapps.com/https://livecrichdtv.pages.dev/lallukistream.m3u8",
       text: "WILLOW BY CRICBUZZ - ENGLISH",
     },
   ];
