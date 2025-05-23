@@ -6,7 +6,11 @@ document.addEventListener("DOMContentLoaded", function () {
   const links = [
     {
       href: "https://s18.24cwc.com/",
-      text: "WILLOW 2",
+      text: "WILLOW BY CRICBUZZ - HINDI",
+    },
+    {
+      href: "https://p.apeiria.net/~player/fcplayer.html?dtv=https://cors-anywhere.ammoapps.com/https://1a-1791.com/live/gi29le7p/slot-63/ynm4-9pg5/chunklist.m3u8",
+      text: "WILLOW BY CRICBUZZ - ENGLISH",
     },
   ];
 
