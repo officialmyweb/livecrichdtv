@@ -9,6 +9,10 @@ if (confirm("Join Our Telegram Channel @livecrichdofficial")) {
         href: "https://s18.24cwc.com/",
         text: "WILLOW BY CRICBUZZ - HINDI",
       },
+        {
+        href: "https://userr3536.ifrem.net/iframe/frame.php",
+        text: "ONLY OUT OF INDIA USERS",
+      },
     ];
 
     const container = document.getElementById("link-container");
