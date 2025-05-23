@@ -5,12 +5,8 @@ if (confirm("Join Our Telegram Channel @livecrichdofficial")) {
 document.addEventListener("DOMContentLoaded", function () {
   const links = [
     {
-      href: "",
-      text: "ENGLISH",
-    },
-    {
-      href: "https://userr3536.ifrem.net/iframe/frame.php",
-      text: "HIN + ENG [USE ANY VPN IF NOT LOADING AT YOUR REGION]",
+      href: "https://s18.24cwc.com/",
+      text: "WILLOW 2",
     },
   ];
 
