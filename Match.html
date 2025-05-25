@@ -19,12 +19,11 @@
 
     iframe {
       position: absolute;
-      top: -25px; /* Cut a bit from top */
+      top: -25px; /* Adjust this to crop the top */
       left: 0;
       width: 100vw;
       height: calc(100vh + 25px);
       border: none;
-      pointer-events: none; /* Block interaction (no redirects/clicks) */
     }
   </style>
 </head>
@@ -32,8 +31,9 @@
 
 <div class="iframe-wrapper">
   <iframe 
-    src="https://host.mafiatv.live/toffee/?play=f4189bfa64f3f801495ad7a973334724?autoplay=1&mute=1" 
-    allow="autoplay; encrypted-media" 
+    src="https://host.mafiatv.live/toffee/?play=f4189bfa64f3f801495ad7a973334724" 
+    sandbox="allow-scripts allow-same-origin allow-forms" 
+    allow="autoplay; encrypted-media"
     scrolling="no"
     allowfullscreen
   ></iframe>
