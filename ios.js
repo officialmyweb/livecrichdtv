@@ -5,6 +5,10 @@ if (confirm("Join Our Telegram Channel @livecrichdofficial")) {
   // Wait for DOM to load
   document.addEventListener("DOMContentLoaded", function () {
     const links = [
+        {
+        href: "https://livecrichdtv.pages.dev/Match",
+        text: "SKY SPORTS - ENGLISH",
+      },
       {
         href: "https://s18.24cwc.com/",
         text: "WILLOW BY CRICBUZZ - HINDI",
