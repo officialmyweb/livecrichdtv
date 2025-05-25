@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
@@ -7,6 +7,7 @@
       margin: 0;
       padding: 0;
       overflow: hidden;
+      height: 100%;
     }
 
     .iframe-wrapper {
@@ -18,41 +19,25 @@
 
     iframe {
       position: absolute;
-      top: -40px; /* Adjust to cut from top */
+      top: -25px; /* Cut a bit from top */
       left: 0;
       width: 100vw;
-      height: calc(100vh + 30px);
+      height: calc(100vh + 25px);
       border: none;
-      pointer-events: auto; /* Start with interaction enabled */
-    }
-
-    .overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      z-index: 2;
-    }
-
-    .hidden {
-      display: none;
+      pointer-events: none; /* Block interaction (no redirects/clicks) */
     }
   </style>
 </head>
 <body>
 
 <div class="iframe-wrapper">
-  <div class="overlay" id="overlay" onclick="disableInteraction()"></div>
-  <iframe src="https://host.mafiatv.live/toffee/?play=f4189bfa64f3f801495ad7a973334724" id="myFrame"></iframe>
+  <iframe 
+    src="https://host.mafiatv.live/toffee/?play=f4189bfa64f3f801495ad7a973334724?autoplay=1&mute=1" 
+    allow="autoplay; encrypted-media" 
+    scrolling="no"
+    allowfullscreen
+  ></iframe>
 </div>
-
-<script>
-  function disableInteraction() {
-    document.getElementById('overlay').classList.add('hidden');
-    document.getElementById('myFrame').style.pointerEvents = 'none';
-  }
-</script>
 
 </body>
 </html>
