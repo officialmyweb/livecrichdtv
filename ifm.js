@@ -3,12 +3,16 @@
  }
 // Define your streams
 const streams = {
-    m1: "https://streamtp4.com/global1.php?stream=peacock2",
-    m2: "https://streamtp4.com/global1.php?stream=espndeportes",
-    m3: "https://p.apeiria.net/~football/cricXfootballplayer.html?dtv=https://dsjz1gms3zce5.cloudfront.net/out/v1/f413830d21d044918adac53dafc1fe3b/index.m3u8",
-    m4: "https://envivo1.com/canal.php?stream=paramount2",
-    m5: "https://la12hd.com/vivo/canales.php?stream=espnplus2",
-    m6: "https://streamtp4.com/global1.php?stream=espndeportes",
+    m1: "https://streamtp4.com/global1.php?stream=disney5",
+    m2: "https://streamtp4.com/global1.php?stream=disney6",
+    m3: "https://streamtp4.com/global1.php?stream=disney7",
+    m4: "https://streamtp4.com/global1.php?stream=disney10",
+    m5: "https://streamtp4.com/global1.php?stream=disney12",
+    m6: "https://streamtp4.com/global1.php?stream=disney13",
+    m7: "https://streamtp4.com/global1.php?stream=disney14",
+    m8: "https://streamtp4.com/global1.php?stream=espndeportes",
+    m9: "https://la12hd.com/vivo/canales.php?stream=espnplus2",
+    m10: "https://streamtp4.com/global1.php?stream=espndeportes",
    
 };
 
