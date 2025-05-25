@@ -1,28 +1,36 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    .iframe-container {
-      width: 100%;
-      height: 500px; /* Adjust as needed */
+    html, body {
+      margin: 0;
+      padding: 0;
       overflow: hidden;
-      position: relative;
     }
 
-    .iframe-container iframe {
+    .iframe-wrapper {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .iframe-wrapper iframe {
       position: absolute;
-      top: -50px; /* Adjust this to cut from the top */
+      top: -35px; /* Adjust this to cut a little from top */
       left: 0;
-      width: 100%;
-      height: 600px; /* Height must be more than container to allow cropping */
+      width: 100vw;
+      height: calc(100vh + 30px); /* Add the offset */
       border: none;
+      pointer-events: none; /* Disables interaction like clicks, redirects */
     }
   </style>
 </head>
 <body>
 
-<div class="iframe-container">
-  <iframe src="https://host.mafiatv.live/toffee/?play=f4189bfa64f3f801495ad7a973334724"></iframe>
+<div class="iframe-wrapper">
+  <iframe src="https://host.mafiatv.live/toffee/?play=f4189bfa64f3f801495ad7a973334724" scrolling="no"></iframe>
 </div>
 
 </body>
