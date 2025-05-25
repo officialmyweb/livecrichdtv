@@ -3,7 +3,7 @@
  }
 // Define your streams
 const streams = {
-    m1: "https://envivo1.com/canal.php?stream=peacock2",
+    m1: "https://streamtp4.com/global1.php?stream=peacock2",
     m2: "https://streamtp4.com/global1.php?stream=espndeportes",
     m3: "https://p.apeiria.net/~football/cricXfootballplayer.html?dtv=https://dsjz1gms3zce5.cloudfront.net/out/v1/f413830d21d044918adac53dafc1fe3b/index.m3u8",
     m4: "https://envivo1.com/canal.php?stream=paramount2",
