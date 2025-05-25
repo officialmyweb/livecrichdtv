@@ -16,22 +16,43 @@
       overflow: hidden;
     }
 
-    .iframe-wrapper iframe {
+    iframe {
       position: absolute;
-      top: -35px; /* Adjust this to cut a little from top */
+      top: -30px; /* Adjust to cut from top */
       left: 0;
       width: 100vw;
-      height: calc(100vh + 30px); /* Add the offset */
+      height: calc(100vh + 30px);
       border: none;
-      pointer-events: none; /* Disables interaction like clicks, redirects */
+      pointer-events: auto; /* Start with interaction enabled */
+    }
+
+    .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 2;
+    }
+
+    .hidden {
+      display: none;
     }
   </style>
 </head>
 <body>
 
 <div class="iframe-wrapper">
-  <iframe src="https://host.mafiatv.live/toffee/?play=f4189bfa64f3f801495ad7a973334724" scrolling="no"></iframe>
+  <div class="overlay" id="overlay" onclick="disableInteraction()"></div>
+  <iframe src="https://host.mafiatv.live/toffee/?play=f4189bfa64f3f801495ad7a973334724" id="myFrame"></iframe>
 </div>
+
+<script>
+  function disableInteraction() {
+    document.getElementById('overlay').classList.add('hidden');
+    document.getElementById('myFrame').style.pointerEvents = 'none';
+  }
+</script>
 
 </body>
 </html>
