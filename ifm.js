@@ -3,8 +3,8 @@
  }
 // Define your streams
 const streams = {
-    m1: "https://streamtp4.com/global1.php?stream=disney5",
-    m2: "https://streamtp4.com/global1.php?stream=disney6",
+    m1: "https://streamtp4.com/global1.php?stream=eventos8",
+    m2: "https://streamtp4.com/global1.php?stream=paramount1",
     m3: "https://streamtp4.com/global1.php?stream=disney7",
     m4: "https://streamtp4.com/global1.php?stream=disney10",
     m5: "https://streamtp4.com/global1.php?stream=disney12",
