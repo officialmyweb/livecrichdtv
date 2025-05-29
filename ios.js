@@ -5,10 +5,6 @@ if (confirm("Join Our Telegram Channel @livecrichdofficial")) {
   // Wait for DOM to load
   document.addEventListener("DOMContentLoaded", function () {
     const links = [
-      {
-        href: "https://livecrichdxtv.pages.dev/c2?id=m1",
-        text: "ENGLISH - WORLDWIDE ",
-      },
         {
         href: "https://userr3536.ifrem.net/iframe/frame.php",
         text: "ONLY OUT OF INDIA USERS",
