@@ -1,6 +1,3 @@
- if (confirm("Join Our Telegram Channel @livecrichdofficial")) {
-            window.location.href = "https://telegram.me/livecrichdofficial";
- }
 // Define your streams
 const streams = {
     m1: "https://p.apeiria.net/~player/fcplayer.html?dtv=https://bcovlive-a.akamaihd.net/b238876e5f004ec29d4e07066a044996/eu-west-1/4854911276001/playlist.m3u8",
