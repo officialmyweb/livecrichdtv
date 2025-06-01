@@ -6,7 +6,7 @@ if (confirm("Join Our Telegram Channel @livecrichdofficial")) {
   document.addEventListener("DOMContentLoaded", function () {
     const links = [
         {
-        href: "https://s19.24cwc.com/",
+        href: "https://p.apeiria.net/~player/fcplayer.html?dtv=https://starsportshindiii.pages.dev/index.m3u8",
         text: "IOS USERS [ONLY INDIA]",
       },
         {
