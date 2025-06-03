@@ -3,89 +3,63 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="referrer" content="no-referrer">
-  <title>JWPlayer - Live Stream</title>
-  <script src="https://cdn.jwplayer.com/libraries/IDzF9Zmk.js"></script>
+  <title>Telegram-Live-Cric-Hd</title>
   <style>
-    html, body {
+    body {
       margin: 0;
-      padding: 0;
-      background-color: #000;
-      height: 100%;
-      overflow: hidden;
+      background: #000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
-    #player {
+    #video-container {
       width: 100%;
+      max-width: 100vw;
       height: 100vh;
+      overflow: hidden;
+      position: relative;
+      transition: transform 0.6s ease;
+      transform-origin: center center;
+    }
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    #rotate-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 1000;
+      background-color: rgba(255, 255, 255, 0.8);
+      border: none;
+      padding: 8px 12px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 6px;
     }
   </style>
 </head>
 <body>
-  <div id="player"></div>
+  <div id="video-container">
+    <button id="rotate-btn">Rotate</button>
+    <iframe 
+      id="ok-video" 
+      src="https://ok.ru/videoembed/9931608235635" 
+      allowfullscreen 
+      allow="autoplay"
+    ></iframe>
+  </div>
 
   <script>
-    jwplayer.key = 'XSuP4qMl+9tK17QNb+4+th2Pm9AWgMO/cYH8CI0HGGr7bdjo';
-
-    function setCookie(name, value) {
-      document.cookie = name + "=" + value + "; path=/";
-    }
-
-    function extractTokenFromLink(link) {
-      var tokenMatch = link.match(/__hdnea__=([^&]+)/);
-      return tokenMatch ? tokenMatch[1] : '';
-    }
-
-    function interceptNetworkRequests(token) {
-      const originalOpen = XMLHttpRequest.prototype.open;
-      XMLHttpRequest.prototype.open = function(method, url) {
-        if (url.startsWith('https://tv.media.jio.com/')) {
-          url = url.replace('tv.media.jio.com', 'jio.drmlive.au/jio');
-        }
-
-        if ((url.includes('.dash') || url.includes('.m3u8') || url.includes('.ts')) && token && !url.includes('__hdnea__=')) {
-          url += (url.includes('?') ? '&' : '?') + '__hdnea__=' + token;
-        }
-
-        arguments[1] = url;
-        originalOpen.apply(this, arguments);
-      };
-    }
-
-    function playVideo() {
-      var link = "https://jiotvmblive.cdn.jio.com/bpk-tv/Sports18_1_HD_BTS/output/index.mpd?__hdnea__=st=1748950387~exp=1749036787~acl=/*~hmac=c9f183cf29e510c49b12f1775f0e87f1a95386412ac248920a9ba10d8fcc6872";
-      var tokenValue = extractTokenFromLink(link);
-
-      if (tokenValue) {
-        setCookie("__hdnea__", tokenValue);
-        interceptNetworkRequests(tokenValue);
-      }
-
-      var playerInstance = jwplayer("player");
-      playerInstance.setup({
-        playlist: [{
-          file: link,
-          type: "dash"
-        }],
-        width: "100%",
-        aspectratio: "16:9",
-        autostart: true,
-        cast: {
-          appid: 'CC1AD845'
-        }
-      });
-
-      playerInstance.on('beforePlay', function() {
-        interceptNetworkRequests(tokenValue);
-      });
-    }
-
-    window.onload = playVideo;
-
-    // Popup on load
-    window.addEventListener("load", function () {
-      var result = window.confirm("Join Our Telegram Channel @livecrichdofficial");
-      if (result) {
-        window.location.href = "https://telegram.me/livecrichdofficial";
+    let rotated = false;
+    document.getElementById('rotate-btn').addEventListener('click', () => {
+      const container = document.getElementById('video-container');
+      rotated = !rotated;
+      if (rotated) {
+        container.style.transform = 'rotate(90deg) scale(1.1)';
+      } else {
+        container.style.transform = 'rotate(0deg)';
       }
     });
   </script>
