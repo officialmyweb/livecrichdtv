@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="referrer" content="no-referrer">
+  <title>Telegram-Live-Cric-Hd</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.6/shaka-player.ui.min.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.6/controls.min.css" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://livecrichdofficial.pages.dev/livecrichd2.css">
+</head>
+<body>
+  <div id="player-container">
+    <div data-shaka-player-container class="shaka-video-container">
+      <video autoplay data-shaka-player id="video" poster="https://i.ibb.co/wzxpfcC/IMG-20240601-170942.jpg"></video>
+    </div>
+  </div>
+
+  <script defer src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js"></script>
+
+  <script>
+    const allowedDomain = "livecrichdtv.pages.dev";
+    if (window.top !== window.self || window.location.hostname !== allowedDomain) {
+        window.top.location.href = "https://telegram.me/livecrichdofficial";
+    }
+
+    if (confirm("Join Our Telegram Channel @livecrichdofficial")) {
+        window.location.href = "https://telegram.me/livecrichdofficial";
+    }
+
+    // Set the video manifest URL
+    const manifestUri = "https://jiotvmblive.cdn.jio.com/bpk-tv/Sports18_1_HD_BTS/output/index.mpd?__hdnea__=st=1748950387~exp=1749036787~acl=/*~hmac=c9f183cf29e510c49b12f1775f0e87f1a95386412ac248920a9ba10d8fcc6872";
+
+    function extractToken(link) {
+      const match = link.match(/__hdnea__=([^&]+)/);
+      return match ? match[1] : '';
+    }
+
+    const hdneaToken = extractToken(manifestUri);
+
+    // Intercept and modify Shaka network requests
+    shaka.net.NetworkingEngine.registerRequestFilter(function(type, request) {
+      if (!request.uris || !request.uris.length) return;
+
+      let uri = request.uris[0];
+
+      // Redirect domain
+      if (uri.includes("tv.media.jio.com")) {
+        uri = uri.replace("tv.media.jio.com", "jio.drmlive.au/jio");
+      }
+
+      // Append token if needed
+      if ((uri.includes(".mpd") || uri.includes(".m3u8") || uri.includes(".ts")) && hdneaToken && !uri.includes("__hdnea__=")) {
+        uri += (uri.includes("?") ? "&" : "?") + "__hdnea__=" + hdneaToken;
+      }
+
+      request.uris[0] = uri;
+    });
+
+    async function initPlayer() {
+      const video = document.getElementById("video");
+      const ui = video["ui"];
+      const controls = ui.getControls();
+      const player = controls.getPlayer();
+
+      ui.configure({
+        controlPanelElements: ["play_pause", "mute", "spacer", "time_and_duration", "quality", "fullscreen", "picture_in_picture", "overflow_menu"],
+        overflowMenuButtons: ["captions", "cast", "quality", "language"]
+      });
+
+      window.player = player;
+      window.ui = ui;
+
+      player.addEventListener("error", onPlayerErrorEvent);
+      controls.addEventListener("error", onUIErrorEvent);
+
+      configureDRM();
+
+      try {
+        await player.load(manifestUri);
+        console.log("The video has now been loaded!");
+      } catch (error) {
+        onPlayerError(error);
+      }
+    }
+
+    function configureDRM() {
+      const drmKeys = {
+        "2fffb62dde135028a768450907fbc9cb": "c6f9915f1444b12985ca16f56a632b85"
+      };
+
+      window.player.configure({
+        drm: {
+          clearKeys: drmKeys
+        }
+      });
+    }
+
+    function addLogo() {
+      const logo = document.createElement("img");
+      logo.src = "https://i.ibb.co/7VF2dfy/1000000077-removebg-preview.png";
+      logo.alt = "Logo";
+      logo.className = "logo";
+      logo.addEventListener("click", function () {
+        window.location.href = "https://telegram.me/livecrichdofficial";
+      });
+      document.querySelector(".shaka-video-container").appendChild(logo);
+    }
+
+    function onPlayerErrorEvent(errorEvent) {
+      onPlayerError(errorEvent.detail);
+    }
+
+    function onPlayerError(error) {
+      console.error("Error code", error.code, "object", error);
+    }
+
+    function onUIErrorEvent(errorEvent) {
+      onPlayerError(errorEvent.detail);
+    }
+
+    function initFailed() {
+      console.error("Unable to load the UI library!");
+    }
+
+    document.addEventListener("shaka-ui-loaded", () => {
+      initPlayer();
+      addLogo();
+    });
+
+    document.addEventListener("shaka-ui-load-failed", initFailed);
+  </script>
+</body>
+</html>
