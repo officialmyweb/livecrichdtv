@@ -5,7 +5,7 @@
 const streams = {
     m1: "https://stream196tp.com/global1.php?stream=fox_1_usa",
     m2: "https://stream196tp.com/global1.php?stream=espn1br",
-    m3: "https://streamtp4.com/global1.php?stream=disney7",
+    m3: "https://livecrichdtv.pages.dev/player?dtv=https://cees34567y890.hatsune86.space/toDIvo6raPHLPReD6cri01aCHIfofRum6sPewroCrAcU.m3u8",
     m4: "https://streamtp4.com/global1.php?stream=disney10",
     m5: "https://streamtp4.com/global1.php?stream=disney12",
     m6: "https://streamtp4.com/global1.php?stream=disney13",
