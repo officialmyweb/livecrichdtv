@@ -3,8 +3,8 @@
  }
 // Define your streams
 const streams = {
-    m1: "https://stream196tp.com/global1.php?stream=eventos8",
-    m2: "https://stream196tp.com/global1.php?stream=telefe",
+    m1: "https://stream196tp.com/global1.php?stream=fox_1_usa",
+    m2: "https://stream196tp.com/global1.php?stream=espn1br",
     m3: "https://streamtp4.com/global1.php?stream=disney7",
     m4: "https://streamtp4.com/global1.php?stream=disney10",
     m5: "https://streamtp4.com/global1.php?stream=disney12",
