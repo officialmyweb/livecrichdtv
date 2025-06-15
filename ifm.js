@@ -11,7 +11,7 @@ if (confirm("Join Our Telegram Channel @cricxfootball")) {
 
 // ✅ Streams list
 const streams = {
-    m1: "https://stream196tp.com/global1.php?stream=telefe",
+    m1: "http://lchd.pages.dev/skytest?dtv=https://mi9hodru2lnlspaswl8regarijequchiy.happy-ending.site/6c589385fb89fa5d0a87055dff33c06d.m3u8",
     m2: "https://stream196tp.com/global1.php?stream=dsports",
     m3: "#",
     m4: "https://streamtp4.com/global1.php?stream=disney10",
