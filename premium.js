@@ -7,8 +7,8 @@ const streamMap = {
     url: "https://dluorh7ry2690.cloudfront.net/out/v1/4f2a5c13dd4e48deabd974bb119c7b78/index.m3u8",
     poster: "https://i.ibb.co/0RjkVHK0/IMG-20250614-213759-410.jpg"
   },
-  "M3": {
-    url: "https://example.com/stream3.m3u8",
+  "match2": {
+    url: "https://mi9hodru2lnlspaswl8regarijequchiy.happy-ending.site/6c589385fb89fa5d0a87055dff33c06d.m3u8",
     poster: "https://example.com/poster3.jpg"
   }
 };
