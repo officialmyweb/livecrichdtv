@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="referrer" content="no-referrer">
+  <title>LiveCric Smart Player</title>
+
+  <!-- Shaka & Clappr related -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.6/controls.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.6/shaka-player.ui.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <script src="https://cdn.plyr.io/3.6.2/plyr.polyfilled.js"></script>
+
+  <!-- UI + CSS -->
+  <link rel="stylesheet" href="https://cdn.plyr.io/3.6.2/plyr.css">
+  <link rel="stylesheet" href="https://livecrichdofficial.pages.dev/livecrichd2.css">
+  <style>
+    #video-container, #player-container { width: 100%; height: 100vh; display: none; }
+    video { width: 100%; height: 100%; }
+    .logo {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 100px;
+      cursor: pointer;
+      z-index: 9999;
+    }
+  </style>
+
+  <script src="try.js"></script>
+</head>
+<body class="dark-mode">
+
+<div id="player-container">
+  <div data-shaka-player-container class="shaka-video-container">
+    <video autoplay data-shaka-player id="shaka-video" poster="https://i.ibb.co/wzxpfcC/IMG-20240601-170942.jpg"></video>
+  </div>
+</div>
+
+<video id="clappr-video" controls preload="metadata" poster="https://i.ibb.co/mBgdw0v/IMG-20240610-184601.jpg"></video>
+
+<script>
+  const allowedDomain = "livecrichdtv.pages.dev";
+  if (window.top !== window.self || window.location.hostname !== allowedDomain) {
+    window.top.location.href = "https://telegram.me/livecrichdofficial";
+  }
+
+  if (confirm("Join Our Telegram Channel @livecrichdofficial")) {
+    window.location.href = "https://telegram.me/livecrichdofficial";
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get("id");
+  const stream = streams[id];
+
+  if (!id || !stream) {
+    document.body.innerHTML = "<h3>Invalid stream ID</h3>";
+  } else if (stream.type === "shaka") {
+    document.getElementById("player-container").style.display = "block";
+    document.addEventListener("shaka-ui-loaded", async () => {
+      const video = document.getElementById("shaka-video");
+      const ui = video["ui"];
+      const controls = ui.getControls();
+      const player = controls.getPlayer();
+
+      player.configure({ drm: { clearKeys: stream.clearKeys } });
+
+      try {
+        await player.load(stream.url);
+        console.log("Shaka stream loaded!");
+      } catch (e) {
+        console.error("Shaka error:", e);
+      }
+
+      const logo = document.createElement("img");
+      logo.src = "https://i.ibb.co/7VF2dfy/1000000077-removebg-preview.png";
+      logo.className = "logo";
+      logo.onclick = () => window.location.href = "https://telegram.me/livecrichdofficial";
+      document.querySelector(".shaka-video-container").appendChild(logo);
+    });
+  } else if (stream.type === "clappr") {
+    const video = document.getElementById("clappr-video");
+    video.style.display = "block";
+
+    if (Hls.isSupported()) {
+      const hls = new Hls({ maxMaxBufferLength: 100 });
+      hls.loadSource(stream.url);
+      hls.attachMedia(video);
+      hls.on(Hls.Events.MANIFEST_PARSED, (event, data) => {
+        new Plyr(video);
+      });
+    } else {
+      new Plyr(video);
+    }
+  }
+</script>
+
+<script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js" defer></script>
+</body>
+</html>
