@@ -1,7 +1,15 @@
- if (confirm("Join Our Telegram Channel @cricxfootball")) {
-            window.location.href = "https://telegram.me/cricxfootball";
- }
-// Define your streams
+
+const allowedDomain = "cricxfootball.pages.dev";
+if (window.top !== window.self || window.location.hostname !== allowedDomain) {
+    window.top.location.href = "https://telegram.me/cricxfootball";
+}
+
+// ✅ Telegram prompt
+if (confirm("Join Our Telegram Channel @cricxfootball")) {
+    window.location.href = "https://telegram.me/cricxfootball";
+}
+
+// ✅ Streams list
 const streams = {
     m1: "https://stream196tp.com/global1.php?stream=telefe",
     m2: "https://stream196tp.com/global1.php?stream=dsports",
@@ -12,17 +20,16 @@ const streams = {
     m7: "https://streamtp4.com/global1.php?stream=disney14",
     m8: "https://streamtp4.com/global1.php?stream=espndeportes",
     m9: "https://la12hd.com/vivo/canales.php?stream=espnplus2",
-    m10: "https://streamtp4.com/global1.php?stream=espndeportes",
-   
+    m10: "http://lchd.pages.dev/skytest?dtv=https://mi9hodru2lnlspaswl8regarijequchiy.happy-ending.site/6c589385fb89fa5d0a87055dff33c06d.m3u8",
 };
 
-// Get the "id" parameter from URL
+// ✅ Get stream ID from URL
 function getStreamId() {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get('id');
 }
 
-// Load the correct stream
+// ✅ Load stream into iframe
 function loadStream() {
     const streamId = getStreamId();
     const iframe = document.getElementById('contentFrame');
@@ -30,10 +37,30 @@ function loadStream() {
     if (streamId && streams[streamId]) {
         iframe.src = streams[streamId];
     } else {
-        // Redirect to Telegram if no valid id
+        // Redirect if invalid or missing ID
         window.location.href = "https://telegram.me/cricxfootball";
     }
 }
 
-// Initialize
+// ✅ Auto landscape on fullscreen
+function enableAutoRotateOnFullscreen() {
+    document.addEventListener("fullscreenchange", async () => {
+        if (document.fullscreenElement) {
+            try {
+                await screen.orientation.lock("landscape");
+            } catch (err) {
+                console.warn("Orientation lock failed:", err);
+            }
+        } else {
+            try {
+                await screen.orientation.unlock?.();
+            } catch (err) {
+                console.warn("Orientation unlock failed:", err);
+            }
+        }
+    });
+}
+
+// ✅ Init
 loadStream();
+enableAutoRotateOnFullscreen();
