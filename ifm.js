@@ -11,7 +11,7 @@ if (confirm("Join Our Telegram Channel @cricxfootball")) {
 
 // ✅ Streams list
 const streams = {
-    m1: "https://livecrichdtv.pages.dev/player?dtv=https://shls-masr2-ak.akamaized.net/out/v1/f683685242b549f48ea8a5171e3e993a/index.m3u8",
+    m1: "https://stream196tp.com/global1.php?stream=dazntv2",
     m2: "https://stream196tp.com/global1.php?stream=dsports",
     m3: "#",
     m4: "https://streamtp4.com/global1.php?stream=disney10",
