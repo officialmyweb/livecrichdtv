@@ -18,7 +18,7 @@ const streams = {
     m5: "https://streamtp4.com/global1.php?stream=disney12",
     m6: "https://streamtp4.com/global1.php?stream=disney13",
     m7: "https://streamtp4.com/global1.php?stream=disney14",
-    m8: "https://streamtp4.com/global1.php?stream=espndeportes",
+    m8: "https://stream196tp.com/global1.php?stream=tnt_1_gb",
     m9: "https://la12hd.com/vivo/canales.php?stream=espnplus2",
     m10: "http://lchd.pages.dev/skytest?dtv=https://mi9hodru2lnlspaswl8regarijequchiy.happy-ending.site/6c589385fb89fa5d0a87055dff33c06d.m3u8",
 };
