@@ -11,7 +11,7 @@ if (confirm("Join Our Telegram Channel @cricxfootball")) {
 
 // ✅ Streams list
 const streams = {
-    m1: "https://envivo5.com/canal.php?stream=tudn_usa",
+    m1: "https://envivo5.com/canal.php?stream=dsports",
     m2: "https://stream196tp.com/global1.php?stream=tudn_usa",
     m3: "#",
     m4: "https://streamtp4.com/global1.php?stream=disney10",
