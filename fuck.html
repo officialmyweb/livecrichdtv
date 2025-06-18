@@ -1,152 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <link rel="shortcut icon" href="https://drmlive.in/sports/fancode.png" />
-    <title>Fancode Live Matches</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@400;700&display=swap">
-    <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #000;
-            color: #fff;
-            transition: background-color 0.3s, color 0.3s;
-        }
-
-        h1 {
-            text-align: center;
-            color: #ff3700;
-            margin-bottom: 20px;
-            font-family: 'Montserrat', sans-serif;
-        }
-
-        .file-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
-            padding: 10px;
-        }
-
-        .match-item {
-            margin: 10px;
-            text-align: center;
-            border-radius: 8px;
-            overflow: hidden;
-            background-color: #1a1a1a;
-            padding: 20px;
-            width: calc(25% - 20px);
-            box-sizing: border-box;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            cursor: pointer;
-        }
-
-        .match-item img {
-            max-width: 100%;
-            height: auto;
-            display: block;
-            margin: 0 auto 10px auto;
-        }
-
-        .match-item h3,
-        .match-item p {
-            font-family: 'Montserrat', sans-serif;
-            margin: 0;
-            text-transform: uppercase;
-        }
-
-        .match-item h3 {
-            font-weight: 700;
-            margin-bottom: 15px;
-        }
-
-        .match-item p {
-            font-weight: 400;
-            margin-bottom: 15px;
-        }
-
-        .status-live {
-            color: yellow;
-            animation: glow 1s infinite alternate;
-        }
-
-        @keyframes glow {
-            0% {
-                text-shadow: 0 0 5px yellow;
-            }
-            100% {
-                text-shadow: 0 0 15px yellow;
-            }
-        }
-
-        .status-upcoming {
-            color: #777;
-            opacity: 0.6;
-        }
-
-        .telegram-toggle {
-            background-color: #ffcc00;
-            color: black;
-            padding: 10px 15px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: bold;
-            display: block;
-            margin: 20px auto;
-            width: fit-content;
-            transition: background-color 0.3s;
-            text-align: center;
-        }
-
-        .telegram-toggle:hover {
-            background-color: #e6b800;
-        }
-
-        .stream-button {
-            padding: 10px 15px;
-            margin: 5px;
-            border: none;
-            border-radius: 5px;
-            font-weight: bold;
-            cursor: pointer;
-            color: white;
-        }
-
-        .adfree-button {
-            background-color: #28a745; /* Green */
-        }
-
-        .adfree-button:hover {
-            background-color: #218838;
-        }
-
-        .button-container {
-            margin-top: 10px;
-        }
-
-        @media (max-width: 768px) {
-            .match-item {
-                width: calc(50% - 20px);
-            }
-        }
-
-        @media (max-width: 480px) {
-            .match-item {
-                width: calc(100% - 20px);
-            }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <title>Disney Channel - JioStar</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.jwplayer.com/libraries/IDzF9Zmk.js"></script>
+  <style>
+    body {
+      margin: 0;
+      background: #000;
+    }
+    #player {
+      width: 100%;
+      height: 100vh;
+    }
+  </style>
 </head>
 <body>
-    <h1>Fancode Matches</h1>
-    <a href="https://telegram.me/livecrichdofficial" class="telegram-toggle">Join Telegram</a>
-    <div class="file-container" id="matches"></div>
 
-    <script>
-const _0x4236a2=_0x5a9a;function _0xfca2(){const _0x414289=['add','\x20vs\x20','querySelector','innerHTML','\x22>Watch\x20Now</button>\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','match-item','addEventListener','sort','.adfree-button','forEach','450466quJDFf','356240tYuGRC','matches','534372nggZax','Error\x20fetching\x20matches:','</h3>\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<p>','218151wpQxtK','event_name','</p>\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22button-container\x22>\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<button\x20class=\x22stream-button\x20adfree-button\x22\x20data-url=\x22','team_1','6999010LFmZXi','status','getElementById','https://raw.githubusercontent.com/drmlive/fancode-live-events/main/fancode.json','title','live','3hsJipz','location','has','21REnfPG','click','336554JGOVyo','toLowerCase','match_id','136xkCkFC','then','status-upcoming','src','201270tVgeAx','\x22>\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<h3>','href'];_0xfca2=function(){return _0x414289;};return _0xfca2();}function _0x5a9a(_0x490e1a,_0x541918){const _0xfca263=_0xfca2();return _0x5a9a=function(_0x5a9ad7,_0x42b6e1){_0x5a9ad7=_0x5a9ad7-0x9c;let _0x3160c7=_0xfca263[_0x5a9ad7];return _0x3160c7;},_0x5a9a(_0x490e1a,_0x541918);}(function(_0x1a1d47,_0x3d4f8e){const _0x20b385=_0x5a9a,_0x25eeda=_0x1a1d47();while(!![]){try{const _0x469006=-parseInt(_0x20b385(0xad))/0x1+-parseInt(_0x20b385(0xc2))/0x2*(-parseInt(_0x20b385(0xbd))/0x3)+parseInt(_0x20b385(0xae))/0x4+-parseInt(_0x20b385(0xa0))/0x5+parseInt(_0x20b385(0xb0))/0x6*(parseInt(_0x20b385(0xc0))/0x7)+parseInt(_0x20b385(0x9c))/0x8*(-parseInt(_0x20b385(0xb3))/0x9)+parseInt(_0x20b385(0xb7))/0xa;if(_0x469006===_0x3d4f8e)break;else _0x25eeda['push'](_0x25eeda['shift']());}catch(_0x35ea1e){_0x25eeda['push'](_0x25eeda['shift']());}}}(_0xfca2,0x4e869));const playerURL='https://lchdm3u8player.rf.gd?dtv=',apiURL=_0x4236a2(0xba);fetch(apiURL)['then'](_0x424478=>_0x424478['json']())[_0x4236a2(0x9d)](_0x112ac4=>{const _0x2318b8=_0x4236a2,_0x22ad30=document[_0x2318b8(0xb9)](_0x2318b8(0xaf)),_0x16e905=new Set();_0x112ac4[_0x2318b8(0xaf)][_0x2318b8(0xaa)]((_0x94b5dc,_0x58f4ee)=>{const _0x3c7deb=_0x2318b8;if(_0x94b5dc[_0x3c7deb(0xb8)][_0x3c7deb(0xc3)]()===_0x3c7deb(0xbc)&&_0x58f4ee[_0x3c7deb(0xb8)][_0x3c7deb(0xc3)]()!==_0x3c7deb(0xbc))return-0x1;if(_0x94b5dc[_0x3c7deb(0xb8)][_0x3c7deb(0xc3)]()!==_0x3c7deb(0xbc)&&_0x58f4ee[_0x3c7deb(0xb8)][_0x3c7deb(0xc3)]()===_0x3c7deb(0xbc))return 0x1;return 0x0;}),_0x112ac4[_0x2318b8(0xaf)][_0x2318b8(0xac)](_0x4bbcf2=>{const _0x61d030=_0x2318b8;if(!_0x16e905[_0x61d030(0xbf)](_0x4bbcf2[_0x61d030(0xc4)])){const _0x1da381=document['createElement']('div');_0x1da381['className']=_0x61d030(0xa8);const _0x3f4cc0=_0x4bbcf2['status'][_0x61d030(0xc3)]()==='live'?'status-live':_0x61d030(0x9e);_0x1da381[_0x61d030(0xa6)]='\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<img\x20src=\x22'+_0x4bbcf2[_0x61d030(0x9f)]+'\x22\x20alt=\x22'+_0x4bbcf2[_0x61d030(0xbb)]+_0x61d030(0xa1)+_0x4bbcf2[_0x61d030(0xb4)]+_0x61d030(0xb2)+_0x4bbcf2[_0x61d030(0xb6)]+_0x61d030(0xa4)+_0x4bbcf2['team_2']+'</p>\x0a\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<p\x20class=\x22'+_0x3f4cc0+'\x22>'+_0x4bbcf2[_0x61d030(0xb8)]+_0x61d030(0xb5)+_0x4bbcf2['adfree_url']+_0x61d030(0xa7);const _0x17fa8c=_0x1da381[_0x61d030(0xa5)](_0x61d030(0xab));_0x17fa8c[_0x61d030(0xa9)](_0x61d030(0xc1),()=>{const _0x42eed0=_0x61d030;window[_0x42eed0(0xbe)][_0x42eed0(0xa2)]=''+playerURL+_0x4bbcf2['adfree_url'];}),_0x22ad30['appendChild'](_0x1da381),_0x16e905[_0x61d030(0xa3)](_0x4bbcf2[_0x61d030(0xc4)]);}});})['catch'](_0x58039a=>{const _0x2be681=_0x4236a2;console['error'](_0x2be681(0xb1),_0x58039a);});        
-    </script>
+<div id="player"></div>
+
+<script>
+  jwplayer.key = 'XSuP4qMl+9tK17QNb+4+th2Pm9AWgMO/cYH8CI0HGGr7bdjo';
+
+  const streamLink = "https://jiotvmblive.cdn.jio.com/bpk-tv/Disney_Channel_BTS/output/index.mpd?__hdnea__=st=1750212217~exp=1750298617~acl=/*~hmac=7abeeb7926746979c863f048b04a27570a6279cd2e49a51cafa0e69be897ecf3";
+
+  function extractTokenFromLink(link) {
+    const match = link.match(/__hdnea__=([^&]+)/);
+    return match ? match[1] : '';
+  }
+
+  function setCookie(name, value) {
+    document.cookie = `${name}=${value}; path=/`;
+  }
+
+  function interceptNetworkRequests(token) {
+    const originalOpen = XMLHttpRequest.prototype.open;
+    XMLHttpRequest.prototype.open = function (method, url) {
+      if (url.includes('.mpd') || url.includes('.m3u8') || url.includes('.ts')) {
+        if (!url.includes('__hdnea__=') && token) {
+          url += (url.includes('?') ? '&' : '?') + '__hdnea__=' + token;
+        }
+      }
+      originalOpen.apply(this, arguments);
+    };
+  }
+
+  function playStream() {
+    const token = extractTokenFromLink(streamLink);
+    if (token) {
+      setCookie("__hdnea__", token);
+      interceptNetworkRequests(token);
+    }
+
+    jwplayer("player").setup({
+      playlist: [{
+        file: streamLink,
+        image: "https://jiotvimages.cdn.jio.com/dare_images/images/Disney_Channel.png",
+        type: "dash"
+      }],
+      width: "100%",
+      aspectratio: "16:9",
+      autostart: true,
+      cast: {
+        appid: 'CC1AD845'
+      }
+    });
+
+    jwplayer().on('beforePlay', function () {
+      interceptNetworkRequests(token);
+    });
+  }
+
+  window.onload = playStream;
+</script>
+
 </body>
 </html>
