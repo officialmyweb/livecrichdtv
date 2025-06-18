@@ -2,13 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Disney Channel - JioStar</title>
+  <title>Disney Channel | Live</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://cdn.jwplayer.com/libraries/IDzF9Zmk.js"></script>
   <style>
-    body {
+    html, body {
       margin: 0;
+      padding: 0;
       background: #000;
+      height: 100%;
     }
     #player {
       width: 100%;
@@ -17,63 +19,45 @@
   </style>
 </head>
 <body>
+  <div id="player"></div>
 
-<div id="player"></div>
+  <script>
+    jwplayer.key = "XSuP4qMl+9tK17QNb+4+th2Pm9AWgMO/cYH8CI0HGGr7bdjo";
 
-<script>
-  jwplayer.key = 'XSuP4qMl+9tK17QNb+4+th2Pm9AWgMO/cYH8CI0HGGr7bdjo';
+    const streamLink = "https://jiotvmblive.cdn.jio.com/bpk-tv/Disney_Channel_BTS/output/index.mpd?__hdnea__=st=1750212217~exp=1750298617~acl=/*~hmac=7abeeb7926746979c863f048b04a27570a6279cd2e49a51cafa0e69be897ecf3";
 
-  const streamLink = "https://jiotvmblive.cdn.jio.com/bpk-tv/Disney_Channel_BTS/output/index.mpd?__hdnea__=st=1750212217~exp=1750298617~acl=/*~hmac=7abeeb7926746979c863f048b04a27570a6279cd2e49a51cafa0e69be897ecf3";
-
-  function extractTokenFromLink(link) {
-    const match = link.match(/__hdnea__=([^&]+)/);
-    return match ? match[1] : '';
-  }
-
-  function setCookie(name, value) {
-    document.cookie = `${name}=${value}; path=/`;
-  }
-
-  function interceptNetworkRequests(token) {
-    const originalOpen = XMLHttpRequest.prototype.open;
-    XMLHttpRequest.prototype.open = function (method, url) {
-      if (url.includes('.mpd') || url.includes('.m3u8') || url.includes('.ts')) {
-        if (!url.includes('__hdnea__=') && token) {
-          url += (url.includes('?') ? '&' : '?') + '__hdnea__=' + token;
-        }
+    function setCookieFromToken(url) {
+      const tokenMatch = url.match(/__hdnea__=([^&]+)/);
+      if (tokenMatch) {
+        document.cookie = "__hdnea__=" + tokenMatch[1] + "; path=/";
       }
-      originalOpen.apply(this, arguments);
-    };
-  }
-
-  function playStream() {
-    const token = extractTokenFromLink(streamLink);
-    if (token) {
-      setCookie("__hdnea__", token);
-      interceptNetworkRequests(token);
     }
+
+    setCookieFromToken(streamLink);
 
     jwplayer("player").setup({
       playlist: [{
         file: streamLink,
         image: "https://jiotvimages.cdn.jio.com/dare_images/images/Disney_Channel.png",
-        type: "dash"
+        type: "dash",
+        title: "Disney Channel"
       }],
+      advertising: {
+        client: "vast",
+        schedule: {
+          preroll: {
+            offset: "pre",
+            tag: "https://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1"
+          }
+        }
+      },
       width: "100%",
       aspectratio: "16:9",
       autostart: true,
       cast: {
-        appid: 'CC1AD845'
+        appid: "CC1AD845"
       }
     });
-
-    jwplayer().on('beforePlay', function () {
-      interceptNetworkRequests(token);
-    });
-  }
-
-  window.onload = playStream;
-</script>
-
+  </script>
 </body>
 </html>
