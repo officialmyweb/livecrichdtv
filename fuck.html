@@ -4,7 +4,9 @@
   <meta charset="UTF-8" />
   <title>Disney Channel | Live</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script src="https://cdn.jwplayer.com/libraries/IDzF9Zmk.js"></script>
+  <meta name="referrer" content="no-referrer" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.6/shaka-player.ui.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.6/controls.min.css" />
   <style>
     html, body {
       margin: 0;
@@ -12,52 +14,76 @@
       background: #000;
       height: 100%;
     }
-    #player {
-      width: 100%;
+    #player-container {
       height: 100vh;
+    }
+    .logo {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      width: 90px;
+      cursor: pointer;
+      z-index: 2;
     }
   </style>
 </head>
 <body>
-  <div id="player"></div>
 
-  <script>
-    jwplayer.key = "XSuP4qMl+9tK17QNb+4+th2Pm9AWgMO/cYH8CI0HGGr7bdjo";
+<div id="player-container">
+  <div data-shaka-player-container class="shaka-video-container">
+    <video autoplay data-shaka-player id="video" poster="https://jiotvimages.cdn.jio.com/dare_images/images/Disney_Channel.png"></video>
+  </div>
+</div>
 
-    const streamLink = "https://jiotvmblive.cdn.jio.com/bpk-tv/Disney_Channel_BTS/output/index.mpd?__hdnea__=st=1750212217~exp=1750298617~acl=/*~hmac=7abeeb7926746979c863f048b04a27570a6279cd2e49a51cafa0e69be897ecf3";
+<img src="https://i.ibb.co/7VF2dfy/1000000077-removebg-preview.png" class="logo" onclick="window.location.href='https://telegram.me/livecrichdofficial'" />
 
-    function setCookieFromToken(url) {
-      const tokenMatch = url.match(/__hdnea__=([^&]+)/);
-      if (tokenMatch) {
-        document.cookie = "__hdnea__=" + tokenMatch[1] + "; path=/";
-      }
-    }
+<script>
+  // Tokened stream URL (valid till expiration time)
+  const manifestUri = "https://jiotvmblive.cdn.jio.com/bpk-tv/Disney_Channel_BTS/output/index.mpd?__hdnea__=st=1750212217~exp=1750298617~acl=/*~hmac=7abeeb7926746979c863f048b04a27570a6279cd2e49a51cafa0e69be897ecf3";
 
-    setCookieFromToken(streamLink);
+  // Extract token and set cookie
+  const tokenMatch = manifestUri.match(/__hdnea__=([^&]+)/);
+  if (tokenMatch) {
+    document.cookie = "__hdnea__=" + tokenMatch[1] + "; path=/";
+  }
 
-    jwplayer("player").setup({
-      playlist: [{
-        file: streamLink,
-        image: "https://jiotvimages.cdn.jio.com/dare_images/images/Disney_Channel.png",
-        type: "dash",
-        title: "Disney Channel"
-      }],
-      advertising: {
-        client: "vast",
-        schedule: {
-          preroll: {
-            offset: "pre",
-            tag: "https://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1"
-          }
+  function initApp() {
+    const video = document.getElementById("video");
+    const ui = video["ui"];
+    const controls = ui.getControls();
+    const player = controls.getPlayer();
+
+    // Configure UI
+    ui.configure({
+      controlPanelElements: [
+        'play_pause', 'mute', 'time_and_duration', 'fullscreen', 'picture_in_picture', 'overflow_menu'
+      ],
+      overflowMenuButtons: ['quality', 'language']
+    });
+
+    // DRM ClearKey Setup
+    player.configure({
+      drm: {
+        clearKeys: {
+          "5181d3e6698055578cedc5bfc86b3e56": "3dca7917d8cf9bb7095dc72b48bdcd3c"
         }
-      },
-      width: "100%",
-      aspectratio: "16:9",
-      autostart: true,
-      cast: {
-        appid: "CC1AD845"
       }
     });
-  </script>
+
+    // Error handling
+    player.addEventListener("error", e => console.error("Player error:", e.detail));
+    controls.addEventListener("error", e => console.error("UI error:", e.detail));
+
+    // Load stream
+    player.load(manifestUri).then(() => {
+      console.log("Stream loaded successfully.");
+    }).catch(e => {
+      console.error("Failed to load stream:", e);
+    });
+  }
+
+  document.addEventListener("shaka-ui-loaded", initApp);
+</script>
+
 </body>
 </html>
