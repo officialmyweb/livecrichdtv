@@ -1,1 +1,86 @@
-.
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>JWPlayer Token Handler</title>
+  <script src="https://content.jwplatform.com/libraries/SAHhwvZq.js"></script> <!-- Replace with your JWPlayer version if needed -->
+  <style>
+    body {
+      margin: 0;
+      background: #000;
+    }
+    #player {
+      width: 100%;
+      height: 100vh;
+    }
+  </style>
+</head>
+<body>
+  <div id="player"></div>
+
+  <script>
+    jwplayer.key = 'XSuP4qMl+9tK17QNb+4+th2Pm9AWgMO/cYH8CI0HGGr7bdjo';
+
+    function setCookie(name, value) {
+      document.cookie = name + "=" + value + "; path=/";
+    }
+
+    function extractTokenFromLink(link) {
+      var tokenMatch = link.match(/hdnea=([^&]+)/);
+      return tokenMatch ? tokenMatch[1] : '';
+    }
+
+    function interceptNetworkRequests(token) {
+      const originalOpen = XMLHttpRequest.prototype.open;
+      XMLHttpRequest.prototype.open = function(method, url) {
+        if (url.startsWith('https://tv.media.jio.com/')) {
+          url = url.replace('tv.media.jio.com', '#');
+        }
+
+        if ((url.includes('.dash')  url.includes('.m3u8')  url.includes('.ts')) && token && !url.includes('hdnea=')) {
+          url += (url.includes('?') ? '&' : '?') + 'hdnea=' + token;
+        }
+
+        originalOpen.apply(this, arguments);
+      };
+    }
+
+    function playVideo() {
+      var link = "https://jiotvmblive.cdn.jio.com/bpk-tv/Sports18_1_HD_BTS/output/index.mpd?hdnea=st=1750212217~exp=1750298617~acl=/*~hmac=7abeeb7926746979c863f048b04a27570a6279cd2e49a51cafa0e69be897ecf3";
+      var tokenValue = extractTokenFromLink(link);
+
+      if (tokenValue) {
+        setCookie("hdnea", tokenValue);
+        interceptNetworkRequests(tokenValue);
+      }
+
+      var playerInstance = jwplayer("player");
+      playerInstance.setup({
+        playlist: [{
+          file: link,
+          type: "dash"
+        }],
+        width: "100%",
+        aspectratio: "16:9",
+        autostart: true,
+        cast: {
+          appid: 'CC1AD845'
+        }
+      });
+
+      playerInstance.on('beforePlay', function() {
+        interceptNetworkRequests(tokenValue);
+      });
+    }
+
+    window.onload = playVideo;
+
+    window.addEventListener("load", function() {
+      var result = window.confirm("Join for more links");
+      if (result) {
+        window.location.href = ""; // Replace with your actual link
+      }
+    });
+  </script>
+</body>
+</html>
