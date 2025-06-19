@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>JW Player ClearKey DRM Example</title>
+  <script src="https://content.jwplatform.com/libraries/SAHhwvZq.js"></script> <!-- Replace with your hosted JW lib -->
+</head>
+<body>
+
+<div id="player"></div>
+
+<script>
+  jwplayer.key = "XSuP4qMl+9tK17QNb+4+th2Pm9AWgMO/cYH8CI0HGGr7bdjo"; // Replace with your actual JW key
+
+  jwplayer("player").setup({
+    file: "https://g006-lin-gb-cmaf-prd-xa.pcdn05.cssott02.com/nowgblin1/Content/CMAF_CTR_H1/Live/channel(skysportscricket)/master_2hr-all.mpd?c3.ri=13632254982398139250",
+    type: "dash",
+    drm: {
+      clearkey: {
+        "111cee33f09683ea9f94f19e0855d4e8": "cac594404740388e6440af3cbc48534e",
+        "111c1b79cffbf68f1d13f3136eab1da8": "f8a6b5ecbbf5d456824d45f6e8d385ea"
+      }
+    },
+    width: "100%",
+    aspectratio: "16:9",
+    autostart: true
+  });
+</script>
+
+</body>
+</html>
