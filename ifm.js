@@ -11,7 +11,7 @@ if (confirm("Join Our Telegram Channel @cricxfootball")) {
 
 // ✅ Streams list
 const streams = {
-    m1: "https://kleanembed.online/embed/8be60dd42e7f51a454fa08b950553e9f",
+    m1: "https://kleanembed.online/embed/4d5314824ea64f82eb32a12406ebb1c8",
     m2: "https://stream196tp.com/global1.php?stream=tudn_usa",
     m3: "#",
     m4: "https://streamtp4.com/global1.php?stream=disney10",
