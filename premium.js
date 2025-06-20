@@ -7,7 +7,7 @@ const streamMap = {
     url: "#",
     poster: "#"
   },
-  "fox": {
+  "fox501": {
     url: "",
     poster: "https://i.ibb.co/dNp10Xf/IMG-20250620-145214.jpg"
   }
