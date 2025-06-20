@@ -7,8 +7,8 @@ const streamMap = {
     url: "https://d2sshbxprtwbjg.cloudfront.net/out/v1/5a00690119224df688a7c3d2e9c7022f/index.m3u8",
     poster: "https://i.ibb.co/0RjkVHK0/IMG-20250614-213759-410.jpg"
   },
-  "match2": {
-    url: "https://mi9hodru2lnlspaswl8regarijequchiy.happy-ending.site/6c589385fb89fa5d0a87055dff33c06d.m3u8",
-    poster: "https://example.com/poster3.jpg"
+  "fox501": {
+    url: "https://uugg.hatsune86.space/lchd-foxsports501.m3u8",
+    poster: "https://i.ibb.co/dNp10Xf/IMG-20250620-145214.jpg"
   }
 };
