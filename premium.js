@@ -4,7 +4,7 @@ const streamMap = {
     poster: "https://i.ibb.co/MyvXYC4Z/IMG-20250610-214129.jpg"
   },
   "sony3": {
-    url: "https://uugg.hatsune86.space/lchd-sonyten3.m3u8",
+    url: "#",
     poster: "#"
   },
   "fox501": {
