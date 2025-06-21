@@ -1,7 +1,7 @@
 const streamMap = {
   "sky": {
     url: "",
-    poster: "https://i.ibb.co/MyvXYC4Z/IMG-20250610-214129.jpg"
+    poster: "https://i.ibb.co/qLW8GXM8/IMG-20250621-141814.jpg"
   },
   "sony3": {
     url: "#",
