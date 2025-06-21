@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>SONY TEN 3 HD</title>
+  <style>
+    iframe {
+      width: 100%;
+      height: 500px;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+<div id="iframe-container"></div>
+
+<script>
+  const iframeURL = "https://tataplay.slivcdn.com/hls/live/2020591/TEN3HD/master.m3u8"; // Replace with your desired URL
+
+  const iframe = document.createElement("iframe");
+  iframe.src = iframeURL;
+
+  document.getElementById("iframe-container").appendChild(iframe);
+</script>
+
+</body>
+</html>
