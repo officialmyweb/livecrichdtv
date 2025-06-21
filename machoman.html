@@ -1,26 +1,27 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>SONY TEN 3 HD</title>
+<!DOCTYPE html><html><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    iframe {
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
       width: 100%;
-      height: 500px;
+      overflow: hidden;
+    }
+    iframe {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
       border: none;
     }
   </style>
-</head>
+<style type="text/css">* {user-select: auto !important; -webkit-user-select: auto !important;}</style><input type="hidden" id="inject_idm_text_selection"></head>
 <body>
-<div id="iframe-container"></div>
+  <iframe src="https://tataplay.slivcdn.com/hls/live/2020591/TEN3HD/master.m3u8" allow="autoplay; encrypted-media" allowfullscreen="">
+  </iframe>
 
-<script>
-  const iframeURL = "https://tataplay.slivcdn.com/hls/live/2020591/TEN3HD/master.m3u8"; // Replace with your desired URL
 
-  const iframe = document.createElement("iframe");
-  iframe.src = iframeURL;
-
-  document.getElementById("iframe-container").appendChild(iframe);
-</script>
-
-</body>
-</html>
+</body></html>
