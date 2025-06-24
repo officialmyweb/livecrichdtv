@@ -8,7 +8,7 @@ const streamMap = {
     poster: "#"
   },
   "fox501": {
-    url: "#",
+    url: "https://uugg.hatsune86.space/lchd-foxsports501.m3u8",
     poster: "https://i.ibb.co/dNp10Xf/IMG-20250620-145214.jpg"
   }
 };
