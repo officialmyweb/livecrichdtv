@@ -1,6 +1,6 @@
 const streamMap = {
   "sky": {
-    url: "#",
+    url: "https://uugg.hatsune86.space/lchd-skycric.m3u8",
     poster: "https://i.ibb.co/qLW8GXM8/IMG-20250621-141814.jpg"
   },
   "sony3": {
