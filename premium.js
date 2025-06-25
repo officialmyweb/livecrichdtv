@@ -10,5 +10,9 @@ const streamMap = {
   "fox501": {
     url: "#",
     poster: "https://i.ibb.co/dNp10Xf/IMG-20250620-145214.jpg"
-  }
+  },
+  "willow2": {
+    url: "https://uugg.hatsune86.space/lchd-willow.m3u8",
+    poster: "#"
+  },
 };
