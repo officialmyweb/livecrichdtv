@@ -3,8 +3,8 @@ const streamMap = {
     url: "#",
     poster: "https://i.ibb.co/qLW8GXM8/IMG-20250621-141814.jpg"
   },
-  "sony3": {
-    url: "#",
+  "willow": {
+    url: "https://kerimmkirac-daddyliveevents.hf.space/proxy/m3u?url=http://38.96.178.201/live/WILLOWTV/index.m3u8",
     poster: "#"
   },
   "fox501": {
