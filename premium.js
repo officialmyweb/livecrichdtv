@@ -3,8 +3,8 @@ const streamMap = {
     url: "#",
     poster: "https://i.ibb.co/qLW8GXM8/IMG-20250621-141814.jpg"
   },
-  "willow": {
-    url: "https://cors-proxy.cooks.fyi/http://38.96.178.201/live/WILLOWTV/index.m3u8",
+  "WWE": {
+    url: "https://quetzalcoatl.quartzzcdn.online/lchd-wwe.m3u8",
     poster: "#"
   },
   "fox501": {
