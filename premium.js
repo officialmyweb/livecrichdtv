@@ -4,7 +4,7 @@ const streamMap = {
     poster: "https://i.ibb.co/qLW8GXM8/IMG-20250621-141814.jpg"
   },
   "WWE": {
-    url: "https://quetzalcoatl.quartzzcdn.online/lchd-wwe.m3u8",
+    url: "#",
     poster: "#"
   },
   "fox501": {
