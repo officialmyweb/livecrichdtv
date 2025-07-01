@@ -11,8 +11,8 @@ const streamMap = {
     url: "#",
     poster: "https://i.ibb.co/dNp10Xf/IMG-20250620-145214.jpg"
   },
-  "willow2": {
-    url: "https://uugg.hatsune86.space/lchd-willow.m3u8",
+  "willow": {
+    url: "https://sinelive-sineproxy.hf.space/proxy/m3u?url=38.96.178.201/live/WILLOWTV/index.m3u8",
     poster: "#"
   },
 };
