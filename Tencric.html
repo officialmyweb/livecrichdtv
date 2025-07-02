@@ -2,20 +2,23 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Video Player with Language Switch</title>
+  <title>Telegram-Live-Cric-Hd</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       text-align: center;
       padding: 20px;
-      background: #f4f4f4;
+      background-color: #000; /* Black background */
+      color: white;
     }
     iframe {
       width: 100%;
       max-width: 800px;
       height: 450px;
-      border: none;
+      border: 4px solid #fff; /* White border around iframe */
+      border-radius: 10px;
       margin-bottom: 20px;
+      box-shadow: 0 0 10px #00ffcc;
     }
     .button-group {
       margin-top: 10px;
@@ -29,26 +32,28 @@
       border-radius: 6px;
       background-color: #007bff;
       color: white;
+      transition: background 0.3s;
     }
     button.active {
       background-color: #28a745;
+    }
+    button:hover {
+      background-color: #0056b3;
     }
   </style>
 </head>
 <body>
 
-  <h2>Live Match Streaming</h2>
-
-  <!-- IFRAME -->
   <iframe id="videoFrame" src="https://tataplay.slivcdn.com/hls/live/2020591/TEN3HD/master_3500.m3u8" allowfullscreen></iframe>
 
-  <!-- BUTTONS -->
   <div class="button-group">
     <button id="btnHindi" class="active" onclick="switchStream('hindi')">Hindi</button>
     <button id="btnEnglish" onclick="switchStream('english')">English</button>
   </div>
 
   <script>
+       if (confirm("Join Our Telegram Channel @livecrichdofficial")) { window.location.href = "https://telegram.me/livecrichdofficial"; }
+    
     function switchStream(lang) {
       const iframe = document.getElementById("videoFrame");
       const btnHindi = document.getElementById("btnHindi");
