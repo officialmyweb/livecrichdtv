@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Video Player with Language Switch</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+      background: #f4f4f4;
+    }
+    iframe {
+      width: 100%;
+      max-width: 800px;
+      height: 450px;
+      border: none;
+      margin-bottom: 20px;
+    }
+    .button-group {
+      margin-top: 10px;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 0 10px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 6px;
+      background-color: #007bff;
+      color: white;
+    }
+    button.active {
+      background-color: #28a745;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Live Match Streaming</h2>
+
+  <!-- IFRAME -->
+  <iframe id="videoFrame" src="https://tataplay.slivcdn.com/hls/live/2020591/TEN3HD/master_3500.m3u8" allowfullscreen></iframe>
+
+  <!-- BUTTONS -->
+  <div class="button-group">
+    <button id="btnHindi" class="active" onclick="switchStream('hindi')">Hindi</button>
+    <button id="btnEnglish" onclick="switchStream('english')">English</button>
+  </div>
+
+  <script>
+    function switchStream(lang) {
+      const iframe = document.getElementById("videoFrame");
+      const btnHindi = document.getElementById("btnHindi");
+      const btnEnglish = document.getElementById("btnEnglish");
+
+      if (lang === 'hindi') {
+        iframe.src = "https://tataplay.slivcdn.com/hls/live/2020591/TEN3HD/master_3500.m3u8";
+        btnHindi.classList.add("active");
+        btnEnglish.classList.remove("active");
+      } else {
+        iframe.src = "https://tataplay.slivcdn.com/hls/live/2011747/TEN1HD/master_3500.m3u8";
+        btnEnglish.classList.add("active");
+        btnHindi.classList.remove("active");
+      }
+    }
+  </script>
+
+</body>
+</html>
