@@ -8,24 +8,24 @@
       font-family: Arial, sans-serif;
       text-align: center;
       padding: 20px;
-      background-color: #000; /* Black background */
+      background-color: #000;
       color: white;
     }
     iframe {
       width: 100%;
       max-width: 800px;
       height: 450px;
-      border: 4px solid #fff; /* White border around iframe */
+      border: 4px solid #fff;
       border-radius: 10px;
       margin-bottom: 20px;
       box-shadow: 0 0 10px #00ffcc;
     }
     .button-group {
-      margin-top: 10px;
+      margin: 10px 0;
     }
     button {
       padding: 10px 20px;
-      margin: 0 10px;
+      margin: 5px;
       font-size: 16px;
       cursor: pointer;
       border: none;
@@ -46,28 +46,62 @@
 
   <iframe id="videoFrame" src="https://tataplay.slivcdn.com/hls/live/2020591/TEN3HD/master_3500.m3u8" allowfullscreen></iframe>
 
+  <!-- Language buttons -->
   <div class="button-group">
-    <button id="btnHindi" class="active" onclick="switchStream('hindi')">Hindi</button>
-    <button id="btnEnglish" onclick="switchStream('english')">English</button>
+    <button id="btnHindi" class="active" onclick="setLanguage('hindi')">Hindi</button>
+    <button id="btnEnglish" onclick="setLanguage('english')">English</button>
+  </div>
+
+  <!-- Quality buttons -->
+  <div class="button-group">
+    <button id="btn1080p" class="active" onclick="setQuality('1080p')">1080p</button>
+    <button id="btn720p" onclick="setQuality('720p')">720p</button>
+    <button id="btn360p" onclick="setQuality('360p')">360p</button>
+    <button id="btn240p" onclick="setQuality('240p')">240p</button>
   </div>
 
   <script>
-       if (confirm("Join Our Telegram Channel @livecrichdofficial")) { window.location.href = "https://telegram.me/livecrichdofficial"; }
-    
-    function switchStream(lang) {
-      const iframe = document.getElementById("videoFrame");
-      const btnHindi = document.getElementById("btnHindi");
-      const btnEnglish = document.getElementById("btnEnglish");
+    if (confirm("Join Our Telegram Channel @livecrichdofficial")) {
+      window.location.href = "https://telegram.me/livecrichdofficial";
+    }
 
-      if (lang === 'hindi') {
-        iframe.src = "https://tataplay.slivcdn.com/hls/live/2020591/TEN3HD/master_3500.m3u8";
-        btnHindi.classList.add("active");
-        btnEnglish.classList.remove("active");
-      } else {
-        iframe.src = "https://tataplay.slivcdn.com/hls/live/2011747/TEN1HD/master_3500.m3u8";
-        btnEnglish.classList.add("active");
-        btnHindi.classList.remove("active");
+    let currentLanguage = 'hindi';
+    let currentQuality = '1080p';
+
+    const sources = {
+      hindi: {
+        '1080p': 'https://tataplay.slivcdn.com/hls/live/2020591/TEN3HD/master_3500.m3u8',
+        '720p':  'https://tataplay.slivcdn.com/hls/live/2020591/TEN3HD/master_1300.m3u8',
+        '360p':  'https://tataplay.slivcdn.com/hls/live/2020591/TEN3HD/master_664.m3u8',
+        '240p':  'https://tataplay.slivcdn.com/hls/live/2020591/TEN3HD/master_224.m3u8'
+      },
+      english: {
+        '1080p': 'https://tataplay.slivcdn.com/hls/live/2011747/TEN1HD/master_3500.m3u8',
+        '720p':  'https://tataplay.slivcdn.com/hls/live/2011747/TEN1HD/master_1300.m3u8',
+        '360p':  'https://tataplay.slivcdn.com/hls/live/2011747/TEN1HD/master_664.m3u8',
+        '240p':  'https://tataplay.slivcdn.com/hls/live/2011747/TEN1HD/master_224.m3u8'
       }
+    };
+
+    function updateStream() {
+      const iframe = document.getElementById("videoFrame");
+      iframe.src = sources[currentLanguage][currentQuality];
+    }
+
+    function setLanguage(lang) {
+      currentLanguage = lang;
+      document.getElementById("btnHindi").classList.toggle("active", lang === 'hindi');
+      document.getElementById("btnEnglish").classList.toggle("active", lang === 'english');
+      updateStream();
+    }
+
+    function setQuality(q) {
+      currentQuality = q;
+      ['1080p', '720p', '360p', '240p'].forEach(res => {
+        document.getElementById('btn' + res).classList.remove('active');
+      });
+      document.getElementById('btn' + q).classList.add('active');
+      updateStream();
     }
   </script>
 
