@@ -3,8 +3,8 @@ const streamMap = {
     url: "#",
     poster: "https://i.ibb.co/qLW8GXM8/IMG-20250621-141814.jpg"
   },
-  "wwe": {
-    url: "https://quetzalcoatl.quartzzcdn.online/lchd-wwe.m3u8",
+  "F1": {
+    url: "https://metalgear.bemtv.cn/STREAM/8318/playlist.m3u8",
     poster: "#"
   },
   "fox501": {
