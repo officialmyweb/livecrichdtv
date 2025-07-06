@@ -1,6 +1,6 @@
 const streamMap = {
   "sky": {
-    url: "#",
+    url: "https://1rinij81ehes2uswech6drot7durixl2r0.rtgjmfvikmgtgrvkpbg.shop/j5ru6icHofROsespidec64w0s7lgo8ot.m3u8",
     poster: "https://i.ibb.co/qLW8GXM8/IMG-20250621-141814.jpg"
   },
   "ECBL": {
