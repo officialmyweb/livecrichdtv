@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Telegram-Live-Cric-Hd</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+  <meta name="referrer" content="no-referrer">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plyr@3.6.12/dist/plyr.css">
+  <style>
+    body {
+      background-color: #000000;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+    html, body {
+      height: 100%;
+    }
+    video {
+      width: 100%;
+      height: 100%;
+      max-width: 100%;
+    }
+    .plyr {
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+  <video id="player" controls playsinline></video>
+
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@1.1.4/dist/hls.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/plyr@3.6.12/dist/plyr.min.js"></script>
+  <script src="https://livecrichdtv.pages.dev/premium.js"></script>
+
+  <script>
+    const allowedDomain = "livecrichdtv.pages.dev";
+    if (window.top !== window.self || window.location.hostname !== allowedDomain) {
+      window.top.location.href = "https://telegram.me/livecrichdofficial";
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const id = urlParams.get("id");
+    const stream = streamMap[id];
+
+    if (!stream || !stream.url || stream.url === "#") {
+      window.location.href = "https://telegram.me/livecrichdofficial";
+    } else {
+      if (confirm("Join Our Telegram Channel @livecrichdofficial")) {window.location.href = "https://telegram.me/livecrichdofficial";}
+
+      const video = document.getElementById("player");
+      if (stream.poster && stream.poster !== "#") {
+        video.setAttribute("poster", stream.poster);
+      }
+
+      if (Hls.isSupported()) {
+        const hls = new Hls({ maxMaxBufferLength: 100 });
+        hls.loadSource(stream.url);
+        hls.attachMedia(video);
+        hls.on(Hls.Events.MANIFEST_PARSED, () => {
+          const availableQualities = hls.levels.map(level => level.height);
+          const defaultQuality = availableQualities[0];
+
+          const player = new Plyr(video, {
+            controls: ['play-large', 'play', 'mute', 'volume', 'settings', 'fullscreen'],
+            quality: {
+              default: defaultQuality,
+              options: availableQualities,
+              forced: true,
+              onChange: (quality) => {
+                hls.levels.forEach((level, index) => {
+                  if (level.height === quality) {
+                    hls.currentLevel = index;
+                  }
+                });
+              }
+            }
+          });
+
+          document.addEventListener('fullscreenchange', () => {
+            if (document.fullscreenElement && screen.orientation && screen.orientation.lock) {
+              screen.orientation.lock('landscape').catch(() => {});
+            }
+          });
+        });
+      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        video.src = stream.url;
+        new Plyr(video);
+      }
+    }
+  </script>
+</body>
+</html>
