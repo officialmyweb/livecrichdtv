@@ -148,53 +148,58 @@
     <script>
           if (confirm("Join Our Telegram Channel @livecrichdofficial")) { window.location.href = "https://telegram.me/livecrichdofficial"; }
       
-        const playerURL = 'https://shz.al/~livecrichd/livecrichdm3u8splayer.html?dtv=';
-        const apiURL = 'https://raw.githubusercontent.com/drmlive/fancode-live-events/main/fancode.json';
+        const playerURL = '#';
+const apiURL = 'https://raw.githubusercontent.com/drmlive/fancode-live-events/main/fancode.json';
 
-        fetch(apiURL)
-            .then(response => response.json())
-            .then(data => {
-                const matchesContainer = document.getElementById('matches');
-                const displayedMatchIds = new Set();
+fetch(apiURL)
+    .then(response => response.json())
+    .then(data => {
+        const matchesContainer = document.getElementById('matches');
+        const displayedMatchIds = new Set();
 
-                // Sort matches so live matches appear first
-                data.matches.sort((a, b) => {
-                    if (a.status.toLowerCase() === 'live' && b.status.toLowerCase() !== 'live') return -1;
-                    if (a.status.toLowerCase() !== 'live' && b.status.toLowerCase() === 'live') return 1;
-                    return 0;
+        // Sort matches so live matches appear first
+        data.matches.sort((a, b) => {
+            if (a.status.toLowerCase() === 'live' && b.status.toLowerCase() !== 'live') return -1;
+            if (a.status.toLowerCase() !== 'live' && b.status.toLowerCase() === 'live') return 1;
+            return 0;
+        });
+
+        data.matches.forEach(match => {
+            if (!displayedMatchIds.has(match.match_id)) {
+                const matchItem = document.createElement('div');
+                matchItem.className = 'match-item';
+
+                const statusClass = match.status.toLowerCase() === 'live' ? 'status-live' : 'status-upcoming';
+
+                // Modify the adfree URL as required
+                let modifiedAdfreeUrl = match.adfree_url
+                    .replace('in-mc-fdlive', 'dai')
+                    .replace('/mumbai/', '/primary/');
+
+                matchItem.innerHTML = `
+                    <img src="${match.src}" alt="${match.title}">
+                    <h3>${match.event_name}</h3>
+                    <p>${match.team_1} vs ${match.team_2}</p>
+                    <p class="${statusClass}">${match.status}</p>
+                    <div class="button-container">
+                        <button class="stream-button adfree-button" data-url="${modifiedAdfreeUrl}">Watch Now</button>
+                    </div>
+                `;
+
+                // Attach event listener to "Watch Now" button
+                const adfreeButton = matchItem.querySelector('.adfree-button');
+                adfreeButton.addEventListener('click', () => {
+                    window.location.href = `${playerURL}${modifiedAdfreeUrl}`;
                 });
 
-                data.matches.forEach(match => {
-                    if (!displayedMatchIds.has(match.match_id)) {
-                        const matchItem = document.createElement('div');
-                        matchItem.className = 'match-item';
-
-                        const statusClass = match.status.toLowerCase() === 'live' ? 'status-live' : 'status-upcoming';
-
-                        matchItem.innerHTML = `
-                            <img src="${match.src}" alt="${match.title}">
-                            <h3>${match.event_name}</h3>
-                            <p>${match.team_1} vs ${match.team_2}</p>
-                            <p class="${statusClass}">${match.status}</p>
-                            <div class="button-container">
-                                <button class="stream-button adfree-button" data-url="${match.adfree_url}">Watch Now</button>
-                            </div>
-                        `;
-
-                        // Attach event listener to "Watch Now" button
-                        const adfreeButton = matchItem.querySelector('.adfree-button');
-                        adfreeButton.addEventListener('click', () => {
-                            window.location.href = `${playerURL}${match.adfree_url}`;
-                        });
-
-                        matchesContainer.appendChild(matchItem);
-                        displayedMatchIds.add(match.match_id);
-                    }
-                });
-            })
-            .catch(error => {
-                console.error('Error fetching matches:', error);
-            });
+                matchesContainer.appendChild(matchItem);
+                displayedMatchIds.add(match.match_id);
+            }
+        });
+    })
+    .catch(error => {
+        console.error('Error fetching matches:', error);
+    });
     </script>
 </body>
 </html>
