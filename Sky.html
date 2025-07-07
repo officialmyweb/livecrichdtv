@@ -146,60 +146,7 @@
     <div class="file-container" id="matches"></div>
 
     <script>
-          if (confirm("Join Our Telegram Channel @livecrichdofficial")) { window.location.href = "https://telegram.me/livecrichdofficial"; }
-      
-        const playerURL = 'https://lchdm3u8player.rf.gd?dtv=';
-const apiURL = 'https://raw.githubusercontent.com/drmlive/fancode-live-events/main/fancode.json';
-
-fetch(apiURL)
-    .then(response => response.json())
-    .then(data => {
-        const matchesContainer = document.getElementById('matches');
-        const displayedMatchIds = new Set();
-
-        // Sort matches so live matches appear first
-        data.matches.sort((a, b) => {
-            if (a.status.toLowerCase() === 'live' && b.status.toLowerCase() !== 'live') return -1;
-            if (a.status.toLowerCase() !== 'live' && b.status.toLowerCase() === 'live') return 1;
-            return 0;
-        });
-
-        data.matches.forEach(match => {
-            if (!displayedMatchIds.has(match.match_id)) {
-                const matchItem = document.createElement('div');
-                matchItem.className = 'match-item';
-
-                const statusClass = match.status.toLowerCase() === 'live' ? 'status-live' : 'status-upcoming';
-
-                // Modify the adfree URL as required
-                let modifiedAdfreeUrl = match.adfree_url
-                    .replace('in-mc-fdlive', 'dai')
-                    .replace('/mumbai/', '/primary/');
-
-                matchItem.innerHTML = `
-                    <img src="${match.src}" alt="${match.title}">
-                    <h3>${match.event_name}</h3>
-                    <p>${match.team_1} vs ${match.team_2}</p>
-                    <p class="${statusClass}">${match.status}</p>
-                    <div class="button-container">
-                        <button class="stream-button adfree-button" data-url="${modifiedAdfreeUrl}">Watch Now</button>
-                    </div>
-                `;
-
-                // Attach event listener to "Watch Now" button
-                const adfreeButton = matchItem.querySelector('.adfree-button');
-                adfreeButton.addEventListener('click', () => {
-                    window.location.href = `${playerURL}${modifiedAdfreeUrl}`;
-                });
-
-                matchesContainer.appendChild(matchItem);
-                displayedMatchIds.add(match.match_id);
-            }
-        });
-    })
-    .catch(error => {
-        console.error('Error fetching matches:', error);
-    });
+function _0x331d(){const _0x4f1ca2=['1736525sVMebv','querySelector','1129923dkyylh','https://telegram.me/livecrichdofficial','/mumbai/','581KvGZbY','dai','replace','live','src','5ozGLNs','add','match_id','createElement','</h3>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<p>','</p>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22button-container\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<button\x20class=\x22stream-button\x20adfree-button\x22\x20data-url=\x22','</p>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<p\x20class=\x22','adfree_url','3575870lIrxJX','className','3csKWQn','has','status','toLowerCase','\x22\x20alt=\x22','appendChild','json','team_1','location','https://lchdm3u8player.rf.gd?dtv=','title','match-item','Error\x20fetching\x20matches:','catch','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<img\x20src=\x22','/primary/','then','14072NQqTdq','matches','team_2','Join\x20Our\x20Telegram\x20Channel\x20@livecrichdofficial','href','status-upcoming','event_name','click','https://raw.githubusercontent.com/drmlive/fancode-live-events/main/fancode.json','sort','6048540BCUMhY','1013986gAUvuT','5887140SvNvQl'];_0x331d=function(){return _0x4f1ca2;};return _0x331d();}const _0xef98c6=_0x2197;(function(_0x48838c,_0x19ff62){const _0x31f291=_0x2197,_0x2b072a=_0x48838c();while(!![]){try{const _0x5642d7=-parseInt(_0x31f291(0xd0))/0x1+parseInt(_0x31f291(0xce))/0x2*(parseInt(_0x31f291(0xb2))/0x3)+-parseInt(_0x31f291(0xcd))/0x4*(-parseInt(_0x31f291(0xa8))/0x5)+parseInt(_0x31f291(0xcf))/0x6+parseInt(_0x31f291(0xa3))/0x7*(-parseInt(_0x31f291(0xc3))/0x8)+parseInt(_0x31f291(0xa0))/0x9+-parseInt(_0x31f291(0xb0))/0xa;if(_0x5642d7===_0x19ff62)break;else _0x2b072a['push'](_0x2b072a['shift']());}catch(_0xde7d83){_0x2b072a['push'](_0x2b072a['shift']());}}}(_0x331d,0xd83fc));function _0x2197(_0x3255fe,_0x452298){const _0x331d72=_0x331d();return _0x2197=function(_0x2197e7,_0x435c6e){_0x2197e7=_0x2197e7-0x9f;let _0x43cf3e=_0x331d72[_0x2197e7];return _0x43cf3e;},_0x2197(_0x3255fe,_0x452298);}confirm(_0xef98c6(0xc6))&&(window[_0xef98c6(0xba)][_0xef98c6(0xc7)]=_0xef98c6(0xa1));const playerURL=_0xef98c6(0xbb),apiURL=_0xef98c6(0xcb);fetch(apiURL)[_0xef98c6(0xc2)](_0x4d408b=>_0x4d408b[_0xef98c6(0xb8)]())['then'](_0x1a8373=>{const _0x2cec16=_0xef98c6,_0x5d02c9=document['getElementById']('matches'),_0x4d75a6=new Set();_0x1a8373[_0x2cec16(0xc4)][_0x2cec16(0xcc)]((_0x57f342,_0x4760f8)=>{const _0x39bf84=_0x2cec16;if(_0x57f342[_0x39bf84(0xb4)][_0x39bf84(0xb5)]()===_0x39bf84(0xa6)&&_0x4760f8[_0x39bf84(0xb4)][_0x39bf84(0xb5)]()!==_0x39bf84(0xa6))return-0x1;if(_0x57f342[_0x39bf84(0xb4)][_0x39bf84(0xb5)]()!=='live'&&_0x4760f8[_0x39bf84(0xb4)][_0x39bf84(0xb5)]()==='live')return 0x1;return 0x0;}),_0x1a8373[_0x2cec16(0xc4)]['forEach'](_0x54abe7=>{const _0x3c4558=_0x2cec16;if(!_0x4d75a6[_0x3c4558(0xb3)](_0x54abe7[_0x3c4558(0xaa)])){const _0x479dd8=document[_0x3c4558(0xab)]('div');_0x479dd8[_0x3c4558(0xb1)]=_0x3c4558(0xbd);const _0x102da1=_0x54abe7[_0x3c4558(0xb4)][_0x3c4558(0xb5)]()===_0x3c4558(0xa6)?'status-live':_0x3c4558(0xc8);let _0x9ae589=_0x54abe7[_0x3c4558(0xaf)][_0x3c4558(0xa5)]('in-mc-fdlive',_0x3c4558(0xa4))['replace'](_0x3c4558(0xa2),_0x3c4558(0xc1));_0x479dd8['innerHTML']=_0x3c4558(0xc0)+_0x54abe7[_0x3c4558(0xa7)]+_0x3c4558(0xb6)+_0x54abe7[_0x3c4558(0xbc)]+'\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<h3>'+_0x54abe7[_0x3c4558(0xc9)]+_0x3c4558(0xac)+_0x54abe7[_0x3c4558(0xb9)]+'\x20vs\x20'+_0x54abe7[_0x3c4558(0xc5)]+_0x3c4558(0xae)+_0x102da1+'\x22>'+_0x54abe7['status']+_0x3c4558(0xad)+_0x9ae589+'\x22>Watch\x20Now</button>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20';const _0x5e37b6=_0x479dd8[_0x3c4558(0x9f)]('.adfree-button');_0x5e37b6['addEventListener'](_0x3c4558(0xca),()=>{const _0x53ee47=_0x3c4558;window[_0x53ee47(0xba)][_0x53ee47(0xc7)]=''+playerURL+_0x9ae589;}),_0x5d02c9[_0x3c4558(0xb7)](_0x479dd8),_0x4d75a6[_0x3c4558(0xa9)](_0x54abe7[_0x3c4558(0xaa)]);}});})[_0xef98c6(0xbf)](_0x2a6bc0=>{const _0x3ff659=_0xef98c6;console['error'](_0x3ff659(0xbe),_0x2a6bc0);});          
 
     </script>
 </body>
