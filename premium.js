@@ -17,7 +17,7 @@ const streamMap = {
     poster: "https://i.ibb.co/V0ZxtGjH/IMG-20250706-160925.jpg"
   },
   "rVp": {
-    url: "#",
+    url: "https://i.ibb.co/FLFkzWL0/image-2.m3u8",
     poster: "https://i.ibb.co/FLFkzWL0/image-2.jpg"
   },
 };
