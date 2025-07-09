@@ -16,4 +16,8 @@ const streamMap = {
     url: "https://sinelive-sineproxy.hf.space/proxy/m3u?url=38.96.178.201/live/WILLOWTV/index.m3u8",
     poster: "https://i.ibb.co/V0ZxtGjH/IMG-20250706-160925.jpg"
   },
+  "rVp": {
+    url: "#",
+    poster: "https://i.ibb.co/FLFkzWL0/image-2.jpg"
+  },
 };
