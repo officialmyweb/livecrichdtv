@@ -69,36 +69,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/hls.js@1.1.4/dist/hls.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/plyr@3.6.12/dist/plyr.min.js"></script>
-  <script>
-// Show modern Telegram popup on page load
-window.addEventListener("load", function () {
-  // Create the popup container
-  var popup = document.createElement("div");
-  popup.className = "popup";
 
-  // Set inner HTML
-  popup.innerHTML = `
-    <div class="popup-content">
-      <h2>Join Us At Telegram</h2>
-      <p>Join our Telegram channel<br><strong>@cricxfootball</strong> for more updates.</p>
-      <button id="joinButton">Join Now and support us</button>
-      <button id="closeButton" class="close-btn">Already Joined or May be later</button>
-    </div>
-  `;
-
-  // Append popup to body
-  document.body.appendChild(popup);
-
-  // Add actions
-  document.getElementById("joinButton").addEventListener("click", function () {
-    window.location.href = "https://telegram.me/cricxfootball";
-  });
-
-  document.getElementById("closeButton").addEventListener("click", function () {
-    document.body.removeChild(popup);
-  });
-});
-  </script>
   <script>
     // Domain / iframe protection
     const allowedDomain = "livecrichdtv.pages.dev";
