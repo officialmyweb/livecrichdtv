@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Live Player - cricXfootball</title>
+  <title>Live Player - Football Matches</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="referrer" content="no-referrer">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plyr@3.6.12/dist/plyr.css">
@@ -71,15 +71,9 @@
   <script src="https://cdn.jsdelivr.net/npm/plyr@3.6.12/dist/plyr.min.js"></script>
 
   <script>
-    // Domain / iframe protection
-    const allowedDomain = "livecrichdtv.pages.dev";
-    if (window.top !== window.self || window.location.hostname !== allowedDomain) {
-      window.top.location.href = "https://telegram.me/cricxfootball";
-    }
-
     document.addEventListener('DOMContentLoaded', () => {
       const video = document.getElementById('player');
-      const streamUrl = "https://edge3-moblive.yuppcdn.net/drm/smil:tencricketdrm.smil/master.m3u8"; // <- PUT your .m3u8 link here
+      const streamUrl = "https://edge3-moblive.yuppcdn.net/drm/smil:tencricketdrm.smil/master.m3u8";
 
       if (Hls.isSupported()) {
         const hls = new Hls({ maxMaxBufferLength: 100 });
