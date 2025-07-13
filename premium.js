@@ -17,7 +17,7 @@ const streamMap = {
     poster: "https://i.ibb.co/V0ZxtGjH/IMG-20250706-160925.jpg"
   },
   "cVSp": {
-    url: "https://1rinij81ehes2uswech6drot7durixl2r0.rtgjmfvikmgtgrvkpbg.shop/96829d01859587f2a3db83c5dba951f9.m3u8",
+    url: "https://subrugopuciblchlvl6uqa666p23rig.happy-ending.site/f61aed258dfa059cec6a1f4a698eeb39.m3u8",
     poster: "https://i.ibb.co/FL2GS6xD/image-3.webp"
   },
 };
