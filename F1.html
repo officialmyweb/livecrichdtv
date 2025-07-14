@@ -1,0 +1,149 @@
+<title>F1|BY FLICKOFWRIST</title>
+    <meta charset="UTF-8">
+    <meta name="referrer" content="no-referrer">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.8.8/shaka-player.ui.min.js"></script><style type="text/css">* {user-select: auto !important; -webkit-user-select: auto !important;}</style><input type="hidden" id="inject_idm_text_selection"><style></style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.9.3/controls.min.css" rel="stylesheet">
+</head>
+<body bgcolor="black" style="margin:0;">
+  <style>
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+.popup-content {
+  background: #1e1e1e;
+  padding: 20px 30px;
+  border-radius: 10px;
+  text-align: center;
+  color: #fff;
+  max-width: 90%;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+}
+.popup-content h2 {
+  margin-top: 0;
+  font-size: 24px;
+}
+.popup-content p {
+  margin-bottom: 20px;
+  font-size: 16px;
+}
+.popup-content button {
+  margin: 5px;
+  padding: 10px 20px;
+  font-size: 15px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+#joinButton {
+  background-color: #0088cc;
+  color: #fff;
+}
+.close-btn {
+  background-color: #555;
+  color: #fff;
+}
+  </style>
+  
+<center>
+    <div data-shaka-player-container="" style="width: 100%; height: 100%; cursor: none;" class="shaka-mobile shaka-video-container" shaka-controls="true">
+        <video poster="#" autoplay="" data-shaka-player="" id="video" style="width: 100%; height: 100%;" class="shaka-video" src="blob:https://t20wc.pages.dev/da763d4e-fd51-4e2a-a817-2b73e4643682"></video>
+</center>
+
+  <script>
+window.addEventListener("load", function () {
+  var popup = document.createElement("div");
+  popup.className = "popup";
+
+  popup.innerHTML = `
+    <div class="popup-content">
+      <h2>Join Us At Telegram</h2>
+      <p>Join our Telegram channel<br><strong>@F1liveupdates</strong> for more updates.</p>
+      <button id="joinButton">JOIN NOW AND SUPPORT US</button>
+      <button id="closeButton" class="close-btn">ALREADY JOINED</button>
+    </div>
+  `;
+
+  document.body.appendChild(popup);
+
+  document.getElementById("joinButton").addEventListener("click", function () {
+    window.location.href = "https://telegram.me/F1liveupdates";
+  });
+
+  document.getElementById("closeButton").addEventListener("click", function () {
+    document.body.removeChild(popup);
+  });
+});
+  </script>
+  
+<script>
+const manifestUri =
+    'https://a204aivottepl-a.akamaihd.net/sin-nitro/live/clients/dash/enc/fdb3pubmek/out/v1/aefca6420f944a9482e117f315de535f/cenc.mpd';
+async function init() {
+  
+  const video = document.getElementById('video');
+  const ui = video['ui'];
+  const controls = ui.getControls();
+  const player = controls.getPlayer();
+  const config = {
+  'controlPanelElements': ['play_pause', 'time_and_duration', 'spacer', 'mute', 'picture_in_picture', 'playback_rate', 'quality', 'fullscreen'],
+  'playbackRates': [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2],
+}
+ui.configure(config);
+player.configure({
+  drm: {
+    clearKeys: {
+      
+      '7e9239c1982d984a002df3ed049d0756': '1b8a17598129a3618535c8fb05f103fe',
+    }
+  }
+});
+  
+  window.player = player;
+  window.ui = ui;
+  
+  player.addEventListener('error', onPlayerErrorEvent);
+  controls.addEventListener('error', onUIErrorEvent);
+  
+  
+  try {
+    await player.load(manifestUri);
+    
+    console.log('The video has now been loaded!');
+  } catch (error) {
+    onPlayerError(error);
+  }
+}
+function onPlayerErrorEvent(errorEvent) {
+  
+  onPlayerError(event.detail);
+}
+function onPlayerError(error) {
+  
+  console.error('Error code', error.code, 'object', error);
+}
+function onUIErrorEvent(errorEvent) {
+  
+  onPlayerError(event.detail);
+}
+function initFailed(errorEvent) {
+  
+
+  console.error('Unable to load the UI library!');
+}
+
+document.addEventListener('shaka-ui-loaded', init);
+  
+
+document.addEventListener('shaka-ui-load-failed', initFailed);</script>
+
+</body></html>
