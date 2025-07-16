@@ -18,7 +18,7 @@ const streamMap = {
   },
   "CvsI": {
     url: "https://subrugopuciblchlvl6uqa666p23rig.happy-ending.site/54290fa6f10ebda2ecea576d1ae64ac3.m3u8",
-    poster: "https://i.ibb.co/FL2GS6xD/image-3.webp"
+    poster: "https://i.ibb.co/NdRznq61/u0xnlu1736767699.jpg"
   },
   "WC2": {
     url: "#",
