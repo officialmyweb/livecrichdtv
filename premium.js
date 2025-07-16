@@ -16,12 +16,12 @@ const streamMap = {
     url: "https://sinelive-sineproxy.hf.space/proxy/m3u?url=38.96.178.201/live/WILLOWTV/index.m3u8",
     poster: "https://i.ibb.co/V0ZxtGjH/IMG-20250706-160925.jpg"
   },
-  "WC": {
-    url: "https://subrugopuciblchlvl6uqa666p23rig.happy-ending.site/f61aed258dfa059cec6a1f4a698eeb39.m3u8",
+  "CvsI": {
+    url: "https://subrugopuciblchlvl6uqa666p23rig.happy-ending.site/54290fa6f10ebda2ecea576d1ae64ac3.m3u8",
     poster: "https://i.ibb.co/FL2GS6xD/image-3.webp"
   },
   "WC2": {
-    url: "https://streaming-live-fcdn.api.prd.univisionnow.com/tudn/tudn.isml/hls/tudn.m3u8",
+    url: "#",
     poster: "https://i.ibb.co/FL2GS6xD/image-3.webp"
   },
 };
