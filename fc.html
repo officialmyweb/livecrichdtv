@@ -228,7 +228,7 @@
 <body>
     <h1>FANCODE MATCHES</h1>
     <a href="https://telegram.me/livecrichdofficial" class="telegram-toggle">Join Telegram</a>
-    <button id="theme-toggle" class="theme-toggle">Card Light Mode</button>
+    <button id="theme-toggle" class="theme-toggle">Toggle Light Mode</button>
     <div class="file-container" id="matches"></div>
     
 
@@ -297,7 +297,7 @@ fetch(apiURL)
 
                 matchItem.addEventListener('click', () => {
                     if (status === 'live') {
-                        alert('This match is live. Use the Watch buttons to Watch.');
+                        alert('This match is live. Use the Watch buttons.');
                     } else {
                         alert('This match is upcoming.');
                     }
