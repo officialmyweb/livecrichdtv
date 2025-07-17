@@ -242,85 +242,88 @@
             <h2>Important Information</h2>
             <p>We do not own any material or streams here, All content and streams are provided by third-party sites & Belong To Their Respective Owners.</p>
 
-        <p>API Credit : Toor</p>
+    
         </div>
     </div>
 
-    <script>
+
+<script>
 const playerURL = 'https://criccoder.pages.dev/p/?url=';
-const apiURL = 'https://raw.githubusercontent.com/drmlive/fancode-live-events/main/fancode.json'; // Replace with your actual API URL
+const apiURL = 'https://raw.githubusercontent.com/drmlive/fancode-live-events/main/fancode.json';
 
 fetch(apiURL)
     .then(response => response.json())
     .then(data => {
-        // Create a Set to track displayed match IDs
         const displayedMatchIds = new Set();
 
-        // Sort matches so that live matches come first
+        // Sort matches: LIVE first
         data.matches.sort((a, b) => {
-            if (a.status.toLowerCase() === 'live' && b.status.toLowerCase() !== 'live') {
-                return -1;
-            }
-            if (a.status.toLowerCase() !== 'live' && b.status.toLowerCase() === 'live') {
-                return 1;
-            }
+            const statusA = a.status.toLowerCase();
+            const statusB = b.status.toLowerCase();
+            if (statusA === 'live' && statusB !== 'live') return -1;
+            if (statusA !== 'live' && statusB === 'live') return 1;
             return 0;
         });
+
         const matchesContainer = document.getElementById('matches');
+
         data.matches.forEach(match => {
-            // Check if the match has already been displayed
             if (!displayedMatchIds.has(match.match_id)) {
                 const matchItem = document.createElement('div');
                 matchItem.className = 'match-item';
 
-                // Determine status and corresponding text
-                const statusText = match.status.toLowerCase() === 'live' ? 'Live' : 'Upcoming';
-                const statusClass = match.status.toLowerCase() === 'live' ? 'status-live' : 'status-upcoming';
-                const startTimeText = match.status.toLowerCase() === 'upcoming' ? <p>${match.startTime}</p> : '';
+                const status = match.status.toLowerCase();
+                const statusClass = status === 'live' ? 'status-live' : 'status-upcoming';
+                const showStartTime = status === 'upcoming' ? `<p>${match.startTime}</p>` : '';
 
-                // Build the inner HTML with new fields and buttons for streaming
+                // Handle dai and adfree URLs (modify only if not null)
+                let daiUrl = match.dai_url || 'null';
+
+                let adfreeUrl = match.adfree_url 
+                    ? match.adfree_url.replace('in-mc-fdlive', 'dai').replace('/mumbai/', '/primary/')
+                    : 'null';
+
+                // Build match card
                 matchItem.innerHTML = `
                     <img src="${match.src}" alt="${match.title}">
                     <h3>${match.event_name}</h3>
-                    
                     <p>${match.team_1} vs ${match.team_2}</p>
-                    <p class="${statusClass}">${statusText}</p>
-                    ${startTimeText}
+                    <p class="${statusClass}">${match.status}</p>
+                    ${showStartTime}
                     <div class="button-container">
-                        <button class="stream-button dai-button" data-url="${match.dai_url}">Watch Normal</button>
-                        <button class="stream-button adfree-button" data-url="${match.adfree_url}">Watch Ad-Free</button>
+                        ${status === 'live' ? `
+                            <button class="stream-button dai-button" data-url="${daiUrl}">Watch Normal</button>
+                            <button class="stream-button adfree-button" data-url="${adfreeUrl}">Watch Ad-Free</button>
+                        ` : ''}
                     </div>
                 `;
 
-                // Event listeners for the stream buttons
-                const daiButton = matchItem.querySelector('.dai-button');
-                const adfreeButton = matchItem.querySelector('.adfree-button');
+                // Button click handling (live only)
+                if (status === 'live') {
+                    const daiButton = matchItem.querySelector('.dai-button');
+                    const adfreeButton = matchItem.querySelector('.adfree-button');
 
-                daiButton.addEventListener('click', (event) => {
-                    event.stopPropagation(); // Prevent match item click event
-                    window.location.href = `${playerURL}${match.dai_url}`;
-                });
-
-                adfreeButton.addEventListener('click', (event) => {
-                    event.stopPropagation(); // Prevent match item click event
-                    window.location.href = `${playerURL}${match.adfree_url}`;
-                });
-
-                // Event listeners for live and upcoming matches
-                if (match.status.toLowerCase() === 'live') {
-                    matchItem.addEventListener('click', () => {
-                        alert('This match is live. Click the buttons to watch.');
+                    daiButton.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        window.location.href = `${playerURL}${daiUrl}`;
                     });
-                } else if (match.status.toLowerCase() === 'upcoming') {
-                    matchItem.addEventListener('click', () => {
-                        alert('This match is upcoming.');
+
+                    adfreeButton.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        window.location.href = `${playerURL}${adfreeUrl}`;
                     });
                 }
 
-                // Append the match item to the container
-                matchesContainer.appendChild(matchItem);
+                // Optional click message
+                matchItem.addEventListener('click', () => {
+                    if (status === 'live') {
+                        alert('This match is live. Use the Watch buttons.');
+                    } else {
+                        alert('This match is upcoming.');
+                    }
+                });
 
-                // Add match_id to the Set to prevent duplicates
+                matchesContainer.appendChild(matchItem);
                 displayedMatchIds.add(match.match_id);
             }
         });
@@ -329,12 +332,12 @@ fetch(apiURL)
         console.error('Error fetching data:', error);
     });
 
+// Hide/show Telegram on scroll
 let lastScrollTop = 0;
 const telegramButton = document.querySelector('.telegram-toggle');
 
 window.addEventListener('scroll', () => {
     const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
-
     if (currentScrollTop > lastScrollTop) {
         telegramButton.classList.add('hidden');
     } else {
@@ -343,11 +346,11 @@ window.addEventListener('scroll', () => {
     lastScrollTop = currentScrollTop <= 0 ? 0 : currentScrollTop;
 });
 
+// Light/Dark mode toggle
 const themeToggle = document.getElementById('theme-toggle');
 let isDarkMode = true;
-
 themeToggle.addEventListener('click', () => {
-    isDarkMode = !isDarkMode; // Toggle the mode
+    isDarkMode = !isDarkMode;
     document.body.classList.toggle('light-mode', !isDarkMode);
     themeToggle.textContent = isDarkMode ? 'Toggle Light Mode' : 'Toggle Dark Mode';
 });
@@ -356,21 +359,19 @@ themeToggle.addEventListener('click', () => {
 const infoToggle = document.getElementById('info-toggle');
 const infoModal = document.getElementById('infoModal');
 const closeModal = document.getElementById('closeModal');
-    infoToggle.addEventListener('click', () => {
-    infoModal.style.display = 'flex'; // Show modal
-});
 
+infoToggle.addEventListener('click', () => {
+    infoModal.style.display = 'flex';
+});
 closeModal.addEventListener('click', () => {
-    infoModal.style.display = 'none'; // Hide modal
+    infoModal.style.display = 'none';
 });
-
-// Close modal when clicking outside
 window.addEventListener('click', (event) => {
     if (event.target === infoModal) {
         infoModal.style.display = 'none';
     }
 });
-
 </script>
+    
 </body>
 </html>    
