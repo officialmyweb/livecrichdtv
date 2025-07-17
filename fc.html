@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <link rel="shortcut icon" href="https://drmlive.in/sports/fancode.png" />
-    <title>Telegram-Live-Cric-Hd</title>
+    <title>Fancode Live Matches</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@400;700&display=swap">
     <style>
         body {
@@ -15,14 +15,6 @@
             color: #fff;
             transition: background-color 0.3s, color 0.3s;
         }
-
-        h1 {
-            text-align: center;
-            color: #ff3700;
-            margin-bottom: 20px;
-            font-family: 'Montserrat', sans-serif;
-        }
-
         .file-container {
             display: flex;
             flex-wrap: wrap;
@@ -30,125 +22,232 @@
             justify-content: center;
             padding: 10px;
         }
-
         .match-item {
             margin: 10px;
             text-align: center;
             border-radius: 8px;
             overflow: hidden;
+            transition: transform .3s ease, box-shadow .3s ease;
             background-color: #1a1a1a;
             padding: 20px;
-            width: calc(25% - 20px);
+            width: calc(25% - 20px); /* Adjusted for desktop screens */
             box-sizing: border-box;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
             cursor: pointer;
         }
-
         .match-item img {
             max-width: 100%;
             height: auto;
             display: block;
             margin: 0 auto 10px auto;
+            transition: box-shadow 0.3s ease;
         }
-
         .match-item h3,
         .match-item p {
             font-family: 'Montserrat', sans-serif;
             margin: 0;
             text-transform: uppercase;
         }
-
         .match-item h3 {
             font-weight: 700;
             margin-bottom: 15px;
         }
-
         .match-item p {
             font-weight: 400;
             margin-bottom: 15px;
         }
-
-        .status-live {
-            color: yellow;
-            animation: glow 1s infinite alternate;
+        .match-item p:last-of-type {
+            margin-bottom: 0;
         }
-
-        @keyframes glow {
-            0% {
-                text-shadow: 0 0 5px yellow;
-            }
-            100% {
-                text-shadow: 0 0 15px yellow;
-            }
+        .match-item a {
+            text-decoration: none;
+            color: #00bfff;
+            font-weight: 700;
+            display: block;
+            margin-top: 5px;
+            transition: color .3s ease;
         }
-
-        .status-upcoming {
-            color: #777;
-            opacity: 0.6;
+        .match-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 10px rgba(255, 72, 0, 0.7);
         }
-
-        .telegram-toggle {
-            background-color: #ffcc00;
-            color: black;
+        .match-item:hover img {
+            box-shadow: 0 0 15px rgba(255, 72, 0, 0.7);
+        }
+        .match-item a:hover {
+            color: #ff6600;
+        }
+        h1 {
+            text-align: center;
+            color: #ff3700;
+            margin-bottom: 10px;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .telegram-toggle, .theme-toggle, .info-toggle {
+            background-color: #ff3700;
+            color: white;
             padding: 10px 15px;
             border-radius: 50px;
             text-decoration: none;
             font-weight: bold;
+            font-family: 'Montserrat', sans-serif;
+            transition: opacity 0.3s, transform 0.3s;
+            text-align: center;
             display: block;
-            margin: 20px auto;
+            margin: 10px auto; /* Center the buttons */
             width: fit-content;
-            transition: background-color 0.3s;
+            max-width: 100%; /* Make sure the buttons don't overflow on small screens */
+        }
+        .theme-toggle {
+            margin-top: 10px; /* Space between buttons */
+        }
+        .info-toggle {
+            margin-top: 20px; /* Extra space before the info button */
+        }
+        .telegram-toggle.hidden {
+            opacity: 0;
+            transform: translateY(-100%);
+        }
+        .telegram-toggle:hover, .theme-toggle:hover, .info-toggle:hover {
+            background-color: #e62e00;
+        }
+        .status-live {
+            color: red;
+            animation: glow 1s infinite alternate;
+        }
+        @keyframes glow {
+            0% {
+                text-shadow: 0 0 5px red;
+            }
+            100% {
+                text-shadow: 0 0 15px red;
+            }
+        }
+        .status-upcoming {
+            color: #777;
+            opacity: 0.6;
+        }
+        /* Light Mode Styles */
+        .light-mode body {
+            background-color: #f0f0f0;
+            color: #000;
+        }
+        .light-mode .match-item {
+            background-color: #e0e0e0;
+        }
+        .light-mode .match-item h3 {
+            color: #333;
+        }
+        .light-mode .match-item p {
+            color: #333;
+        }
+        .light-mode .status-live {
+            color: #d9534f;
+        }
+        .light-mode .status-upcoming {
+            color: #888;
+        }
+        /* Modal Styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.6); /* Black with opacity */
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: #333;
+            color: #fff;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 600px;
             text-align: center;
         }
-
-        .telegram-toggle:hover {
-            background-color: #e6b800;
+        .modal-header h2 {
+            margin: 0;
         }
-
-        .stream-button {
-            padding: 10px 15px;
-            margin: 5px;
-            border: none;
-            border-radius: 5px;
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
             font-weight: bold;
             cursor: pointer;
-            color: white;
         }
-
-        .adfree-button {
-            background-color: #28a745; /* Green */
+        .close:hover,
+        .close:focus {
+            color: #fff;
+            text-decoration: none;
         }
-
-        .adfree-button:hover {
-            background-color: #218838;
+        /* Responsive Styles */
+        @media (max-width: 1024px) {
+            .match-item {
+                width: calc(33.333% - 20px);
+            }
         }
-
-        .button-container {
-            margin-top: 10px;
-        }
-
         @media (max-width: 768px) {
             .match-item {
                 width: calc(50% - 20px);
             }
         }
-
         @media (max-width: 480px) {
             .match-item {
                 width: calc(100% - 20px);
             }
+            .telegram-toggle, .theme-toggle, .info-toggle {
+                font-size: 14px;
+                padding: 8px 12px;
+            }
         }
+        .button-container {
+    margin-top: 10px;
+}
+
+.stream-button {
+    padding: 10px 15px;
+    margin-right: 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    color: white;
+}
+
+.dai-button {
+    background-color: #007bff; /* Blue for Dai */
+}
+
+.adfree-button {
+    background-color: #28a745; /* Green for Ad-Free */
+}
+
     </style>
 </head>
 <body>
-    <h1>Fancode Matches</h1>
-    <a href="https://telegram.me/livecrichdofficial" class="telegram-toggle">Join Telegram</a>
+    <h1>FANCODE LIVE</h1>
+    <a href="https://telegram.me/criccoder" class="telegram-toggle">Join Telegram</a>
+    <button id="theme-toggle" class="theme-toggle">Toggle Light Mode</button>
     <div class="file-container" id="matches"></div>
+    <button id="info-toggle" class="info-toggle">Copyright & Credit [CLICK HERE TO READ]</button>
+
+    <!-- Info Modal -->
+    <div id="infoModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeModal">&times;</span>
+            <h2>Important Information</h2>
+            <p>We do not own any material or streams here, All content and streams are provided by third-party sites & Belong To Their Respective Owners.</p>
+
+        <p>API Credit : Toor</p>
+        </div>
+    </div>
 
     <script>
-          if (confirm("Join Our Telegram Channel @livecrichdofficial")) { window.location.href = "https://telegram.me/livecrichdofficial"; }
-      
-        const playerURL = 'https://criccoder.pages.dev/p/?url=';
+const playerURL = 'https://criccoder.pages.dev/p/?url=';
 const apiURL = 'https://raw.githubusercontent.com/drmlive/fancode-live-events/main/fancode.json'; // Replace with your actual API URL
 
 fetch(apiURL)
@@ -257,7 +356,7 @@ themeToggle.addEventListener('click', () => {
 const infoToggle = document.getElementById('info-toggle');
 const infoModal = document.getElementById('infoModal');
 const closeModal = document.getElementById('closeModal');
-        infoToggle.addEventListener('click', () => {
+    infoToggle.addEventListener('click', () => {
     infoModal.style.display = 'flex'; // Show modal
 });
 
@@ -271,6 +370,7 @@ window.addEventListener('click', (event) => {
         infoModal.style.display = 'none';
     }
 });
-    </script>
+
+</script>
 </body>
-</html>
+</html>    
