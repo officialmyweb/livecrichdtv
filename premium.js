@@ -12,9 +12,9 @@ const streamMap = {
     url: "#",
     poster: "https://i.ibb.co/dNp10Xf/IMG-20250620-145214.jpg"
   },
-  "willow": {
-    url: "https://sinelive-sineproxy.hf.space/proxy/m3u?url=38.96.178.201/live/WILLOWTV/index.m3u8",
-    poster: "https://i.ibb.co/V0ZxtGjH/IMG-20250706-160925.jpg"
+  "MUTV": {
+    url: "https://subrugopuciblchlvl6uqa666p23rig.happy-ending.site/5fa5626c627f8663459043f8baea2aba.m3u8",
+    poster: "#"
   },
   "WCLE": {
     url: "https://dai.fancode.com/primary/129719_english_hls_24272ta-di_h264/index.m3u8",
