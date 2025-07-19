@@ -16,12 +16,5 @@ const streamMap = {
     url: "https://www.fancode.com/skillup-uploads/cms-media/123371_5107_FRA-W_GER-W_fc-web.jpg",
     poster: "https://www.fancode.com/skillup-uploads/cms-media/123371_5107_FRA-W_GER-W_fc-web.jpg"
   },
-  "WCLE": {
-    url: "https://dai.fancode.com/primary/129719_english_hls_24272ta-di_h264/index.m3u8",
-    poster: "#"
-  },
-  "WCLH": {
-    url: "https://dai.fancode.com/primary/129719_hindi_hls_1891adfreeta-di_h264/index.m3u8",
-    poster: "#"
-  },
+
 };
