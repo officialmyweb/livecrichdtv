@@ -12,9 +12,9 @@ const streamMap = {
     url: "#",
     poster: "https://i.ibb.co/dNp10Xf/IMG-20250620-145214.jpg"
   },
-  "MUTV": {
-    url: "https://subrugopuciblchlvl6uqa666p23rig.happy-ending.site/5fa5626c627f8663459043f8baea2aba.m3u8",
-    poster: "#"
+  "Weuro": {
+    url: "#",
+    poster: "https://www.fancode.com/skillup-uploads/cms-media/123371_5107_FRA-W_GER-W_fc-web.jpg"
   },
   "WCLE": {
     url: "https://dai.fancode.com/primary/129719_english_hls_24272ta-di_h264/index.m3u8",
