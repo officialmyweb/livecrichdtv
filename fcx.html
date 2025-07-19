@@ -33,12 +33,10 @@
   <script src="https://livecrichdtv.pages.dev/popup.js"></script> <!-- Contains streamMap -->
 
 <script>
-  const allowedDomain = "livecrichdtv.pages.dev";
-
-  if (window.top === window.self || window.location.hostname !== allowedDomain) {
-    alert("This content is protected.\nJoin our Telegram Channel @cricxfootball for access.");
-    window.location.href = "https://telegram.me/cricxfootball";
-  }
+  const allowedDomain = "livecrichdofficial.pages.dev";
+    if (window.top !== window.self || window.location.hostname !== allowedDomain) {
+        window.top.location.href = "https://telegram.me/livecrichdofficial";
+    }
 
   document.addEventListener('DOMContentLoaded', () => {
     const urlParams = new URLSearchParams(window.location.search);
