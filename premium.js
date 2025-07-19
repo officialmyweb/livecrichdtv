@@ -12,7 +12,7 @@ const streamMap = {
     url: "#",
     poster: "https://i.ibb.co/dNp10Xf/IMG-20250620-145214.jpg"
   },
-  "Weuro": {
+  "EURO": {
     url: "#",
     poster: "https://www.fancode.com/skillup-uploads/cms-media/123371_5107_FRA-W_GER-W_fc-web.jpg"
   },
