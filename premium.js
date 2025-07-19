@@ -16,12 +16,12 @@ const streamMap = {
     url: "https://sinelive-sineproxy.hf.space/proxy/m3u?url=38.96.178.201/live/WILLOWTV/index.m3u8",
     poster: "https://i.ibb.co/V0ZxtGjH/IMG-20250706-160925.jpg"
   },
-  "CvsM": {
-    url: "#",
-    poster: "https://i.ibb.co/NdRznq61/u0xnlu1736767699.jpg"
+  "WCLE": {
+    url: "https://dai.fancode.com/primary/129719_english_hls_24272ta-di_h264/index.m3u8",
+    poster: "#"
   },
-  "WC2": {
-    url: "#",
+  "WCLH": {
+    url: "https://dai.fancode.com/primary/129719_hindi_hls_1891adfreeta-di_h264/index.m3u8",
     poster: "#"
   },
 };
