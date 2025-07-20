@@ -13,7 +13,7 @@ const streamMap = {
     poster: "https://i.ibb.co/dNp10Xf/IMG-20250620-145214.jpg"
   },
   "UFC": {
-    url: "https://subrugopuciblchlvl6uqa666p23rig.happy-ending.site/8d0b25788b85a82caeab436d87eb7eca.m3u8",
+    url: "#",
     poster: "https://i.ibb.co/bgR0c78K/UFC-318-keyart-16x9-v1.webp"
   },
 
