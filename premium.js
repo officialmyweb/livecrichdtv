@@ -12,9 +12,9 @@ const streamMap = {
     url: "#",
     poster: "https://i.ibb.co/dNp10Xf/IMG-20250620-145214.jpg"
   },
-  "EURO": {
-    url: "https://dai.fancode.com/primary/123371_english_hls_78008adfreeta-di_h264/index.m3u8",
-    poster: "https://www.fancode.com/skillup-uploads/cms-media/123371_5107_FRA-W_GER-W_fc-web.jpg"
+  "UFC": {
+    url: "https://subrugopuciblchlvl6uqa666p23rig.happy-ending.site/8d0b25788b85a82caeab436d87eb7eca.m3u8",
+    poster: "https://i.ibb.co/bgR0c78K/UFC-318-keyart-16x9-v1.webp"
   },
 
 };
