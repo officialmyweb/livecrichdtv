@@ -33,6 +33,11 @@
   <script src="hello.js"></script> <!-- External streamMap file -->
 
   <script>
+    const allowedDomain = "livecrichdtv.pages.dev";
+    if (window.top !== window.self || window.location.hostname !== allowedDomain) {
+        window.top.location.href = "https://telegram.me/livecrichdofficial";
+    }
+    
     document.addEventListener('DOMContentLoaded', () => {
       const urlParams = new URLSearchParams(window.location.search);
       const streamId = urlParams.get('id') || 'sky';
