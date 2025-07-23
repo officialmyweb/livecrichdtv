@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <link rel="shortcut icon" href="https://drmlive.in/sports/fancode.png" />
+    <title>Telegram-Live-Cric-Hd</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@400;700&display=swap">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #000;
+            color: #fff;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .file-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            padding: 10px;
+        }
+        .match-item {
+            margin: 10px;
+            text-align: center;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform .3s ease, box-shadow .3s ease;
+            background-color: #1a1a1a;
+            padding: 20px;
+            width: calc(25% - 20px); 
+            box-sizing: border-box;
+            cursor: pointer;
+        }
+        .match-item img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto 10px auto;
+            transition: box-shadow 0.3s ease;
+        }
+        .match-item h3,
+        .match-item p {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            text-transform: uppercase;
+        }
+        .match-item h3 {
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        .match-item p {
+            font-weight: 400;
+            margin-bottom: 15px;
+        }
+        .match-item p:last-of-type {
+            margin-bottom: 0;
+        }
+        .match-item a {
+            text-decoration: none;
+            color: #00bfff;
+            font-weight: 700;
+            display: block;
+            margin-top: 5px;
+            transition: color .3s ease;
+        }
+        .match-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 10px rgba(255, 72, 0, 0.7);
+        }
+        .match-item:hover img {
+            box-shadow: 0 0 15px rgba(255, 72, 0, 0.7);
+        }
+        .match-item a:hover {
+            color: #ff6600;
+        }
+        h1 {
+            text-align: center;
+            color: #ff3700;
+            margin-bottom: 10px;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .telegram-toggle, .theme-toggle, .info-toggle {
+            background-color: #ff3700;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            font-family: 'Montserrat', sans-serif;
+            transition: opacity 0.3s, transform 0.3s;
+            text-align: center;
+            display: block;
+            margin: 10px auto; 
+            width: fit-content;
+            max-width: 100%; 
+        }
+        .theme-toggle {
+            margin-top: 10px; 
+        }
+        .info-toggle {
+            margin-top: 20px; 
+        }
+        .telegram-toggle.hidden {
+            opacity: 0;
+            transform: translateY(-100%);
+        }
+        .telegram-toggle:hover, .theme-toggle:hover, .info-toggle:hover {
+            background-color: #e62e00;
+        }
+        .status-live {
+            color: red;
+            animation: glow 1s infinite alternate;
+        }
+        @keyframes glow {
+            0% {
+                text-shadow: 0 0 5px red;
+            }
+            100% {
+                text-shadow: 0 0 15px red;
+            }
+        }
+        .status-upcoming {
+            color: #777;
+            opacity: 0.6;
+        }
+        .light-mode body {
+            background-color: #f0f0f0;
+            color: #000;
+        }
+        .light-mode .match-item {
+            background-color: #e0e0e0;
+        }
+        .light-mode .match-item h3 {
+            color: #333;
+        }
+        .light-mode .match-item p {
+            color: #333;
+        }
+        .light-mode .status-live {
+            color: #d9534f;
+        }
+        .light-mode .status-upcoming {
+            color: #888;
+        }
+        .modal {
+            display: none; 
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.6); 
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: #333;
+            color: #fff;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 600px;
+            text-align: center;
+        }
+        .modal-header h2 {
+            margin: 0;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close:hover,
+        .close:focus {
+            color: #fff;
+            text-decoration: none;
+        }
+        @media (max-width: 1024px) {
+            .match-item {
+                width: calc(33.333% - 20px);
+            }
+        }
+        @media (max-width: 768px) {
+            .match-item {
+                width: calc(50% - 20px);
+            }
+        }
+        @media (max-width: 480px) {
+            .match-item {
+                width: calc(100% - 20px);
+            }
+            .telegram-toggle, .theme-toggle, .info-toggle {
+                font-size: 14px;
+                padding: 8px 12px;
+            }
+        }
+        .button-container {
+    margin-top: 10px;
+}
+
+.stream-button {
+    padding: 10px 15px;
+    margin-right: 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    color: white;
+}
+
+.dai-button {
+    background-color: #007bff; 
+}
+
+.adfree-button {
+    background-color: #28a745; 
+}
+
+    </style>
+</head>
+<body>
+    <h1>FANCODE MATCHES</h1>
+    <a href="https://telegram.me/livecrichdofficial" class="telegram-toggle">Join Telegram</a>
+    <button id="theme-toggle" class="theme-toggle">Toggle Light Mode</button>
+    <div class="file-container" id="matches"></div>
+    
+
+<script>
+const _0x33d8f6=_0x624f;(function(_0x4be91d,_0x3cf82e){const _0x243ad7=_0x624f,_0x49078e=_0x4be91d();while(!![]){try{const _0x5c023d=parseInt(_0x243ad7(0xc3))/0x1+parseInt(_0x243ad7(0xbc))/0x2+-parseInt(_0x243ad7(0x102))/0x3*(parseInt(_0x243ad7(0xec))/0x4)+-parseInt(_0x243ad7(0xf8))/0x5+parseInt(_0x243ad7(0xd6))/0x6*(parseInt(_0x243ad7(0xf2))/0x7)+-parseInt(_0x243ad7(0xba))/0x8+parseInt(_0x243ad7(0xff))/0x9;if(_0x5c023d===_0x3cf82e)break;else _0x49078e['push'](_0x49078e['shift']());}catch(_0x46164a){_0x49078e['push'](_0x49078e['shift']());}}}(_0x30e0,0x72fb0));function _0x30e0(){const _0x359db3=['2031CjNHmR','toggle','https://lchdm3u8player.rf.gd/?dtv=','replace','then','.adfree-button','appendChild','pageYOffset','addEventListener','3313920LsRazE','</p>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<p\x20class=\x22','733342bRSxPO','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<img\x20src=\x22','upcoming','</h3>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<p>','team_2','json','toLowerCase','524295NSFzLO','documentElement','theme-toggle','This\x20match\x20is\x20live.\x20Use\x20the\x20Watch\x20buttons.','remove','in-mc-fdlive','textContent','null','scroll','\x22>Watch\x20Ad-Free</button>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','infoModal','body','</p>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','className','div','.dai-button','match_id','click','Toggle\x20Dark\x20Mode','714yZBCVJ','<p>','matches','catch','src','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','classList','getElementById','location','scrollTop','hidden','none','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<button\x20class=\x22stream-button\x20dai-button\x22\x20data-url=\x22','status','light-mode','event_name','style','team_1','\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<h3>','This\x20match\x20is\x20upcoming.','error','dai','3512RUHEKj','startTime','Toggle\x20Light\x20Mode','/mumbai/','target','closeModal','48265tlsVbn','add','\x22\x20alt=\x22','flex','dai_url','adfree_url','4614715dTiyvV','href','live','status-upcoming','querySelector','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22button-container\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','match-item','6219702JMEnfx','https://lchdxfc.valid32784.workers.dev/fancode.json','forEach'];_0x30e0=function(){return _0x359db3;};return _0x30e0();}const playerURL=_0x33d8f6(0x104),apiURL=_0x33d8f6(0x100);fetch(apiURL)['then'](_0x1d9018=>_0x1d9018[_0x33d8f6(0xc1)]())[_0x33d8f6(0xb5)](_0x2fbb27=>{const _0x312d7d=_0x33d8f6,_0x3f4597=new Set();_0x2fbb27[_0x312d7d(0xd8)]['sort']((_0x204fc5,_0x47628b)=>{const _0x5fd910=_0x312d7d,_0x25d772=_0x204fc5[_0x5fd910(0xe3)][_0x5fd910(0xc2)](),_0x1af969=_0x47628b[_0x5fd910(0xe3)][_0x5fd910(0xc2)]();if(_0x25d772==='live'&&_0x1af969!==_0x5fd910(0xfa))return-0x1;if(_0x25d772!=='live'&&_0x1af969===_0x5fd910(0xfa))return 0x1;return 0x0;});const _0x56dff0=document[_0x312d7d(0xdd)](_0x312d7d(0xd8));_0x2fbb27[_0x312d7d(0xd8)][_0x312d7d(0x101)](_0xf6cf2b=>{const _0x10f303=_0x312d7d;if(!_0x3f4597['has'](_0xf6cf2b[_0x10f303(0xd3)])){const _0x4c8d7d=document['createElement'](_0x10f303(0xd1));_0x4c8d7d[_0x10f303(0xd0)]=_0x10f303(0xfe);const _0x579ddb=_0xf6cf2b[_0x10f303(0xe3)][_0x10f303(0xc2)](),_0x58b3d2=_0x579ddb===_0x10f303(0xfa)?'status-live':_0x10f303(0xfb),_0x21a17b=_0x579ddb===_0x10f303(0xbe)?_0x10f303(0xd7)+_0xf6cf2b[_0x10f303(0xed)]+'</p>':'';let _0xdfdea8=_0xf6cf2b[_0x10f303(0xf6)]||_0x10f303(0xca),_0x149223=_0xf6cf2b[_0x10f303(0xf7)]?_0xf6cf2b['adfree_url'][_0x10f303(0x105)](_0x10f303(0xc8),_0x10f303(0xeb))[_0x10f303(0x105)](_0x10f303(0xef),'/primary/'):'null';_0x4c8d7d['innerHTML']=_0x10f303(0xbd)+_0xf6cf2b[_0x10f303(0xda)]+_0x10f303(0xf4)+_0xf6cf2b['title']+_0x10f303(0xe8)+_0xf6cf2b[_0x10f303(0xe5)]+_0x10f303(0xbf)+_0xf6cf2b[_0x10f303(0xe7)]+'\x20vs\x20'+_0xf6cf2b[_0x10f303(0xc0)]+_0x10f303(0xbb)+_0x58b3d2+'\x22>'+_0xf6cf2b[_0x10f303(0xe3)]+_0x10f303(0xcf)+_0x21a17b+_0x10f303(0xfd)+(_0x579ddb===_0x10f303(0xfa)?_0x10f303(0xe2)+_0xdfdea8+'\x22>Watch\x20Normal</button>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<button\x20class=\x22stream-button\x20adfree-button\x22\x20data-url=\x22'+_0x149223+_0x10f303(0xcc):'')+_0x10f303(0xdb);if(_0x579ddb===_0x10f303(0xfa)){const _0x3c3043=_0x4c8d7d[_0x10f303(0xfc)](_0x10f303(0xd2)),_0x7db804=_0x4c8d7d['querySelector'](_0x10f303(0xb6));_0x3c3043[_0x10f303(0xb9)](_0x10f303(0xd4),_0x20c491=>{const _0x103d50=_0x10f303;_0x20c491['stopPropagation'](),window[_0x103d50(0xde)]['href']=''+playerURL+_0xdfdea8;}),_0x7db804[_0x10f303(0xb9)](_0x10f303(0xd4),_0x1945e9=>{const _0x148d29=_0x10f303;_0x1945e9['stopPropagation'](),window['location'][_0x148d29(0xf9)]=''+playerURL+_0x149223;});}_0x4c8d7d['addEventListener'](_0x10f303(0xd4),()=>{const _0x388045=_0x10f303;_0x579ddb==='live'?alert(_0x388045(0xc6)):alert(_0x388045(0xe9));}),_0x56dff0[_0x10f303(0xb7)](_0x4c8d7d),_0x3f4597[_0x10f303(0xf3)](_0xf6cf2b['match_id']);}});})[_0x33d8f6(0xd9)](_0x36ee44=>{const _0x57f7f4=_0x33d8f6;console[_0x57f7f4(0xea)]('Error\x20fetching\x20data:',_0x36ee44);});function _0x624f(_0xd66544,_0x49525c){const _0x30e0e9=_0x30e0();return _0x624f=function(_0x624f29,_0x5cd1f0){_0x624f29=_0x624f29-0xb5;let _0x561163=_0x30e0e9[_0x624f29];return _0x561163;},_0x624f(_0xd66544,_0x49525c);}let lastScrollTop=0x0;const telegramButton=document['querySelector']('.telegram-toggle');window[_0x33d8f6(0xb9)](_0x33d8f6(0xcb),()=>{const _0xb9a4a9=_0x33d8f6,_0x29d305=window[_0xb9a4a9(0xb8)]||document[_0xb9a4a9(0xc4)][_0xb9a4a9(0xdf)];_0x29d305>lastScrollTop?telegramButton[_0xb9a4a9(0xdc)]['add']('hidden'):telegramButton[_0xb9a4a9(0xdc)][_0xb9a4a9(0xc7)](_0xb9a4a9(0xe0)),lastScrollTop=_0x29d305<=0x0?0x0:_0x29d305;});const themeToggle=document[_0x33d8f6(0xdd)](_0x33d8f6(0xc5));let isDarkMode=!![];themeToggle['addEventListener'](_0x33d8f6(0xd4),()=>{const _0x36209c=_0x33d8f6;isDarkMode=!isDarkMode,document[_0x36209c(0xce)][_0x36209c(0xdc)][_0x36209c(0x103)](_0x36209c(0xe4),!isDarkMode),themeToggle[_0x36209c(0xc9)]=isDarkMode?_0x36209c(0xee):_0x36209c(0xd5);});const infoToggle=document['getElementById']('info-toggle'),infoModal=document[_0x33d8f6(0xdd)](_0x33d8f6(0xcd)),closeModal=document['getElementById'](_0x33d8f6(0xf1));infoToggle['addEventListener'](_0x33d8f6(0xd4),()=>{const _0x1fbf71=_0x33d8f6;infoModal[_0x1fbf71(0xe6)]['display']=_0x1fbf71(0xf5);}),closeModal[_0x33d8f6(0xb9)](_0x33d8f6(0xd4),()=>{const _0x46302f=_0x33d8f6;infoModal[_0x46302f(0xe6)]['display']=_0x46302f(0xe1);}),window[_0x33d8f6(0xb9)](_0x33d8f6(0xd4),_0x510ab7=>{const _0x3b2961=_0x33d8f6;_0x510ab7[_0x3b2961(0xf0)]===infoModal&&(infoModal[_0x3b2961(0xe6)]['display']='none');});
+</script>
+    
+</body>
+</html>    
