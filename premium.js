@@ -12,9 +12,9 @@ const streamMap = {
     url: "#",
     poster: "https://i.ibb.co/dNp10Xf/IMG-20250620-145214.jpg"
   },
-  "UFC": {
-    url: "https://subrugopuciblchlvl6uqa666p23rig.happy-ending.site/omni-vaquint/8048e3dc4acfa9ea42368d84067ec90c.m3u8?auth=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdHJlYW1JZCI6IjgwNDhlM2RjNGFjZmE5ZWE0MjM2OGQ4NDA2N2VjOTBjIiwidHlwZSI6InBsYXlsaXN0X2FjY2VzcyIsImV4cCI6MTc1MzU1NzQ4N30.P3VjUnVrbFN0OWdV",
-    poster: "https://i.ibb.co/1f2dyH11/2RtGz0E.jpg"
+  "CLUB": {
+    url: "https://rgelive.akamaized.net/hls/live/2043151/radiolive/playlist.m3u8",
+    poster: ""
   },
 
 };
