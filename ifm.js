@@ -11,8 +11,8 @@ if (confirm("Join Our Telegram Channel @cricxfootball")) {
 
 // ✅ Streams list
 const streams = {
-    m1: "https://kleanembed.online/embed/c72905c81bbfeb341032d70a4691d4b6",
-    m2: "https://iframe-tm02.onrender.com?id=SonyTen5Hd",
+    m1: "https://envivofy.com/canal.php?stream=event1",
+    m2: "https://cheapmarket.blog/idea/?id=2",
     m3: "#",
     m4: "https://streamtp4.com/global1.php?stream=disney10",
     m5: "https://streamtp4.com/global1.php?stream=disney12",
