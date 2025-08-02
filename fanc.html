@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <link rel="shortcut icon" href="https://drmlive.in/sports/fancode.png" />
+    <title>Telegram-Live-Cric-Hd</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@400;700&display=swap">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #000;
+            color: #fff;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .file-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            padding: 10px;
+        }
+        .match-item {
+            margin: 10px;
+            text-align: center;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform .3s ease, box-shadow .3s ease;
+            background-color: #1a1a1a;
+            padding: 20px;
+            width: calc(25% - 20px); 
+            box-sizing: border-box;
+            cursor: pointer;
+        }
+        .match-item img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto 10px auto;
+            transition: box-shadow 0.3s ease;
+        }
+        .match-item h3,
+        .match-item p {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            text-transform: uppercase;
+        }
+        .match-item h3 {
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        .match-item p {
+            font-weight: 400;
+            margin-bottom: 15px;
+        }
+        .match-item p:last-of-type {
+            margin-bottom: 0;
+        }
+        .match-item a {
+            text-decoration: none;
+            color: #00bfff;
+            font-weight: 700;
+            display: block;
+            margin-top: 5px;
+            transition: color .3s ease;
+        }
+        .match-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 10px rgba(255, 72, 0, 0.7);
+        }
+        .match-item:hover img {
+            box-shadow: 0 0 15px rgba(255, 72, 0, 0.7);
+        }
+        .match-item a:hover {
+            color: #ff6600;
+        }
+        h1 {
+            text-align: center;
+            color: #ff3700;
+            margin-bottom: 10px;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .telegram-toggle, .theme-toggle, .info-toggle {
+            background-color: #ff3700;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            font-family: 'Montserrat', sans-serif;
+            transition: opacity 0.3s, transform 0.3s;
+            text-align: center;
+            display: block;
+            margin: 10px auto; 
+            width: fit-content;
+            max-width: 100%; 
+        }
+        .theme-toggle {
+            margin-top: 10px; 
+        }
+        .info-toggle {
+            margin-top: 20px; 
+        }
+        .telegram-toggle.hidden {
+            opacity: 0;
+            transform: translateY(-100%);
+        }
+        .telegram-toggle:hover, .theme-toggle:hover, .info-toggle:hover {
+            background-color: #e62e00;
+        }
+        .status-live {
+            color: red;
+            animation: glow 1s infinite alternate;
+        }
+        @keyframes glow {
+            0% {
+                text-shadow: 0 0 5px red;
+            }
+            100% {
+                text-shadow: 0 0 15px red;
+            }
+        }
+        .status-upcoming {
+            color: #777;
+            opacity: 0.6;
+        }
+        .light-mode body {
+            background-color: #f0f0f0;
+            color: #000;
+        }
+        .light-mode .match-item {
+            background-color: #e0e0e0;
+        }
+        .light-mode .match-item h3 {
+            color: #333;
+        }
+        .light-mode .match-item p {
+            color: #333;
+        }
+        .light-mode .status-live {
+            color: #d9534f;
+        }
+        .light-mode .status-upcoming {
+            color: #888;
+        }
+        .modal {
+            display: none; 
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.6); 
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: #333;
+            color: #fff;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 600px;
+            text-align: center;
+        }
+        .modal-header h2 {
+            margin: 0;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close:hover,
+        .close:focus {
+            color: #fff;
+            text-decoration: none;
+        }
+        @media (max-width: 1024px) {
+            .match-item {
+                width: calc(33.333% - 20px);
+            }
+        }
+        @media (max-width: 768px) {
+            .match-item {
+                width: calc(50% - 20px);
+            }
+        }
+        @media (max-width: 480px) {
+            .match-item {
+                width: calc(100% - 20px);
+            }
+            .telegram-toggle, .theme-toggle, .info-toggle {
+                font-size: 14px;
+                padding: 8px 12px;
+            }
+        }
+        .button-container {
+    margin-top: 10px;
+}
+
+.stream-button {
+    padding: 10px 15px;
+    margin-right: 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    color: white;
+}
+
+.dai-button {
+    background-color: #007bff; 
+}
+
+.adfree-button {
+    background-color: #28a745; 
+}
+
+    </style>
+</head>
+<body>
+    <h1>FANCODE MATCHES</h1>
+    <a href="https://telegram.me/livecrichdofficial" class="telegram-toggle">Join Telegram</a>
+    <button id="theme-toggle" class="theme-toggle">Toggle Light Mode</button>
+    <div class="file-container" id="matches"></div>
+    
+
+<script>
+const playerBaseURL = 'https://lchdm3u8player.rf.gd/?dtv=';
+const apiURL = 'https://raw.githubusercontent.com/drmlive/fancode-live-events/main/fancode.json';
+
+// Function to clean/transform adfree_url if needed
+function cleanAdfreeUrl(url) {
+    if (!url) return '';
+    if (url.includes('in-mc-fdlive.fancode.com') || url.includes('in-mc-pdlive.fancode.com')) {
+        return url
+            .replace('in-mc-fdlive.fancode.com', 'dai.fancode.com')
+            .replace('in-mc-pdlive.fancode.com', 'dai.fancode.com')
+            .replace('/mumbai/', '/primary/');
+    }
+    return url; // Return as-is if no pattern match
+}
+
+fetch(apiURL)
+    .then(response => response.json())
+    .then(data => {
+        const displayedMatchIds = new Set();
+
+        // Sort live matches to top
+        data.matches.sort((a, b) => {
+            if (a.status.toLowerCase() === 'live' && b.status.toLowerCase() !== 'live') return -1;
+            if (a.status.toLowerCase() !== 'live' && b.status.toLowerCase() === 'live') return 1;
+            return 0;
+        });
+
+        const matchesContainer = document.getElementById('matches');
+        data.matches.forEach(match => {
+            if (!displayedMatchIds.has(match.match_id)) {
+                const matchItem = document.createElement('div');
+                matchItem.className = 'match-item';
+
+                const statusText = match.status.toLowerCase() === 'live' ? 'Live' : 'Upcoming';
+                const statusClass = match.status.toLowerCase() === 'live' ? 'status-live' : 'status-upcoming';
+                const startTimeText = match.status.toLowerCase() === 'upcoming' ? `<p>${match.startTime}</p>` : '';
+
+                const cleanedAdfree = cleanAdfreeUrl(match.adfree_url);
+
+                matchItem.innerHTML = `
+                    <img src="${match.src}" alt="${match.title}">
+                    <h3>${match.event_name}</h3>
+                    <p>${match.team_1} vs ${match.team_2}</p>
+                    <p class="${statusClass}">${statusText}</p>
+                    ${startTimeText}
+                    <div class="button-container">
+                        <button class="stream-button dai-button">Watch Normal</button>
+                        <button class="stream-button adfree-button">Watch Ad-Free</button>
+                    </div>
+                `;
+
+                // Event listeners for Watch buttons
+                const daiButton = matchItem.querySelector('.dai-button');
+                const adfreeButton = matchItem.querySelector('.adfree-button');
+
+                daiButton.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    if (match.dai_url) {
+                        window.location.href = `${playerBaseURL}${match.dai_url}`;
+                    } else {
+                        alert('No Normal stream available.');
+                    }
+                });
+
+                adfreeButton.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    if (cleanedAdfree) {
+                        window.location.href = `${playerBaseURL}${cleanedAdfree}`;
+                    } else {
+                        alert('No Ad-Free stream available.');
+                    }
+                });
+
+                // Click alert for match status
+                if (match.status.toLowerCase() === 'live') {
+                    matchItem.addEventListener('click', () => {
+                        alert('This match is live. Click a button to watch.');
+                    });
+                } else if (match.status.toLowerCase() === 'upcoming') {
+                    matchItem.addEventListener('click', () => {
+                        alert('This match is upcoming.');
+                    });
+                }
+
+                matchesContainer.appendChild(matchItem);
+                displayedMatchIds.add(match.match_id);
+            }
+        });
+    })
+    .catch(error => {
+        console.error('Error fetching data:', error);
+    });
+
+
+// UI Behavior - Scroll & Theme
+let lastScrollTop = 0;
+const telegramButton = document.querySelector('.telegram-toggle');
+
+window.addEventListener('scroll', () => {
+    const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    if (currentScrollTop > lastScrollTop) {
+        telegramButton.classList.add('hidden');
+    } else {
+        telegramButton.classList.remove('hidden');
+    }
+    lastScrollTop = currentScrollTop <= 0 ? 0 : currentScrollTop;
+});
+
+const themeToggle = document.getElementById('theme-toggle');
+let isDarkMode = true;
+
+themeToggle.addEventListener('click', () => {
+    isDarkMode = !isDarkMode;
+    document.body.classList.toggle('light-mode', !isDarkMode);
+    themeToggle.textContent = isDarkMode ? 'Toggle Light Mode' : 'Toggle Dark Mode';
+});
+
+// Info Modal
+const infoToggle = document.getElementById('info-toggle');
+const infoModal = document.getElementById('infoModal');
+const closeModal = document.getElementById('closeModal');
+
+infoToggle.addEventListener('click', () => {
+    infoModal.style.display = 'flex';
+});
+
+closeModal.addEventListener('click', () => {
+    infoModal.style.display = 'none';
+});
+
+window.addEventListener('click', (event) => {
+    if (event.target === infoModal) {
+        infoModal.style.display = 'none';
+    }
+});
+
+</script>
+    
+</body>
+</html>    
