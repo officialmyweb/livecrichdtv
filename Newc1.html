@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Telegram-crivXfootball</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+  <meta name="referrer" content="no-referrer">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plyr@3.6.12/dist/plyr.css">
+  <style>
+    body {
+      background-color: #000;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+    html, body {
+      height: 100%;
+    }
+    video {
+      width: 100%;
+      height: 100%;
+      max-width: 100%;
+    }
+    .plyr {
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+  <video id="player" playsinline controls poster="" crossorigin="anonymous"></video>
+
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@1.1.4/dist/hls.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/plyr@3.6.12/dist/plyr.min.js"></script>
+  <script src="https://livecrichdtv.pages.dev/premium.js"></script> 
+
+  <script>
+    const allowedDomain = "cxfootball.pages.dev";
+
+    if (window.top === window.self || window.location.hostname !== allowedDomain) {
+      alert("Join our Telegram Channel @cricxfootball");
+      window.location.href = "https://telegram.me/cricxfootball";
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const streamId = urlParams.get('id');
+      const streamData = streamMap?.[streamId];
+
+      if (!streamId || !streamData || !streamData.url || streamData.url === "#") {
+        window.location.href = "https://telegram.me/cricxfootball";
+        return;
+      }
+
+      const video = document.getElementById('player');
+      video.poster = streamData.poster || "";
+
+      if (Hls.isSupported()) {
+        const hls = new Hls({ maxMaxBufferLength: 100 });
+        hls.loadSource(streamData.url);
+        hls.attachMedia(video);
+        hls.on(Hls.Events.MANIFEST_PARSED, () => {
+          const availableQualities = hls.levels.map(level => level.height);
+          const defaultQuality = availableQualities[0];
+
+          new Plyr(video, {
+            controls: ['play-large', 'play', 'mute', 'volume', 'settings', 'fullscreen'],
+            quality: {
+              default: defaultQuality,
+              options: availableQualities,
+              forced: true,
+              onChange: quality => {
+                hls.levels.forEach((level, index) => {
+                  if (level.height === quality) hls.currentLevel = index;
+                });
+              }
+            }
+          });
+        });
+      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        video.src = streamData.url;
+        new Plyr(video);
+      }
+    });
+
+    document.addEventListener('fullscreenchange', () => {
+      if (document.fullscreenElement && screen.orientation?.lock) {
+        screen.orientation.lock('landscape').catch(console.warn);
+      }
+    });
+  </script>
+</body>
+</html>
