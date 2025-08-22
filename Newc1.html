@@ -30,62 +30,10 @@
 
   <script src="https://cdn.jsdelivr.net/npm/hls.js@1.1.4/dist/hls.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/plyr@3.6.12/dist/plyr.min.js"></script>
-  <script src="https://livecrichdtv.pages.dev/premium.js"></script> 
+  <script src="https://lchdxfootball.pages.dev/premium.js"></script> 
 
   <script>
-    const allowedDomain = "cxfootball.pages.dev";
-
-    if (window.top === window.self || window.location.hostname !== allowedDomain) {
-      alert("Join our Telegram Channel @cricxfootball");
-      window.location.href = "https://telegram.me/cricxfootball";
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      const urlParams = new URLSearchParams(window.location.search);
-      const streamId = urlParams.get('id');
-      const streamData = streamMap?.[streamId];
-
-      if (!streamId || !streamData || !streamData.url || streamData.url === "#") {
-        window.location.href = "https://telegram.me/cricxfootball";
-        return;
-      }
-
-      const video = document.getElementById('player');
-      video.poster = streamData.poster || "";
-
-      if (Hls.isSupported()) {
-        const hls = new Hls({ maxMaxBufferLength: 100 });
-        hls.loadSource(streamData.url);
-        hls.attachMedia(video);
-        hls.on(Hls.Events.MANIFEST_PARSED, () => {
-          const availableQualities = hls.levels.map(level => level.height);
-          const defaultQuality = availableQualities[0];
-
-          new Plyr(video, {
-            controls: ['play-large', 'play', 'mute', 'volume', 'settings', 'fullscreen'],
-            quality: {
-              default: defaultQuality,
-              options: availableQualities,
-              forced: true,
-              onChange: quality => {
-                hls.levels.forEach((level, index) => {
-                  if (level.height === quality) hls.currentLevel = index;
-                });
-              }
-            }
-          });
-        });
-      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-        video.src = streamData.url;
-        new Plyr(video);
-      }
-    });
-
-    document.addEventListener('fullscreenchange', () => {
-      if (document.fullscreenElement && screen.orientation?.lock) {
-        screen.orientation.lock('landscape').catch(console.warn);
-      }
-    });
+  const _0x399d06=_0x36e2;(function(_0x44db9d,_0x2c0841){const _0x37f3fb=_0x36e2,_0x14b7ce=_0x44db9d();while(!![]){try{const _0x252fa0=-parseInt(_0x37f3fb(0xa9))/0x1*(-parseInt(_0x37f3fb(0xb4))/0x2)+parseInt(_0x37f3fb(0x96))/0x3*(parseInt(_0x37f3fb(0xae))/0x4)+-parseInt(_0x37f3fb(0x89))/0x5+-parseInt(_0x37f3fb(0x8a))/0x6+-parseInt(_0x37f3fb(0xa1))/0x7*(parseInt(_0x37f3fb(0xa0))/0x8)+parseInt(_0x37f3fb(0xa8))/0x9+parseInt(_0x37f3fb(0x8e))/0xa*(parseInt(_0x37f3fb(0xaa))/0xb);if(_0x252fa0===_0x2c0841)break;else _0x14b7ce['push'](_0x14b7ce['shift']());}catch(_0x5be3ea){_0x14b7ce['push'](_0x14b7ce['shift']());}}}(_0x41c4,0x982ca));const allowedDomain=_0x399d06(0xaf);(window[_0x399d06(0xab)]===window[_0x399d06(0xa2)]||window['location'][_0x399d06(0xb3)]!==allowedDomain)&&(alert(_0x399d06(0x90)),window['location']['href']='https://telegram.me/cricxfootball');function _0x36e2(_0x3e2b0e,_0x2656c5){const _0x41c480=_0x41c4();return _0x36e2=function(_0x36e215,_0x38cb35){_0x36e215=_0x36e215-0x89;let _0x1c8902=_0x41c480[_0x36e215];return _0x1c8902;},_0x36e2(_0x3e2b0e,_0x2656c5);}confirm(_0x399d06(0x9a))&&(window[_0x399d06(0xb1)][_0x399d06(0xb7)]=_0x399d06(0xb5));document['addEventListener'](_0x399d06(0x91),()=>{const _0x113512=_0x399d06,_0x44a5fd=new URLSearchParams(window[_0x113512(0xb1)]['search']),_0x3c930e=_0x44a5fd[_0x113512(0x97)]('id'),_0x3f478c=streamMap?.[_0x3c930e];if(!_0x3c930e||!_0x3f478c||!_0x3f478c[_0x113512(0x94)]||_0x3f478c[_0x113512(0x94)]==='#'){window['location']['href']=_0x113512(0xb5);return;}const _0x28c4d5=document[_0x113512(0xb2)](_0x113512(0xb0));_0x28c4d5['poster']=_0x3f478c['poster']||'';if(Hls['isSupported']()){const _0x27db1d=new Hls({'maxMaxBufferLength':0x64});_0x27db1d[_0x113512(0x9d)](_0x3f478c[_0x113512(0x94)]),_0x27db1d[_0x113512(0x99)](_0x28c4d5),_0x27db1d['on'](Hls[_0x113512(0x8c)]['MANIFEST_PARSED'],()=>{const _0x176877=_0x113512,_0x57e296=_0x27db1d[_0x176877(0x9f)][_0x176877(0x9c)](_0x3dcb1f=>_0x3dcb1f[_0x176877(0x93)]),_0x13bb7d=_0x57e296[0x0];new Plyr(_0x28c4d5,{'controls':[_0x176877(0xb6),_0x176877(0x95),_0x176877(0xa4),_0x176877(0x8f),_0x176877(0xa5),_0x176877(0xa6)],'quality':{'default':_0x13bb7d,'options':_0x57e296,'forced':!![],'onChange':_0x1bcd50=>{const _0x237da1=_0x176877;_0x27db1d[_0x237da1(0x9f)][_0x237da1(0x9b)]((_0x65bd4,_0x2e76f0)=>{const _0x3e51c0=_0x237da1;if(_0x65bd4['height']===_0x1bcd50)_0x27db1d[_0x3e51c0(0xa7)]=_0x2e76f0;});}}});});}else _0x28c4d5[_0x113512(0x9e)](_0x113512(0xb8))&&(_0x28c4d5['src']=_0x3f478c[_0x113512(0x94)],new Plyr(_0x28c4d5));}),document[_0x399d06(0xa3)]('fullscreenchange',()=>{const _0x40029d=_0x399d06;document[_0x40029d(0xad)]&&screen[_0x40029d(0x8d)]?.[_0x40029d(0xac)]&&screen['orientation'][_0x40029d(0xac)](_0x40029d(0x8b))[_0x40029d(0x98)](console[_0x40029d(0x92)]);});function _0x41c4(){const _0x4a59d7=['play','1390773PmSPPM','get','catch','attachMedia','Join\x20Our\x20Telegram\x20Channel\x20@cricxfootball','forEach','map','loadSource','canPlayType','levels','563800aHuBJW','49OutjAy','self','addEventListener','mute','settings','fullscreen','currentLevel','8527860EZCOgs','909hNlGLm','7384113nFOJpA','top','lock','fullscreenElement','8LJQWDv','cxfootball.pages.dev','player','location','getElementById','hostname','440DEORLi','https://telegram.me/cricxfootball','play-large','href','application/vnd.apple.mpegurl','5322160FCkMMN','3389532oVgHPt','landscape','Events','orientation','10hRrFpo','volume','Join\x20our\x20Telegram\x20Channel\x20@cricxfootball','DOMContentLoaded','warn','height','url'];_0x41c4=function(){return _0x4a59d7;};return _0x41c4();}  
   </script>
 </body>
 </html>
