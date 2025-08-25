@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Goat - Public Source</title>
+  <style>
+    html, body {
+      margin: 0;
+      height: 100%;
+      background: #000;
+      overflow: hidden;
+    }
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <script src="streams.js"></script>
+  <script>
+    if (confirm("Join Our Telegram Channel @official_premier_leaguee")) {window.location.href = "https://telegram.me/official_premier_leaguee";}
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const streamId = urlParams.get("id");
+
+    const iframeUrl = streams[streamId] || streams["M1"]; 
+
+    const iframe = document.createElement("iframe");
+    iframe.src = iframeUrl;
+    iframe.sandbox = "allow-scripts allow-same-origin allow-forms allow-pointer-lock";
+    iframe.allow = "autoplay; fullscreen; picture-in-picture; encrypted-media";
+    iframe.allowFullscreen = true;
+
+    document.body.appendChild(iframe);
+  </script>
+</body>
+</html>
