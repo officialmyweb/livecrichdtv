@@ -2,162 +2,91 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>M3U + JWPlayer</title>
+  <title>M3U → JWPlayer (Multi-ID)</title>
   <script src="https://content.jwplatform.com/libraries/SAHhwvZq.js"></script>
   <style>
-    body { margin:0; background:#000; font-family:sans-serif; }
-    #player { width:100%; height:60vh; }
-    #channel-list { display:flex; flex-wrap:wrap; gap:10px; padding:10px; }
-    .channel-tile { width:120px; cursor:pointer; text-align:center; color:#fff; }
-    .channel-tile img { width:100px; border-radius:8px; }
-    .channel-name { margin-top:5px; font-size:14px; }
+    body { margin: 0; background: #000; }
+    #player { width: 100%; height: 100vh; }
   </style>
 </head>
 <body>
   <div id="player"></div>
-  <input type="text" id="search-bar" placeholder="Search channel..." onkeyup="filterChannels()" style="width:100%;padding:8px;">
-  <div id="channel-list"></div>
 
   <script>
-    jwplayer.key = 'XSuP4qMl+9tK17QNb+4+th2Pm9AWgMO/cYH8CI0HGGr7bdjo';
+    jwplayer.key = "XSuP4qMl+9tK17QNb+4+th2Pm9AWgMO/cYH8CI0HGGr7bdjo";
 
-    let sharedHdnea = '';
+    const m3uUrl = "https://raw.githubusercontent.com/alex4528/m3u/main/jstar.m3u";
 
-    // --- Parse M3U ---
+    // Get ?id= param from URL
+    function getIdParam() {
+      const urlParams = new URLSearchParams(window.location.search);
+      return parseInt(urlParams.get("id") || "1", 10);
+    }
+
     async function fetchM3U() {
-      try {
-        const res = await fetch('https://raw.githubusercontent.com/alex4528/m3u/main/jstar.m3u');
-        return parseM3U(await res.text());
-      } catch (err) {
-        console.error('M3U fetch error:', err);
-        return [];
-      }
+      const response = await fetch(m3uUrl);
+      const m3uText = await response.text();
+      return parseM3U(m3uText);
     }
 
-    function parseM3U(text) {
-      const lines = text.split('\n').map(l=>l.trim());
-      const channels = [];
-      let current = null;
+    function parseM3U(m3uText) {
+      const lines = m3uText.split("\n").map(l => l.trim()).filter(l => l.length > 0);
+      const entries = [];
+      let keyId = "", key = "";
 
-      for (const line of lines) {
-        if (line.startsWith('#EXTINF:')) {
-          current = {};
-          const match = line.match(/tvg-id="([^"]+)"\s+group-title="([^"]+)"\s+tvg-logo="([^"]+)"\s*,(.+)/);
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+
+        if (line.startsWith("#KODIPROP:inputstream.adaptive.license_key=")) {
+          // Format: license_key=KID:KEY
+          const match = line.match(/license_key=([^:]+):(.+)/);
           if (match) {
-            current.id = match[1];
-            current.group = match[2];
-            current.logo = match[3];
-            current.name = match[4];
+            keyId = match[1].trim();
+            key = match[2].trim();
           }
-        } else if (line.startsWith('#KODIPROP:inputstream.adaptive.license_key=')) {
-          const keyMatch = line.match(/license_key=([^:]+):(.+)/);
-          if (keyMatch && current) {
-            current.mod = keyMatch[1];
-            current.key = keyMatch[2];
-          }
-        } else if (line.startsWith('#EXTVLCOPT:http-user-agent=')) {
-          if (current) current.userAgent = line.replace('#EXTVLCOPT:http-user-agent=', '');
-        } else if (line.startsWith('#EXTHTTP:')) {
-          const httpMatch = line.match(/"cookie":"__hdnea__=(.+)"/);
-          if (httpMatch && current) {
-            current.hdnea = httpMatch[1];
-            sharedHdnea = httpMatch[1];
-          }
-        } else if (line && !line.startsWith('#') && current) {
-          current.url = line.split("&xxx=")[0];
-          channels.push(current);
-          current = null;
+        } else if (!line.startsWith("#")) {
+          // Stream URL line
+          entries.push({
+            url: line,
+            keyId: keyId,
+            key: key
+          });
+          keyId = "";
+          key = "";
         }
       }
-      return channels;
+
+      return entries;
     }
 
-    // --- Custom channels fallback ---
-    const customChannels = [
-      {
-        name:"Maa Movies",
-        logo:"https://jiotvimages.cdn.jio.com/dare_images/images/Maa_Movies.png",
-        url:"https://jiotvmblive.cdn.jio.com/bpk-tv/Maa_Movies_BTS/output/index.mpd",
-        mod:"6dff9a2c741754c1b75312c53bc83d92",
-        key:"b75a65f46065ee70de75a88fed692846",
-        userAgent:"plaYtv/7.1.5 (Linux;Android 13) ExoPlayerLib/2.11.6",
-        hdnea: sharedHdnea
-      }
-    ];
+    async function initPlayer() {
+      const entries = await fetchM3U();
+      const id = getIdParam();
 
-    // --- Inject headers like Shaka did ---
-    function interceptRequests(token, ua) {
-      const origOpen = XMLHttpRequest.prototype.open;
-      XMLHttpRequest.prototype.open = function(method, url) {
-        if ((url.includes('.mpd')||url.includes('.m3u8')||url.includes('.ts')) && token && !url.includes('__hdnea__=')) {
-          url += (url.includes('?') ? '&' : '?') + '__hdnea__=' + token;
-        }
-        origOpen.apply(this, arguments);
-      };
-
-      const origSend = XMLHttpRequest.prototype.send;
-      XMLHttpRequest.prototype.send = function(body) {
-        this.setRequestHeader('Referer','https://www.jiotv.com/');
-        this.setRequestHeader('User-Agent', ua || "plaYtv/7.1.5 (Linux;Android 13) ExoPlayerLib/2.11.6");
-        this.setRequestHeader('Cookie', `__hdnea__=${token}`);
-        origSend.apply(this, arguments);
-      };
-    }
-
-    // --- Play channel ---
-    function playChannel(ch) {
-      const token = ch.hdnea || sharedHdnea;
-      interceptRequests(token, ch.userAgent);
-
-      jwplayer("player").setup({
-        playlist: [{
-          file: ch.url,
-          type: "dash",
-          drm: { clearkey: { [ch.mod]: ch.key }},
-          image: ch.logo,
-          title: ch.name
-        }],
-        autostart: true,
-        width: "100%",
-        aspectratio: "16:9"
-      });
-    }
-
-    // --- Load channel grid ---
-    async function loadChannels() {
-      const m3uCh = await fetchM3U();
-      customChannels.forEach(c => c.hdnea = sharedHdnea);
-      const channels = [...m3uCh, ...customChannels];
-
-      const list = document.getElementById("channel-list");
-      list.innerHTML = "";
-      if (!channels.length) {
-        list.textContent = "No channels found.";
+      if (id < 1 || id > entries.length) {
+        document.body.innerHTML = "<h2 style='color:white;text-align:center;'>Invalid ID</h2>";
         return;
       }
 
-      // auto-play first channel
-      playChannel(channels[0]);
+      const stream = entries[id - 1];
+      console.log("Playing:", stream);
 
-      channels.forEach(ch=>{
-        const tile = document.createElement("div");
-        tile.classList.add("channel-tile");
-        tile.innerHTML = `<img src="${ch.logo||'https://via.placeholder.com/100'}"><div class="channel-name">${ch.name}</div>`;
-        tile.onclick=()=>playChannel(ch);
-        list.appendChild(tile);
+      jwplayer("player").setup({
+        file: stream.url,
+        type: "dash",
+        drm: {
+          clearkey: {
+            keyId: stream.keyId,
+            key: stream.key
+          }
+        },
+        width: "100%",
+        height: "100%",
+        autostart: true
       });
     }
 
-    // --- Search filter ---
-    function filterChannels() {
-      const val=document.getElementById('search-bar').value.toLowerCase();
-      document.querySelectorAll('.channel-tile').forEach(t=>{
-        const name=t.querySelector('.channel-name').textContent.toLowerCase();
-        t.style.display=name.includes(val)?'':'none';
-      });
-    }
-
-    window.onload = loadChannels;
+    initPlayer();
   </script>
 </body>
 </html>
