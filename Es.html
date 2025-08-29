@@ -2,98 +2,115 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>JWPlayer DRM Loader</title>
+  <title>M3U → JWPlayer (Dynamic M3U Parser)</title>
   <script src="https://content.jwplatform.com/libraries/SAHhwvZq.js"></script>
   <style>
-    body {
-      margin: 0;
-      background: #000;
-    }
-    #player {
-      width: 100%;
-      height: 100vh;
-    }
+    body { margin: 0; background: #000; }
+    #player { width: 100%; height: 100vh; }
   </style>
 </head>
 <body>
   <div id="player"></div>
 
   <script>
-    jwplayer.key = "XSuP4qMl+9tK17QNb+4+th2Pm9AWgMO/cYH8CI0HGGr7bdjo";
+    jwplayer.key = 'XSuP4qMl+9tK17QNb+4+th2Pm9AWgMO/cYH8CI0HGGr7bdjo';
 
-    // Utility: get URL param
-    function getQueryParam(name) {
-      const urlParams = new URLSearchParams(window.location.search);
-      return urlParams.get(name);
-    }
-
-    // Utility: set cookie
     function setCookie(name, value) {
       document.cookie = name + "=" + value + "; path=/";
     }
 
-    // Load and play selected channel
-    async function loadChannel() {
-      const channelId = getQueryParam("id");
+    function extractTokenFromLink(link) {
+      var tokenMatch = link.match(/__hdnea__=([^&]+)/);
+      return tokenMatch ? tokenMatch[1] : '';
+    }
+
+    function interceptNetworkRequests(token) {
+      const originalOpen = XMLHttpRequest.prototype.open;
+      XMLHttpRequest.prototype.open = function(method, url) {
+        if ((url.includes('.mpd') || url.includes('.m3u8') || url.includes('.ts'))
+            && token && !url.includes('__hdnea__=')) {
+          url += (url.includes('?') ? '&' : '?') + '__hdnea__=' + token;
+        }
+        originalOpen.apply(this, arguments);
+      };
+    }
+
+    async function loadAndPlay() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const channelId = urlParams.get("id");
       if (!channelId) {
-        alert("No channel id provided in URL. Example: ?id=1373");
+        alert("No channel id provided (?id=1373)");
         return;
       }
 
-      try {
-        const response = await fetch("https://pkl.xojiv79335.workers.dev");
-        const channels = await response.json();
+      const m3uUrl = "https://raw.githubusercontent.com/alex4528/m3u/main/jstar.m3u";
+      const response = await fetch(m3uUrl);
+      const text = await response.text();
+      const lines = text.split("\n");
 
-        const channel = channels.find(ch => ch.channel_id === channelId);
-        if (!channel) {
-          alert("Channel not found!");
-          return;
-        }
+      let mpdUrl = "", kid = "", key = "", cookie = "";
 
-        // Apply cookie
-        if (channel.cookie) {
-          const cookieParts = channel.cookie.split("=");
-          if (cookieParts.length === 2) {
-            setCookie(cookieParts[0].replace("__", ""), cookieParts[1]);
-          }
-        }
+      for (let i = 0; i < lines.length; i++) {
+        if (lines[i].includes(`tvg-id="${channelId}"`)) {
+          for (let j = i + 1; j < lines.length; j++) {
+            if (lines[j].startsWith("#EXTINF")) break;
 
-        // Setup JWPlayer with DRM keys
-        jwplayer("player").setup({
-          playlist: [{
-            file: channel.channel_url,
-            image: channel.channel_logo,
-            type: "dash",
-            drm: {
-              clearkey: {
-                keyId: channel.keyId,
-                key: channel.key
+            if (lines[j].includes("license_key=")) {
+              const match = lines[j].match(/license_key=([^:]+):([a-f0-9]+)/i);
+              if (match) {
+                kid = match[1];
+                key = match[2];
               }
             }
-          }],
-          width: "100%",
-          aspectratio: "16:9",
-          autostart: true,
-          cast: { appid: "CC1AD845" }
-        });
 
-      } catch (err) {
-        console.error("Error loading channel:", err);
-        alert("Failed to load channel data!");
+            if (lines[j].startsWith("#EXTHTTP:")) {
+              const cookieMatch = lines[j].match(/"cookie":"([^"]+)"/);
+              if (cookieMatch) cookie = cookieMatch[1];
+            }
+
+            if (lines[j].startsWith("http") && lines[j].includes(".mpd")) {
+              // remove junk after &xxx=
+              mpdUrl = lines[j].split("&xxx=")[0];
+            }
+          }
+          break;
+        }
       }
+
+      if (!mpdUrl || !kid || !key) {
+        alert("Channel not found or parsing failed.");
+        return;
+      }
+
+      // use cookie if found
+      if (cookie) {
+        setCookie("__hdnea__", cookie.split("=")[1]);
+      }
+
+      // also handle token inside URL
+      const tokenValue = extractTokenFromLink(mpdUrl);
+      if (tokenValue) {
+        setCookie("__hdnea__", tokenValue);
+        interceptNetworkRequests(tokenValue);
+      }
+
+      jwplayer("player").setup({
+        playlist: [{
+          file: mpdUrl,
+          type: "dash",
+          drm: {
+            clearkey: {
+              [kid]: key
+            }
+          }
+        }],
+        width: "100%",
+        aspectratio: "16:9",
+        autostart: true
+      });
     }
 
-    window.onload = loadChannel;
-
-    // Telegram popup
-    window.addEventListener("load", function () {
-      setTimeout(() => {
-        const result = window.confirm("📣 Join our Telegram Channel for more free links and updates!");
-        if (result) {
-          window.location.href = "https://t.me/your_channel"; // Replace with your Telegram link
-        }
-      }, 1500);
-    });
+    window.onload = loadAndPlay;
   </script>
 </body>
 </html>
