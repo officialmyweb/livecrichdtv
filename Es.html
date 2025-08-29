@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>M3U → JWPlayer (with token)</title>
+  <title>M3U → JWPlayer</title>
   <script src="https://content.jwplatform.com/libraries/SAHhwvZq.js"></script>
   <style>
     body { margin: 0; background: #000; }
@@ -42,7 +42,6 @@
         return;
       }
 
-      // Fetch the M3U file
       const m3uUrl = "https://raw.githubusercontent.com/alex4528/m3u/main/jstar.m3u";
       const response = await fetch(m3uUrl);
       const text = await response.text();
@@ -52,7 +51,6 @@
 
       for (let i = 0; i < lines.length; i++) {
         if (lines[i].includes(`tvg-id="${channelId}"`)) {
-          // Extract license key line
           const licenseLine = lines[i+2];
           const licenseMatch = licenseLine.match(/license_key=([^:]+):([a-f0-9]+)/i);
           if (licenseMatch) {
@@ -60,7 +58,6 @@
             key = licenseMatch[2];
           }
 
-          // Extract MPD link line
           const urlLine = lines[i+5];
           const mpdMatch = urlLine.match(/(https?:\/\/[^\s]+?\.mpd[^\s]*)/);
           if (mpdMatch) {
@@ -75,14 +72,12 @@
         return;
       }
 
-      // Extract token from mpd link
-      var tokenValue = extractTokenFromLink(mpdUrl);
+      const tokenValue = extractTokenFromLink(mpdUrl);
       if (tokenValue) {
         setCookie("__hdnea__", tokenValue);
         interceptNetworkRequests(tokenValue);
       }
 
-      // Setup JWPlayer
       jwplayer("player").setup({
         playlist: [{
           file: mpdUrl,
