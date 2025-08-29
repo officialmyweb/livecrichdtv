@@ -2,89 +2,107 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>JWPlayer Token + ClearKey</title>
+  <title>M3U → JWPlayer (Dynamic Parser)</title>
   <script src="https://content.jwplatform.com/libraries/SAHhwvZq.js"></script>
   <style>
-    body {
-      margin: 0;
-      background: #000;
-    }
-    #player {
-      width: 100%;
-      height: 100vh;
-    }
+    body { margin: 0; background: #000; }
+    #player { width: 100%; height: 100vh; }
   </style>
 </head>
 <body>
   <div id="player"></div>
 
   <script>
-    // Your JWPlayer license key
-    jwplayer.key = "XSuP4qMl+9tK17QNb+4+th2Pm9AWgMO/cYH8CI0HGGr7bdjo";
+    jwplayer.key = 'XSuP4qMl+9tK17QNb+4+th2Pm9AWgMO/cYH8CI0HGGr7bdjo';
 
-    // Extract token from URL
-    function extractTokenFromLink(link) {
-      const tokenMatch = link.match(/__hdnea__=([^&]+)/);
-      return tokenMatch ? tokenMatch[1] : "";
+    function setCookie(name, value) {
+      document.cookie = name + "=" + value + "; path=/";
     }
 
-    // Intercept requests and inject token if missing
+    function extractTokenFromLink(link) {
+      var tokenMatch = link.match(/__hdnea__=([^&]+)/);
+      return tokenMatch ? tokenMatch[1] : '';
+    }
+
     function interceptNetworkRequests(token) {
       const originalOpen = XMLHttpRequest.prototype.open;
       XMLHttpRequest.prototype.open = function(method, url) {
-        if (url.startsWith("https://tv.media.jio.com/")) {
-          url = url.replace("tv.media.jio.com", "your.proxy.if.want.to.play.worldwide.otherwise.remains.same");
+        if ((url.includes('.dash') || url.includes('.m3u8') || url.includes('.ts')) && token && !url.includes('__hdnea__=')) {
+          url += (url.includes('?') ? '&' : '?') + '__hdnea__=' + token;
         }
-
-        if ((url.includes(".mpd") || url.includes(".m3u8") || url.includes(".ts")) && token && !url.includes("hdnea=")) {
-          url += (url.includes("?") ? "&" : "?") + "hdnea=" + token;
-        }
-
-        return originalOpen.apply(this, [method, url]);
+        originalOpen.apply(this, arguments);
       };
     }
 
-    function playVideo() {
-      // Example DASH stream with token
-      const link = "https://jiotvmblive.cdn.jio.com/bpk-tv/Padhega_Bharat_BTS/output/index.mpd?__hdnea__=st=1756432438~exp=1756518838~acl=/*~hmac=8edea7cab50a50c0014b54d7a193a7e00bd2f8fdc7ae7c84a386352ce9a56fec";
-      const tokenValue = extractTokenFromLink(link);
+    async function loadAndPlay() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const channelId = urlParams.get("id");
+      if (!channelId) {
+        alert("No channel id provided (?id=1984)");
+        return;
+      }
 
+      const m3uUrl = "https://raw.githubusercontent.com/alex4528/m3u/main/jstar.m3u";
+      const response = await fetch(m3uUrl);
+      const text = await response.text();
+      const lines = text.split("\n");
+
+      let mpdUrl = "", kid = "", key = "";
+
+      for (let i = 0; i < lines.length; i++) {
+        if (lines[i].includes(`tvg-id="${channelId}"`)) {
+          // Scan forward until next EXTINF or end
+          for (let j = i + 1; j < lines.length; j++) {
+            if (lines[j].startsWith("#EXTINF")) break; // stop at next channel
+
+            if (lines[j].includes("license_key=")) {
+              const match = lines[j].match(/license_key=([^:]+):([a-f0-9]+)/i);
+              if (match) {
+                kid = match[1];
+                key = match[2];
+              }
+            }
+
+            if (lines[j].includes(".mpd")) {
+              const urlMatch = lines[j].match(/(https?:\/\/[^\s]+?\.mpd[^\s]*)/);
+              if (urlMatch) {
+                mpdUrl = urlMatch[1];
+              }
+            }
+          }
+          break;
+        }
+      }
+
+      if (!mpdUrl || !kid || !key) {
+        alert("Channel not found or parsing failed.");
+        return;
+      }
+
+      const tokenValue = extractTokenFromLink(mpdUrl);
       if (tokenValue) {
+        setCookie("__hdnea__", tokenValue);
         interceptNetworkRequests(tokenValue);
       }
 
-      // Setup JWPlayer with ClearKey only
-      const playerInstance = jwplayer("player").setup({
+      jwplayer("player").setup({
         playlist: [{
-          file: link,
+          file: mpdUrl,
           type: "dash",
           drm: {
             clearkey: {
-              keyId: "3d17067588d750e9998162e8d3bd7b78", // 🔑 Replace with your actual KID
-              key: "87f6231b567ad15dc65f3002a45ded95"  // 🔑 Replace with your actual KEY
+              [kid]: key
             }
           }
         }],
         width: "100%",
         aspectratio: "16:9",
-        autostart: true,
-        cast: { appid: "CC1AD845" }
-      });
-
-      playerInstance.on("beforePlay", function() {
-        interceptNetworkRequests(tokenValue);
+        autostart: true
       });
     }
 
-    window.onload = playVideo;
-
-    // Telegram / join prompt
-    window.addEventListener("load", function() {
-      const result = window.confirm("Join for more links?");
-      if (result) {
-        window.location.href = "https://t.me/yourchannel"; // Replace with your channel link
-      }
-    });
+    window.onload = loadAndPlay;
   </script>
 </body>
 </html>
+
