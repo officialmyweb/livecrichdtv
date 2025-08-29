@@ -30,12 +30,25 @@
 
     function interceptNetworkRequests(token) {
       const originalOpen = XMLHttpRequest.prototype.open;
+      const originalSend = XMLHttpRequest.prototype.send;
+
       XMLHttpRequest.prototype.open = function(method, url) {
+        this._url = url; // save url for later
         if ((url.includes('.dash') || url.includes('.m3u8') || url.includes('.ts')) &&
             token && !url.includes('__hdnea__=')) {
           url += (url.includes('?') ? '&' : '?') + '__hdnea__=' + token;
         }
         originalOpen.apply(this, arguments);
+      };
+
+      XMLHttpRequest.prototype.send = function(body) {
+        // force headers for JioTV
+        try {
+          this.setRequestHeader("Referer", "https://jiotv.com/");
+          this.setRequestHeader("Origin", "https://jiotv.com");
+          this.setRequestHeader("User-Agent", "plaYtv/7.1.3 (Linux;Android 13) ExoPlayerLib/824.0");
+        } catch (e) {}
+        originalSend.apply(this, arguments);
       };
     }
 
@@ -51,23 +64,20 @@
       const response = await fetch(m3uUrl);
       const text = await response.text();
 
-      // --- parse whole m3u into channel blocks ---
-      const blocks = text.split("#EXTINF").slice(1); // skip header
+      const blocks = text.split("#EXTINF").slice(1);
       let mpdUrl = "", kid = "", key = "";
 
       for (let block of blocks) {
         const idMatch = block.match(/tvg-id="(\d+)"/);
         if (idMatch && idMatch[1] === channelId) {
-          // Extract kid:key
           const keyMatch = block.match(/license_key=([a-f0-9]+):([a-f0-9]+)/i);
           if (keyMatch) {
             kid = keyMatch[1];
             key = keyMatch[2];
           }
-          // Extract mpd url
           const mpdMatch = block.match(/(https?:\/\/[^\s]+?\.mpd[^\s]*)/);
           if (mpdMatch) {
-            mpdUrl = mpdMatch[1].split("&xxx=")[0]; // clean garbage
+            mpdUrl = mpdMatch[1].split("&xxx=")[0];
           }
           break;
         }
@@ -78,14 +88,12 @@
         return;
       }
 
-      // Handle token
       const tokenValue = extractTokenFromLink(mpdUrl);
       if (tokenValue) {
         setCookie("__hdnea__", tokenValue);
         interceptNetworkRequests(tokenValue);
       }
 
-      // Setup JWPlayer
       jwplayer("player").setup({
         playlist: [{
           file: mpdUrl,
