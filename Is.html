@@ -2,123 +2,108 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>M3U → JWPlayer (Dynamic Parser)</title>
+  <title>JWPlayer JSON All Channels</title>
   <script src="https://content.jwplatform.com/libraries/SAHhwvZq.js"></script>
   <style>
-    body { margin:0; background:#000; }
+    body { margin:0; background:#000; font-family:sans-serif; color:#fff; }
     .jwplayer { position:absolute !important; }
     .jwplayer.jw-flag-aspect-mode { min-height:100%; max-height:100%; }
+    #channelList { position: fixed; top: 10px; left: 10px; z-index:1000; background: rgba(0,0,0,0.6); padding:10px; border-radius:5px; }
+    #channelList select { padding:5px; font-size:16px; }
   </style>
 </head>
 <body>
-  <div id="player"></div>
 
-  <script>
-    jwplayer.key = 'XSuP4qMl+9tK17QNb+4+th2Pm9AWgMO/cYH8CI0HGGr7bdjo';
+<div id="channelList">
+  <label for="channels">Select Channel:</label>
+  <select id="channels"></select>
+</div>
 
-    // --- Token handler logic (KEEPING as you requested) ---
-    function setCookie(name, value) {
-      document.cookie = name + "=" + value + "; path=/";
-    }
-    function extractTokenFromLink(link) {
-      var tokenMatch = link.match(/__hdnea__=([^&]+)/);
-      return tokenMatch ? tokenMatch[1] : '';
-    }
-    function interceptNetworkRequests(token) {
-      const originalOpen = XMLHttpRequest.prototype.open;
-      XMLHttpRequest.prototype.open = function(method, url) {
-        if ((url.includes('.dash') || url.includes('.m3u8') || url.includes('.ts')) && token && !url.includes('__hdnea__=')) {
-          url += (url.includes('?') ? '&' : '?') + '__hdnea__=' + token;
-        }
-        originalOpen.apply(this, arguments);
-      };
-    }
+<div id="player"></div>
 
-    async function loadAndPlay() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const channelId = urlParams.get("id");
-      if (!channelId) {
-        alert("No channel id provided (?id=1984 / ?id=173a / ?id=173s)");
-        return;
+<script>
+  jwplayer.key = 'XSuP4qMl+9tK17QNb+4+th2Pm9AWgMO/cYH8CI0HGGr7bdjo';
+
+  // --- Token / cookie handler ---
+  function setCookie(name, value) {
+    document.cookie = name + "=" + value + "; path=/";
+  }
+  function extractTokenFromLink(link) {
+    const tokenMatch = link.match(/__hdnea__=([^&]+)/);
+    return tokenMatch ? tokenMatch[1] : '';
+  }
+  function interceptNetworkRequests(token) {
+    const originalOpen = XMLHttpRequest.prototype.open;
+    XMLHttpRequest.prototype.open = function(method, url) {
+      if ((url.includes('.dash') || url.includes('.m3u8') || url.includes('.ts')) && token && !url.includes('__hdnea__=')) {
+        url += (url.includes('?') ? '&' : '?') + '__hdnea__=' + token;
       }
+      originalOpen.apply(this, arguments);
+    };
+  }
 
-      const m3uUrl = "https://raw.githubusercontent.com/alex4528/m3u/main/jstar.m3u";
-      const response = await fetch(m3uUrl);
-      const text = await response.text();
-      const lines = text.split("\n");
+  async function loadChannels() {
+    const jsonUrl = "https://pkll.xojiv79335.workers.dev/";
+    const response = await fetch(jsonUrl);
+    const channels = await response.json();
 
-      let mpdUrl = "", kid = "", key = "";
+    const select = document.getElementById("channels");
 
-      // Map short ids to actual M3U entries
-      const channelMap = {
-        "1984": { id: "1984" },                          // Sports18_1_HD
-        "173a": { id: "173", name: "Star Sports 1 Hindi HD" },
-        "173s": { id: "173", name: "Aaj Tak" }
-      };
+    // Fill dropdown
+    channels.forEach(c => {
+      const option = document.createElement("option");
+      option.value = c.channel_id;
+      option.textContent = c.channel_name;
+      select.appendChild(option);
+    });
 
-      const target = channelMap[channelId];
-      if (!target) {
-        alert("Invalid channel id.");
-        return;
-      }
+    // Get ?id param or default to first channel
+    const urlParams = new URLSearchParams(window.location.search);
+    const initialId = urlParams.get("id") || channels[0].channel_id;
 
-      for (let i = 0; i < lines.length; i++) {
-        if (lines[i].includes(`tvg-id="${target.id}"`)) {
-          // If there are two 173 entries, filter by channel name
-          if (target.name && !lines[i].includes(target.name)) continue;
+    select.value = initialId;
 
-          for (let j = i + 1; j < lines.length; j++) {
-            if (lines[j].startsWith("#EXTINF")) break; 
+    // Play initial channel
+    playChannel(initialId, channels);
 
-            if (lines[j].includes("license_key=")) {
-              const match = lines[j].match(/license_key=([^:]+):([a-f0-9]+)/i);
-              if (match) {
-                kid = match[1];
-                key = match[2];
-              }
-            }
+    // Listen for change
+    select.addEventListener("change", e => {
+      playChannel(e.target.value, channels);
+    });
+  }
 
-            if (lines[j].includes(".mpd")) {
-              const urlMatch = lines[j].match(/(https?:\/\/[^\s]+?\.mpd\?[^\s]+)/);
-              if (urlMatch) {
-                mpdUrl = urlMatch[1].split("&xxx=")[0]; // clean unwanted garbage
-              }
-            }
+  function playChannel(channelId, channels) {
+    const channelData = channels.find(c => c.channel_id === channelId);
+    if (!channelData) {
+      alert("Channel not found: " + channelId);
+      return;
+    }
+
+    // Apply token handler
+    const tokenValue = extractTokenFromLink(channelData.channel_url);
+    if (tokenValue) {
+      setCookie("__hdnea__", tokenValue);
+      interceptNetworkRequests(tokenValue);
+    }
+
+    jwplayer("player").setup({
+      playlist: [{
+        file: channelData.channel_url,
+        type: "dash",
+        drm: {
+          clearkey: {
+            [channelData.keyId]: channelData.key
           }
-          break;
         }
-      }
+      }],
+      width: "100%",
+      aspectratio: "16:9",
+      autostart: true
+    });
+  }
 
-      if (!mpdUrl || !kid || !key) {
-        alert("Parsing failed for channel " + channelId);
-        return;
-      }
+  window.onload = loadChannels;
+</script>
 
-      // Apply token handler
-      const tokenValue = extractTokenFromLink(mpdUrl);
-      if (tokenValue) {
-        setCookie("__hdnea__", tokenValue);
-        interceptNetworkRequests(tokenValue);
-      }
-
-      // JWPlayer setup
-      jwplayer("player").setup({
-        playlist: [{
-          file: mpdUrl,
-          type: "dash",
-          drm: {
-            clearkey: {
-              [kid]: key
-            }
-          }
-        }],
-        width: "100%",
-        aspectratio: "16:9",
-        autostart: true
-      });
-    }
-
-    window.onload = loadAndPlay;
-  </script>
 </body>
 </html>
