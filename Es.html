@@ -2,17 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>JWPlayer DRM Example</title>
+  <title>M3U → JWPlayer (with token)</title>
   <script src="https://content.jwplatform.com/libraries/SAHhwvZq.js"></script>
   <style>
-    body {
-      margin: 0;
-      background: #000;
-    }
-    #player {
-      width: 100%;
-      height: 100vh;
-    }
+    body { margin: 0; background: #000; }
+    #player { width: 100%; height: 100vh; }
   </style>
 </head>
 <body>
@@ -33,59 +27,79 @@
     function interceptNetworkRequests(token) {
       const originalOpen = XMLHttpRequest.prototype.open;
       XMLHttpRequest.prototype.open = function(method, url) {
-        if (url.startsWith('https://tv.media.jio.com/')) {
-          url = url.replace('tv.media.jio.com', 'jio.drmlive.au/jio');
-        }
-
         if ((url.includes('.dash') || url.includes('.m3u8') || url.includes('.ts')) && token && !url.includes('__hdnea__=')) {
           url += (url.includes('?') ? '&' : '?') + '__hdnea__=' + token;
         }
-
         originalOpen.apply(this, arguments);
       };
     }
 
-    function playVideo() {
-      var link = "https://jiotvmblive.cdn.jio.com/bpk-tv/Star_Sports_HD1_Hindi_BTS/output/index.mpd?hdnea=st=1756432438~exp=1756518838~acl=/*~hmac=8edea7cab50a50c0014b54d7a193a7e00bd2f8fdc7ae7c84a386352ce9a56fec";
-      var tokenValue = extractTokenFromLink(link);
+    async function loadAndPlay() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const channelId = urlParams.get("id");
+      if (!channelId) {
+        alert("No channel id provided (?id=1984)");
+        return;
+      }
 
+      // Fetch the M3U file
+      const m3uUrl = "https://raw.githubusercontent.com/alex4528/m3u/main/jstar.m3u";
+      const response = await fetch(m3uUrl);
+      const text = await response.text();
+      const lines = text.split("\n");
+
+      let mpdUrl = "", kid = "", key = "";
+
+      for (let i = 0; i < lines.length; i++) {
+        if (lines[i].includes(`tvg-id="${channelId}"`)) {
+          // Extract license key line
+          const licenseLine = lines[i+2];
+          const licenseMatch = licenseLine.match(/license_key=([^:]+):([a-f0-9]+)/i);
+          if (licenseMatch) {
+            kid = licenseMatch[1];
+            key = licenseMatch[2];
+          }
+
+          // Extract MPD link line
+          const urlLine = lines[i+5];
+          const mpdMatch = urlLine.match(/(https?:\/\/[^\s]+?\.mpd[^\s]*)/);
+          if (mpdMatch) {
+            mpdUrl = mpdMatch[1];
+          }
+          break;
+        }
+      }
+
+      if (!mpdUrl || !kid || !key) {
+        alert("Channel not found or parsing failed.");
+        return;
+      }
+
+      // Extract token from mpd link
+      var tokenValue = extractTokenFromLink(mpdUrl);
       if (tokenValue) {
         setCookie("__hdnea__", tokenValue);
         interceptNetworkRequests(tokenValue);
       }
 
-      var playerInstance = jwplayer("player");
-      playerInstance.setup({
+      // Setup JWPlayer
+      jwplayer("player").setup({
         playlist: [{
-          file: link,
+          file: mpdUrl,
           type: "dash",
           drm: {
             clearkey: {
-              "df20894ec30954d3b28097c138f4cfda": "ff9b6292b1cddbd11a046029cb314634"
+              [kid]: key
             }
           }
         }],
         width: "100%",
         aspectratio: "16:9",
-        autostart: true,
-        cast: {
-          appid: 'CC1AD845'
-        }
-      });
-
-      playerInstance.on('beforePlay', function() {
-        interceptNetworkRequests(tokenValue);
+        autostart: true
       });
     }
 
-    window.onload = playVideo;
-
-    window.addEventListener("load", function() {
-      var result = window.confirm("Join for more links");
-      if (result) {
-        window.location.href = ""; // Replace with your actual link
-      }
-    });
+    window.onload = loadAndPlay;
   </script>
 </body>
 </html>
