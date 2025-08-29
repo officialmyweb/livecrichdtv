@@ -2,94 +2,129 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>JWPlayer Worker Single Channel</title>
-  <script src="https://content.jwplatform.com/libraries/SAHhwvZq.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shaka Player - Channel</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.11/shaka-player.ui.min.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.11/controls.min.css" crossorigin="anonymous">
   <style>
-    body { margin:0; background:#000; }
-    .jwplayer { position:absolute !important; }
-    .jwplayer.jw-flag-aspect-mode { min-height:100%; max-height:100%; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { background: #000; height: 100vh; width: 100vw; overflow: hidden; font-family: system-ui, -apple-system, sans-serif; }
+    .shaka-video-container { position: absolute; inset: 0; width: 100%; height: 100%; }
+    video { width: 100%; height: 100%; background: #000; object-fit: contain; }
+    .shaka-spinner-container,
+    .shaka-spinner,
+    .shaka-spinner-svg { display: none !important; visibility: hidden !important; opacity: 0 !important; }
   </style>
 </head>
 <body>
-  <div id="player"></div>
+  <div class="shaka-video-container">
+    <video autoplay playsinline></video>
+  </div>
 
   <script>
-    jwplayer.key = 'XSuP4qMl+9tK17QNb+4+th2Pm9AWgMO/cYH8CI0HGGr7bdjo';
+    document.addEventListener('DOMContentLoaded', async () => {
+      shaka.polyfill.installAll();
 
-    // --- Token / cookie handler ---
-    function setCookie(name, value) {
-      document.cookie = name + "=" + value + "; path=/";
-    }
+      if (!shaka.Player.isBrowserSupported()) {
+        console.error('Browser not supported');
+        return;
+      }
 
-    function extractTokenFromLink(link) {
-      const tokenMatch = link.match(/__hdnea__=([^&]+)/);
-      return tokenMatch ? tokenMatch[1] : '';
-    }
-
-    function interceptNetworkRequests(token) {
-      const originalOpen = XMLHttpRequest.prototype.open;
-      XMLHttpRequest.prototype.open = function(method, url) {
-
-        // --- Your custom Jio domain logic ---
-        if (url.startsWith('https://tv.media.jio.com/')) {
-          url = url.replace('tv.media.jio.com', 'tv.media.jio.com');
-        }
-
-        // --- Add __hdnea__ token if needed ---
-        if ((url.includes('.dash') || url.includes('.m3u8') || url.includes('.ts')) && token && !url.includes('__hdnea__=')) {
-          url += (url.includes('?') ? '&' : '?') + '__hdnea__=' + token;
-        }
-
-        return originalOpen.apply(this, arguments);
-      };
-    }
-
-    async function loadAndPlay() {
       const urlParams = new URLSearchParams(window.location.search);
       const channelId = urlParams.get("id");
-
       if (!channelId) {
         alert("No channel ID provided. Use ?id=YOUR_ID");
         return;
       }
 
-      // Fetch single-channel JSON from worker
+      // Fetch channel data from worker
       const workerUrl = `https://pkll.xojiv79335.workers.dev/?id=${channelId}`;
-      const response = await fetch(workerUrl);
-      const channelData = await response.json();
-
-      if (!channelData || Object.keys(channelData).length === 0) {
-        alert("Channel not found or invalid ID: " + channelId);
+      let channelData;
+      try {
+        const response = await fetch(workerUrl);
+        channelData = await response.json();
+        if (Array.isArray(channelData)) channelData = channelData[0];
+      } catch (err) {
+        console.error("Failed to fetch channel JSON:", err);
+        alert("Failed to load channel data");
         return;
       }
 
-      // Apply token handling + network interception
-      const tokenValue = extractTokenFromLink(channelData.channel_url);
-      if (tokenValue) {
-        setCookie("__hdnea__", tokenValue);
-        interceptNetworkRequests(tokenValue);
-      } else {
-        interceptNetworkRequests(null); // still intercept Jio URLs
+      if (!channelData || !channelData.channel_url || !channelData.key || !channelData.keyId) {
+        alert("Invalid channel data for ID: " + channelId);
+        return;
       }
 
-      // JWPlayer setup
-      jwplayer("player").setup({
-        playlist: [{
-          file: channelData.channel_url,  // clean URL from worker
-          type: "dash",
-          drm: {
-            clearkey: {
-              [channelData.keyId]: channelData.key
-            }
-          }
-        }],
-        width: "100%",
-        aspectratio: "16:9",
-        autostart: true
-      });
-    }
+      const video = document.querySelector('video');
+      const player = new shaka.Player();
+      await player.attach(video);
 
-    window.onload = loadAndPlay;
+      const container = document.querySelector('.shaka-video-container');
+      const ui = new shaka.ui.Overlay(player, container, video);
+
+      ui.configure({
+        controlPanelElements: [
+          'play_pause', 'time_and_duration', 'mute', 'volume',
+          'spacer', 'language', 'captions', 'picture_in_picture',
+          'quality', 'fullscreen'
+        ]
+      });
+
+      // DRM & cookie
+      const drmConfig = { clearKeys: { [channelData.keyId]: channelData.key } };
+      const cookieHeader = channelData.cookie;
+      const streamUrl = channelData.channel_url;
+
+      player.configure({
+        drm: drmConfig,
+        streaming: {
+          lowLatencyMode: true,
+          bufferingGoal: 15,
+          rebufferingGoal: 2,
+          bufferBehind: 15,
+          retryParameters: { timeout: 10000, maxAttempts: 5, baseDelay: 300, backoffFactor: 1.2 },
+          segmentRequestTimeout: 8000,
+          segmentPrefetchLimit: 2,
+          useNativeHlsOnSafari: true
+        }
+      });
+
+      // Networking request filter
+      player.getNetworkingEngine().registerRequestFilter((type, request) => {
+        request.headers['Referer'] = 'https://www.jiotv.com/';
+        request.headers['User-Agent'] = "plaYtv/7.1.5 (Linux;Android 13) ExoPlayerLib/2.11.6";
+        request.headers['Cookie'] = cookieHeader;
+
+        if (
+          (type === shaka.net.NetworkingEngine.RequestType.MANIFEST ||
+           type === shaka.net.NetworkingEngine.RequestType.SEGMENT) &&
+          request.uris[0] && !request.uris[0].includes('__hdnea__=')
+        ) {
+          const separator = request.uris[0].includes('?') ? '&' : '?';
+          request.uris[0] += separator + cookieHeader;
+        }
+      });
+
+      // Autoplay logic
+      const attemptAutoplay = async () => {
+        try { await video.play(); } 
+        catch (err) { video.muted = true; await video.play(); }
+      };
+
+      player.addEventListener('error', (event) => console.error('Shaka Player Error:', event.detail));
+      video.addEventListener('loadedmetadata', () => video.volume = 0.8);
+      document.addEventListener('visibilitychange', () => { if (!document.hidden && video.paused) attemptAutoplay(); });
+
+      try { await player.load(streamUrl); await attemptAutoplay(); }
+      catch (err) { console.error('Load error:', err); }
+
+      // Fullscreen on mobile
+      video.addEventListener('play', () => {
+        if (window.self === window.top && !document.fullscreenElement && window.innerWidth <= 768) {
+          container.requestFullscreen().catch(() => console.log('Fullscreen request failed'));
+        }
+      }, { once: true });
+    });
   </script>
 </body>
 </html>
