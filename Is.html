@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Shaka Player - Channel</title>
+  <title>Shaka Channel</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.11/shaka-player.ui.min.js" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.11/controls.min.css" crossorigin="anonymous">
   <style>
@@ -11,6 +11,19 @@
     html, body { background: #000; height: 100vh; width: 100vw; overflow: hidden; font-family: system-ui, -apple-system, sans-serif; }
     .shaka-video-container { position: absolute; inset: 0; width: 100%; height: 100%; }
     video { width: 100%; height: 100%; background: #000; object-fit: contain; }
+    .error-message {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+      font-size: 2rem;
+      text-align: center;
+      padding: 20px;
+      background: rgba(0,0,0,0.8);
+      z-index: 1000;
+    }
     .shaka-spinner-container,
     .shaka-spinner,
     .shaka-spinner-svg { display: none !important; visibility: hidden !important; opacity: 0 !important; }
@@ -20,13 +33,14 @@
   <div class="shaka-video-container">
     <video autoplay playsinline></video>
   </div>
+  <div class="error-message" id="errorMessage" style="display:none;"></div>
 
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
       shaka.polyfill.installAll();
 
       if (!shaka.Player.isBrowserSupported()) {
-        console.error('Browser not supported');
+        alert('Browser not supported');
         return;
       }
 
@@ -37,7 +51,7 @@
         return;
       }
 
-      // Fetch channel data from worker
+      // Fetch channel JSON from worker
       const workerUrl = `https://pkll.xojiv79335.workers.dev/?id=${channelId}`;
       let channelData;
       try {
@@ -45,13 +59,12 @@
         channelData = await response.json();
         if (Array.isArray(channelData)) channelData = channelData[0];
       } catch (err) {
-        console.error("Failed to fetch channel JSON:", err);
-        alert("Failed to load channel data");
+        showError("Failed to fetch channel JSON: " + err.message);
         return;
       }
 
-      if (!channelData || !channelData.channel_url || !channelData.key || !channelData.keyId) {
-        alert("Invalid channel data for ID: " + channelId);
+      if (!channelData || !channelData.channel_url || !channelData.key || !channelData.keyId || !channelData.cookie) {
+        showError("Invalid channel data for ID: " + channelId);
         return;
       }
 
@@ -70,7 +83,6 @@
         ]
       });
 
-      // DRM & cookie
       const drmConfig = { clearKeys: { [channelData.keyId]: channelData.key } };
       const cookieHeader = channelData.cookie;
       const streamUrl = channelData.channel_url;
@@ -89,7 +101,7 @@
         }
       });
 
-      // Networking request filter
+      // Network filter
       player.getNetworkingEngine().registerRequestFilter((type, request) => {
         request.headers['Referer'] = 'https://www.jiotv.com/';
         request.headers['User-Agent'] = "plaYtv/7.1.5 (Linux;Android 13) ExoPlayerLib/2.11.6";
@@ -105,25 +117,38 @@
         }
       });
 
-      // Autoplay logic
-      const attemptAutoplay = async () => {
-        try { await video.play(); } 
-        catch (err) { video.muted = true; await video.play(); }
-      };
-
-      player.addEventListener('error', (event) => console.error('Shaka Player Error:', event.detail));
-      video.addEventListener('loadedmetadata', () => video.volume = 0.8);
-      document.addEventListener('visibilitychange', () => { if (!document.hidden && video.paused) attemptAutoplay(); });
-
-      try { await player.load(streamUrl); await attemptAutoplay(); }
-      catch (err) { console.error('Load error:', err); }
-
       // Fullscreen on mobile
       video.addEventListener('play', () => {
         if (window.self === window.top && !document.fullscreenElement && window.innerWidth <= 768) {
           container.requestFullscreen().catch(() => console.log('Fullscreen request failed'));
         }
       }, { once: true });
+
+      player.addEventListener('error', (event) => {
+        const shakaError = event.detail;
+        console.error('Shaka Player Error:', shakaError);
+        showError("Playback Error: " + shakaError.message);
+      });
+
+      try {
+        await player.load(streamUrl);
+        await attemptAutoplay(video);
+      } catch (err) {
+        console.error('Load error:', err);
+        showError("Cannot play stream. Possibly wrong key or expired token.");
+      }
+
+      // Autoplay attempt
+      async function attemptAutoplay(videoEl) {
+        try { await videoEl.play(); } 
+        catch (err) { videoEl.muted = true; await videoEl.play(); }
+      }
+
+      function showError(message) {
+        const errorDiv = document.getElementById('errorMessage');
+        errorDiv.textContent = message;
+        errorDiv.style.display = 'flex';
+      }
     });
   </script>
 </body>
