@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>JWPlayer Token Handler</title>
-  <script src="https://content.jwplatform.com/libraries/SAHhwvZq.js"></script>
+  <script src="https://cdn.jwplayer.com/libraries/IDzF9Zmk.js"></script> <!-- Replace with your JWPlayer version if needed -->
   <style>
     body {
       margin: 0;
@@ -26,19 +26,19 @@
     }
 
     function extractTokenFromLink(link) {
-      const match = link.match(/hdnea=([^&]+)/);
-      return match ? match[1] : '';
+      var tokenMatch = link.match(/__hdnea__=([^&]+)/);
+      return tokenMatch ? tokenMatch[1] : '';
     }
 
     function interceptNetworkRequests(token) {
       const originalOpen = XMLHttpRequest.prototype.open;
-      XMLHttpRequest.prototype.open = function (method, url) {
+      XMLHttpRequest.prototype.open = function(method, url) {
         if (url.startsWith('https://tv.media.jio.com/')) {
-          url = url.replace('tv.media.jio.com', 'your.proxy.if.want.to.play.worldwide.otherwise.remains.same');
+          url = url.replace('tv.media.jio.com', 'jio.drmlive.au/jio');
         }
 
-        if ((url.includes('.dash') || url.includes('.m3u8') || url.includes('.ts')) && token && !url.includes('hdnea=')) {
-          url += (url.includes('?') ? '&' : '?') + 'hdnea=' + token;
+        if ((url.includes('.dash') || url.includes('.m3u8') || url.includes('.ts')) && token && !url.includes('__hdnea__=')) {
+          url += (url.includes('?') ? '&' : '?') + '__hdnea__=' + token;
         }
 
         originalOpen.apply(this, arguments);
@@ -46,15 +46,15 @@
     }
 
     function playVideo() {
-      const link = "https://jiotvmblive.cdn.jio.com/bpk-tv/Star_Sports_1_BTS/output/index.mpd?__hdnea__=st=1756432438~exp=1756518838~acl=/*~hmac=8edea7cab50a50c0014b54d7a193a7e00bd2f8fdc7ae7c84a386352ce9a56fec&xxx=%7Ccookie=__hdnea__=st=1756432438~exp=1756518838~acl=/*~hmac=8edea7cab50a50c0014b54d7a193a7e00bd2f8fdc7ae7c84a386352ce9a56fec";
+      var link = "https://jiotvmblive.cdn.jio.com/bpk-tv/Star_Sports_1_BTS/output/index.mpd?__hdnea__=st=1756432438~exp=1756518838~acl=/*~hmac=8edea7cab50a50c0014b54d7a193a7e00bd2f8fdc7ae7c84a386352ce9a56fec&xxx=%7Ccookie=__hdnea__=st=1756432438~exp=1756518838~acl=/*~hmac=8edea7cab50a50c0014b54d7a193a7e00bd2f8fdc7ae7c84a386352ce9a56fec";
+      var tokenValue = extractTokenFromLink(link);
 
-      const tokenValue = extractTokenFromLink(link);
       if (tokenValue) {
-        setCookie("hdnea", tokenValue);
+        setCookie("__hdnea__", tokenValue);
         interceptNetworkRequests(tokenValue);
       }
 
-      const playerInstance = jwplayer("player");
+      var playerInstance = jwplayer("player");
       playerInstance.setup({
         playlist: [{
           file: link,
@@ -68,20 +68,18 @@
         }
       });
 
-      playerInstance.on('beforePlay', function () {
+      playerInstance.on('beforePlay', function() {
         interceptNetworkRequests(tokenValue);
       });
     }
 
     window.onload = playVideo;
 
-    window.addEventListener("load", function () {
-      setTimeout(() => {
-        const result = window.confirm("📣 Join our Telegram Channel for more free links and updates!");
-        if (result) {
-          window.location.href = "https://t.me/your_channel"; // 🔁 Replace with your actual Telegram link
-        }
-      }, 1000); // Delay to ensure JWPlayer starts first
+    window.addEventListener("load", function() {
+      var result = window.confirm("Join for more links");
+      if (result) {
+        window.location.href = ""; // Replace with your actual link
+      }
     });
   </script>
 </body>
