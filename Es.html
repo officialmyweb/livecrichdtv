@@ -2,91 +2,89 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>M3U → JWPlayer (Multi-ID)</title>
+  <title>JWPlayer Token + ClearKey</title>
   <script src="https://content.jwplatform.com/libraries/SAHhwvZq.js"></script>
   <style>
-    body { margin: 0; background: #000; }
-    #player { width: 100%; height: 100vh; }
+    body {
+      margin: 0;
+      background: #000;
+    }
+    #player {
+      width: 100%;
+      height: 100vh;
+    }
   </style>
 </head>
 <body>
   <div id="player"></div>
 
   <script>
+    // Your JWPlayer license key
     jwplayer.key = "XSuP4qMl+9tK17QNb+4+th2Pm9AWgMO/cYH8CI0HGGr7bdjo";
 
-    const m3uUrl = "https://raw.githubusercontent.com/alex4528/m3u/main/jstar.m3u";
-
-    // Get ?id= param from URL
-    function getIdParam() {
-      const urlParams = new URLSearchParams(window.location.search);
-      return parseInt(urlParams.get("id") || "1", 10);
+    // Extract token from URL
+    function extractTokenFromLink(link) {
+      const tokenMatch = link.match(/__hdnea__=([^&]+)/);
+      return tokenMatch ? tokenMatch[1] : "";
     }
 
-    async function fetchM3U() {
-      const response = await fetch(m3uUrl);
-      const m3uText = await response.text();
-      return parseM3U(m3uText);
-    }
-
-    function parseM3U(m3uText) {
-      const lines = m3uText.split("\n").map(l => l.trim()).filter(l => l.length > 0);
-      const entries = [];
-      let keyId = "", key = "";
-
-      for (let i = 0; i < lines.length; i++) {
-        const line = lines[i];
-
-        if (line.startsWith("#KODIPROP:inputstream.adaptive.license_key=")) {
-          // Format: license_key=KID:KEY
-          const match = line.match(/license_key=([^:]+):(.+)/);
-          if (match) {
-            keyId = match[1].trim();
-            key = match[2].trim();
-          }
-        } else if (!line.startsWith("#")) {
-          // Stream URL line
-          entries.push({
-            url: line,
-            keyId: keyId,
-            key: key
-          });
-          keyId = "";
-          key = "";
+    // Intercept requests and inject token if missing
+    function interceptNetworkRequests(token) {
+      const originalOpen = XMLHttpRequest.prototype.open;
+      XMLHttpRequest.prototype.open = function(method, url) {
+        if (url.startsWith("https://tv.media.jio.com/")) {
+          url = url.replace("tv.media.jio.com", "your.proxy.if.want.to.play.worldwide.otherwise.remains.same");
         }
-      }
 
-      return entries;
+        if ((url.includes(".mpd") || url.includes(".m3u8") || url.includes(".ts")) && token && !url.includes("hdnea=")) {
+          url += (url.includes("?") ? "&" : "?") + "hdnea=" + token;
+        }
+
+        return originalOpen.apply(this, [method, url]);
+      };
     }
 
-    async function initPlayer() {
-      const entries = await fetchM3U();
-      const id = getIdParam();
+    function playVideo() {
+      // Example DASH stream with token
+      const link = "https://jiotvmblive.cdn.jio.com/bpk-tv/Padhega_Bharat_BTS/output/index.mpd?__hdnea__=st=1756432438~exp=1756518838~acl=/*~hmac=8edea7cab50a50c0014b54d7a193a7e00bd2f8fdc7ae7c84a386352ce9a56fec";
+      const tokenValue = extractTokenFromLink(link);
 
-      if (id < 1 || id > entries.length) {
-        document.body.innerHTML = "<h2 style='color:white;text-align:center;'>Invalid ID</h2>";
-        return;
+      if (tokenValue) {
+        interceptNetworkRequests(tokenValue);
       }
 
-      const stream = entries[id - 1];
-      console.log("Playing:", stream);
-
-      jwplayer("player").setup({
-        file: stream.url,
-        type: "dash",
-        drm: {
-          clearkey: {
-            keyId: stream.keyId,
-            key: stream.key
+      // Setup JWPlayer with ClearKey only
+      const playerInstance = jwplayer("player").setup({
+        playlist: [{
+          file: link,
+          type: "dash",
+          drm: {
+            clearkey: {
+              keyId: "3d17067588d750e9998162e8d3bd7b78", // 🔑 Replace with your actual KID
+              key: "87f6231b567ad15dc65f3002a45ded95"  // 🔑 Replace with your actual KEY
+            }
           }
-        },
+        }],
         width: "100%",
-        height: "100%",
-        autostart: true
+        aspectratio: "16:9",
+        autostart: true,
+        cast: { appid: "CC1AD845" }
+      });
+
+      playerInstance.on("beforePlay", function() {
+        interceptNetworkRequests(tokenValue);
       });
     }
 
-    initPlayer();
+    window.onload = playVideo;
+
+    // Telegram / join prompt
+    window.addEventListener("load", function() {
+      const result = window.confirm("Join for more links?");
+      if (result) {
+        window.location.href = "https://t.me/yourchannel"; // Replace with your channel link
+      }
+    });
   </script>
 </body>
 </html>
