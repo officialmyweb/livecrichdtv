@@ -2,66 +2,69 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>JSON Live Player</title>
-  <script src="https://cdn.jsdelivr.net/npm/shaka-player@4.9.6/dist/shaka-player.compiled.min.js"></script>
+  <title>M3U → JWPlayer (Dynamic JSON Parser)</title>
+  <script src="https://content.jwplatform.com/libraries/SAHhwvZq.js"></script>
   <style>
-    body { margin:0; background:#000; }
-    video { width:100%; height:100vh; }
+    body { margin: 0; background: #000; }
+    #player { width: 100%; height: 100vh; }
   </style>
 </head>
 <body>
+  <div id="player"></div>
 
-<video id="video" autoplay controls></video>
+  <script>
+    jwplayer.key = 'XSuP4qMl+9tK17QNb+4+th2Pm9AWgMO/cYH8CI0HGGr7bdjo';
 
-<script>
-  async function initPlayer() {
-    const video = document.getElementById('video');
-    const player = new shaka.Player(video);
-
-    // Log errors
-    player.addEventListener('error', e => console.error("Error:", e));
-
-    try {
-      // Fetch your JSON (from worker)
-      let res = await fetch("https://pkl.xojiv79335.workers.dev/");
-      let data = await res.json();
-
-      // Example: pick first channel (Disney Channel)
-      let channel = data[0];  
-
-      console.log("Loaded channel:", channel.channel_name);
-
-      // Configure license + keys
-      player.configure({
-        drm: {
-          clearKeys: {
-            [channel.keyId]: channel.key   // KeyId : Key
-          }
-        },
-        streaming: {
-          retryParameters: { maxAttempts: 50, baseDelay: 500, backoffFactor: 2 }
-        }
-      });
-
-      // Set custom headers (cookies / token)
-      player.getNetworkingEngine().registerRequestFilter((type, request) => {
-        if (type === shaka.net.NetworkingEngine.RequestType.SEGMENT ||
-            type === shaka.net.NetworkingEngine.RequestType.MANIFEST) {
-          request.headers["cookie"] = channel.cookie;
-        }
-      });
-
-      // Load the channel
-      await player.load(channel.channel_url);
-      console.log("Playing:", channel.channel_name);
-
-    } catch (err) {
-      console.error("Player init error:", err);
+    function setCookie(name, value) {
+      document.cookie = name + "=" + value + "; path=/";
     }
-  }
 
-  document.addEventListener('DOMContentLoaded', initPlayer);
-</script>
+    async function loadAndPlay() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const channelId = urlParams.get("id");
+      if (!channelId) {
+        alert("No channel id provided (?id=1373)");
+        return;
+      }
 
+      const jsonUrl = "https://pkl.xojiv79335.workers.dev/";
+      const response = await fetch(jsonUrl);
+      const channels = await response.json();
+
+      // find the channel by id
+      const channel = channels.find(c => c.channel_id === channelId);
+      if (!channel) {
+        alert("Channel not found in JSON.");
+        return;
+      }
+
+      // set cookie if exists
+      if (channel.cookie) {
+        const cookieParts = channel.cookie.split("=");
+        if (cookieParts.length >= 2) {
+          setCookie(cookieParts[0], cookieParts.slice(1).join("="));
+        }
+      }
+
+      jwplayer("player").setup({
+        playlist: [{
+          file: channel.channel_url,
+          type: "dash",
+          drm: {
+            clearkey: {
+              [channel.keyId]: channel.key
+            }
+          },
+          image: channel.channel_logo,
+          title: channel.channel_name
+        }],
+        width: "100%",
+        aspectratio: "16:9",
+        autostart: true
+      });
+    }
+
+    window.onload = loadAndPlay;
+  </script>
 </body>
 </html>
