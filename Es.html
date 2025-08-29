@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>M3U → JWPlayer</title>
+  <title>M3U → JWPlayer (Dynamic Parser)</title>
   <script src="https://content.jwplatform.com/libraries/SAHhwvZq.js"></script>
   <style>
     body { margin: 0; background: #000; }
@@ -51,17 +51,24 @@
 
       for (let i = 0; i < lines.length; i++) {
         if (lines[i].includes(`tvg-id="${channelId}"`)) {
-          const licenseLine = lines[i+2];
-          const licenseMatch = licenseLine.match(/license_key=([^:]+):([a-f0-9]+)/i);
-          if (licenseMatch) {
-            kid = licenseMatch[1];
-            key = licenseMatch[2];
-          }
+          // Scan forward until next EXTINF or end
+          for (let j = i + 1; j < lines.length; j++) {
+            if (lines[j].startsWith("#EXTINF")) break; // stop at next channel
 
-          const urlLine = lines[i+5];
-          const mpdMatch = urlLine.match(/(https?:\/\/[^\s]+?\.mpd[^\s]*)/);
-          if (mpdMatch) {
-            mpdUrl = mpdMatch[1];
+            if (lines[j].includes("license_key=")) {
+              const match = lines[j].match(/license_key=([^:]+):([a-f0-9]+)/i);
+              if (match) {
+                kid = match[1];
+                key = match[2];
+              }
+            }
+
+            if (lines[j].includes(".mpd")) {
+              const urlMatch = lines[j].match(/(https?:\/\/[^\s]+?\.mpd[^\s]*)/);
+              if (urlMatch) {
+                mpdUrl = urlMatch[1];
+              }
+            }
           }
           break;
         }
