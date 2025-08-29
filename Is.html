@@ -50,32 +50,24 @@
       const m3uUrl = "https://raw.githubusercontent.com/alex4528/m3u/main/jstar.m3u";
       const response = await fetch(m3uUrl);
       const text = await response.text();
-      const lines = text.split("\n");
 
+      // --- parse whole m3u into channel blocks ---
+      const blocks = text.split("#EXTINF").slice(1); // skip header
       let mpdUrl = "", kid = "", key = "";
 
-      for (let i = 0; i < lines.length; i++) {
-        if (lines[i].includes(`tvg-id="${channelId}"`)) {
-          // scan next lines until next channel
-          for (let j = i + 1; j < lines.length; j++) {
-            if (lines[j].startsWith("#EXTINF")) break;
-
-            if (lines[j].includes("license_key=")) {
-              const match = lines[j].match(/license_key=([a-f0-9]+):([a-f0-9]+)/i);
-              if (match) {
-                kid = match[1];
-                key = match[2];
-              }
-            }
-
-            if (lines[j].includes(".mpd")) {
-              let urlMatch = lines[j].match(/(https?:\/\/[^\s]+)/);
-              if (urlMatch) {
-                mpdUrl = urlMatch[1];
-                // strip extra &xxx= if present
-                mpdUrl = mpdUrl.split("&xxx=")[0];
-              }
-            }
+      for (let block of blocks) {
+        const idMatch = block.match(/tvg-id="(\d+)"/);
+        if (idMatch && idMatch[1] === channelId) {
+          // Extract kid:key
+          const keyMatch = block.match(/license_key=([a-f0-9]+):([a-f0-9]+)/i);
+          if (keyMatch) {
+            kid = keyMatch[1];
+            key = keyMatch[2];
+          }
+          // Extract mpd url
+          const mpdMatch = block.match(/(https?:\/\/[^\s]+?\.mpd[^\s]*)/);
+          if (mpdMatch) {
+            mpdUrl = mpdMatch[1].split("&xxx=")[0]; // clean garbage
           }
           break;
         }
