@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>JWPlayer Token Handler</title>
-  <script src="https://content.jwplatform.com/libraries/SAHhwvZq.js"></script> <!-- Replace with your JWPlayer version if needed -->
+  <title>JWPlayer DRM Example</title>
+  <script src="https://content.jwplatform.com/libraries/SAHhwvZq.js"></script>
   <style>
     body {
       margin: 0;
@@ -58,7 +58,12 @@
       playerInstance.setup({
         playlist: [{
           file: link,
-          type: "dash"
+          type: "dash",
+          drm: {
+            clearkey: {
+              "df20894ec30954d3b28097c138f4cfda": "ff9b6292b1cddbd11a046029cb314634"
+            }
+          }
         }],
         width: "100%",
         aspectratio: "16:9",
