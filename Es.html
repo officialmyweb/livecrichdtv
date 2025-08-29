@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>M3U → JWPlayer (Dynamic JSON Parser)</title>
+  <title>MPH</title>
   <script src="https://content.jwplatform.com/libraries/SAHhwvZq.js"></script>
   <style>
     body { margin: 0; background: #000; }
@@ -19,6 +19,22 @@
       document.cookie = name + "=" + value + "; path=/";
     }
 
+    function extractTokenFromLink(link) {
+      var tokenMatch = link.match(/__hdnea__=([^&]+)/);
+      return tokenMatch ? tokenMatch[1] : '';
+    }
+
+    function interceptNetworkRequests(token) {
+      const originalOpen = XMLHttpRequest.prototype.open;
+      XMLHttpRequest.prototype.open = function(method, url) {
+        if ((url.includes('.mpd') || url.includes('.m3u8') || url.includes('.ts')) 
+            && token && !url.includes('__hdnea__=')) {
+          url += (url.includes('?') ? '&' : '?') + '__hdnea__=' + token;
+        }
+        originalOpen.apply(this, arguments);
+      };
+    }
+
     async function loadAndPlay() {
       const urlParams = new URLSearchParams(window.location.search);
       const channelId = urlParams.get("id");
@@ -31,28 +47,36 @@
       const response = await fetch(jsonUrl);
       const channels = await response.json();
 
-      // find the channel by id
+      // find channel by ID
       const channel = channels.find(c => c.channel_id === channelId);
       if (!channel) {
         alert("Channel not found in JSON.");
         return;
       }
 
-      // set cookie if exists
-      if (channel.cookie) {
-        const cookieParts = channel.cookie.split("=");
-        if (cookieParts.length >= 2) {
-          setCookie(cookieParts[0], cookieParts.slice(1).join("="));
-        }
+      const mpdUrl = channel.channel_url;
+      const kid = channel.keyId;
+      const key = channel.key;
+
+      if (!mpdUrl || !kid || !key) {
+        alert("Missing URL or DRM keys.");
+        return;
+      }
+
+      // Extract token from URL
+      const tokenValue = extractTokenFromLink(mpdUrl);
+      if (tokenValue) {
+        setCookie("__hdnea__", tokenValue);
+        interceptNetworkRequests(tokenValue);
       }
 
       jwplayer("player").setup({
         playlist: [{
-          file: channel.channel_url,
-          type: "dash",
+          file: mpdUrl,
+          type: mpdUrl.includes(".m3u8") ? "hls" : "dash",
           drm: {
             clearkey: {
-              [channel.keyId]: channel.key
+              [kid]: key
             }
           },
           image: channel.channel_logo,
