@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JIOTV - BY ALEX PUBLIC M3U ON GITHUB</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.11/shaka-player.ui.min.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.11/controls.min.css" crossorigin="anonymous">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      background: #000;
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+    .shaka-video-container {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+    video {
+      width: 100%;
+      height: 100%;
+      background: #000;
+      object-fit: contain;
+    }
+    .shaka-spinner-container,
+    .shaka-spinner,
+    .shaka-spinner-svg {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="shaka-video-container" data-shaka-player>
+  <video autoplay playsinline preload="metadata" poster="/weiptv.webp"></video>
+  </div>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+  shaka.polyfill.installAll();
+  if (!shaka.Player.isBrowserSupported()) { alert('Browser not supported'); return; }
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const channelId = urlParams.get("id");
+  if (!channelId) { alert("Provide ?id=CHANNEL_ID"); return; }
+
+  const video = document.querySelector('video');
+  const player = new shaka.Player();
+  await player.attach(video);
+  const container = document.querySelector('.shaka-video-container');
+  const ui = new shaka.ui.Overlay(player, container, video);
+  ui.configure({ controlPanelElements:['play_pause','time_and_duration','mute','volume','spacer','language','captions','picture_in_picture','quality','fullscreen'] });
+
+  let mpdUrl="", keyId="", key="", cookieHeader="";
+  
+  try {
+    const m3uUrl = "https://raw.githubusercontent.com/alex4528/m3u/main/jstar.m3u"; 
+    const resp = await fetch(m3uUrl);
+    const text = await resp.text();
+    const lines = text.split("\n");
+
+    for (let i=0;i<lines.length;i++) {
+      if (lines[i].includes(tvg-id="${channelId}")) {
+        for (let j=i+1;j<lines.length;j++) {
+          if (lines[j].startsWith('#EXTINF')) break;
+          if (lines[j].includes("license_key=")) {
+            const match = lines[j].match(/license_key=([^:]+):([a-f0-9]+)/i);
+            if (match){ keyId=match[1]; key=match[2]; }
+          }
+          if (lines[j].startsWith('#EXTHTTP:')) {
+            const cookieMatch = lines[j].match(/"cookie":"([^"]+)"/);
+            if (cookieMatch) cookieHeader=cookieMatch[1];
+          }
+          if (lines[j].startsWith('http')) { mpdUrl = lines[j].split('&xxx')[0]; } 
+        }
+        break;
+      }
+    }
+
+    if (!mpdUrl  !keyId  !key) { showError("Channel or key parsing failed"); return; }
+
+  } catch(err) { showError("Failed to fetch M3U: "+err.message); return; }
+
+  const drmConfig = { clearKeys: { [keyId]: key } };
+  player.configure({
+    drm: drmConfig,
+    streaming: { lowLatencyMode:true, bufferingGoal:15, rebufferingGoal:2, bufferBehind:15, segmentPrefetchLimit:2, retryParameters:{timeout:10000,maxAttempts:5,baseDelay:300,backoffFactor:1.2} }
+  });
+
+  player.getNetworkingEngine().registerRequestFilter((type, request)=>{
+    request.headers['Referer']='https://www.jiotv.com/';
+    request.headers['User-Agent']="plaYtv/7.1.5 (Linux;Android 13) ExoPlayerLib/2.11.6";
+    request.headers['Cookie']=cookieHeader;
+    if ((type===shaka.net.NetworkingEngine.RequestType.MANIFEST || type===shaka.net.NetworkingEngine.RequestType.SEGMENT) && request.uris[0] && !request.uris[0].includes('hdnea=')) {
+      const sep = request.uris[0].includes('?')?'&':'?';
+      request.uris[0]+=sep+cookieHeader;
+    }
+  });
+
+player.addEventListener('error',(e)=>{ console.error('Location Error', e.detail); showError("Playback failed."); });
+
+  try {
+    await player.load(mpdUrl);
+    await attemptAutoplay(video);
+  } catch(err){ showError("Load error: "+err.message); }
+
+  async function attemptAutoplay(v){ try{ await v.play(); }catch(e){ v.muted=true; await v.play(); } }
+  function showError(msg){ const d=document.getElementById('errorMessage'); d.textContent=msg; d.style.display='flex'; }
+});
+  </script>
+</body>
+</html>
