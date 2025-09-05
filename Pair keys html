@@ -1,0 +1,841 @@
+<!DOCTYPE html><html lang="es" data-fp="ya3fswf0up"><head>
+<meta name="robots" content="noindex">
+<script src="//cdn.jsdelivr.net/npm/@clappr/player@0.4.0/dist/clappr.min.js"></script><style type="text/css">.container[data-container] {
+  position: absolute;
+  background-color: black;
+  height: 100%;
+  width: 100%;
+  max-width: 100%; }
+  .container[data-container] .chromeless {
+    cursor: default; }
+
+[data-player]:not(.nocursor) .container[data-container]:not(.chromeless).pointer-enabled {
+  cursor: pointer; }
+</style><style type="text/css">[data-player] {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transform: translate3d(0, 0, 0);
+  position: relative;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-style: normal;
+  font-weight: normal;
+  text-align: center;
+  overflow: hidden;
+  font-size: 100%;
+  font-family: "Roboto", "Open Sans", Arial, sans-serif;
+  text-shadow: 0 0 0;
+  box-sizing: border-box; }
+  [data-player] div, [data-player] span, [data-player] applet, [data-player] object, [data-player] iframe,
+  [data-player] h1, [data-player] h2, [data-player] h3, [data-player] h4, [data-player] h5, [data-player] h6, [data-player] p, [data-player] blockquote, [data-player] pre,
+  [data-player] a, [data-player] abbr, [data-player] acronym, [data-player] address, [data-player] big, [data-player] cite, [data-player] code,
+  [data-player] del, [data-player] dfn, [data-player] em, [data-player] img, [data-player] ins, [data-player] kbd, [data-player] q, [data-player] s, [data-player] samp,
+  [data-player] small, [data-player] strike, [data-player] strong, [data-player] sub, [data-player] sup, [data-player] tt, [data-player] var,
+  [data-player] b, [data-player] u, [data-player] i, [data-player] center,
+  [data-player] dl, [data-player] dt, [data-player] dd, [data-player] ol, [data-player] ul, [data-player] li,
+  [data-player] fieldset, [data-player] form, [data-player] label, [data-player] legend,
+  [data-player] table, [data-player] caption, [data-player] tbody, [data-player] tfoot, [data-player] thead, [data-player] tr, [data-player] th, [data-player] td,
+  [data-player] article, [data-player] aside, [data-player] canvas, [data-player] details, [data-player] embed,
+  [data-player] figure, [data-player] figcaption, [data-player] footer, [data-player] header, [data-player] hgroup,
+  [data-player] menu, [data-player] nav, [data-player] output, [data-player] ruby, [data-player] section, [data-player] summary,
+  [data-player] time, [data-player] mark, [data-player] audio, [data-player] video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font: inherit;
+    font-size: 100%;
+    vertical-align: baseline; }
+  [data-player] table {
+    border-collapse: collapse;
+    border-spacing: 0; }
+  [data-player] caption, [data-player] th, [data-player] td {
+    text-align: left;
+    font-weight: normal;
+    vertical-align: middle; }
+  [data-player] q, [data-player] blockquote {
+    quotes: none; }
+    [data-player] q:before, [data-player] q:after, [data-player] blockquote:before, [data-player] blockquote:after {
+      content: "";
+      content: none; }
+  [data-player] a img {
+    border: none; }
+  [data-player]:focus {
+    outline: 0; }
+  [data-player] * {
+    max-width: none;
+    box-sizing: inherit;
+    float: none; }
+  [data-player] div {
+    display: block; }
+  [data-player].fullscreen {
+    width: 100% !important;
+    height: 100% !important;
+    top: 0;
+    left: 0; }
+  [data-player].nocursor {
+    cursor: none; }
+
+.clappr-style {
+  display: none !important; }
+</style><style type="text/css">[data-html5-video] {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  display: block; }
+</style><style type="text/css">[data-html-img] {
+  max-width: 100%;
+  max-height: 100%; }
+</style><style type="text/css">[data-no-op] {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  text-align: center; }
+
+[data-no-op] p[data-no-op-msg] {
+  position: absolute;
+  text-align: center;
+  font-size: 25px;
+  left: 0;
+  right: 0;
+  color: white;
+  padding: 10px;
+  /* center vertically */
+  top: 50%;
+  transform: translateY(-50%);
+  max-height: 100%;
+  overflow: auto; }
+
+[data-no-op] canvas[data-no-op-canvas] {
+  background-color: #777;
+  height: 100%;
+  width: 100%; }
+</style><style type="text/css">.cc-controls[data-cc-controls] {
+  float: right;
+  position: relative;
+  display: none; }
+  .cc-controls[data-cc-controls].available {
+    display: block; }
+  .cc-controls[data-cc-controls] .cc-button {
+    padding: 6px !important; }
+    .cc-controls[data-cc-controls] .cc-button.enabled {
+      display: block;
+      opacity: 1.0; }
+      .cc-controls[data-cc-controls] .cc-button.enabled:hover {
+        opacity: 1.0;
+        text-shadow: none; }
+  .cc-controls[data-cc-controls] > ul {
+    list-style-type: none;
+    position: absolute;
+    bottom: 25px;
+    border: 1px solid black;
+    display: none;
+    background-color: #e6e6e6; }
+  .cc-controls[data-cc-controls] li {
+    font-size: 10px; }
+    .cc-controls[data-cc-controls] li[data-title] {
+      background-color: #c3c2c2;
+      padding: 5px; }
+    .cc-controls[data-cc-controls] li a {
+      color: #444;
+      padding: 2px 10px;
+      display: block;
+      text-decoration: none; }
+      .cc-controls[data-cc-controls] li a:hover {
+        background-color: #555;
+        color: white; }
+        .cc-controls[data-cc-controls] li a:hover a {
+          color: white;
+          text-decoration: none; }
+    .cc-controls[data-cc-controls] li.current a {
+      color: #f00; }
+</style><style type="text/css">.dvr-controls[data-dvr-controls] {
+  display: inline-block;
+  float: left;
+  color: #fff;
+  line-height: 32px;
+  font-size: 10px;
+  font-weight: bold;
+  margin-left: 6px; }
+  .dvr-controls[data-dvr-controls] .live-info {
+    cursor: default;
+    font-family: "Roboto", "Open Sans", Arial, sans-serif;
+    text-transform: uppercase; }
+    .dvr-controls[data-dvr-controls] .live-info:before {
+      content: "";
+      display: inline-block;
+      position: relative;
+      width: 7px;
+      height: 7px;
+      border-radius: 3.5px;
+      margin-right: 3.5px;
+      background-color: #ff0101; }
+    .dvr-controls[data-dvr-controls] .live-info.disabled {
+      opacity: 0.3; }
+      .dvr-controls[data-dvr-controls] .live-info.disabled:before {
+        background-color: #fff; }
+  .dvr-controls[data-dvr-controls] .live-button {
+    cursor: pointer;
+    outline: none;
+    display: none;
+    border: 0;
+    color: #fff;
+    background-color: transparent;
+    height: 32px;
+    padding: 0;
+    opacity: 0.7;
+    font-family: "Roboto", "Open Sans", Arial, sans-serif;
+    text-transform: uppercase;
+    transition: all 0.1s ease; }
+    .dvr-controls[data-dvr-controls] .live-button:before {
+      content: "";
+      display: inline-block;
+      position: relative;
+      width: 7px;
+      height: 7px;
+      border-radius: 3.5px;
+      margin-right: 3.5px;
+      background-color: #fff; }
+    .dvr-controls[data-dvr-controls] .live-button:hover {
+      opacity: 1;
+      text-shadow: rgba(255, 255, 255, 0.75) 0 0 5px; }
+
+.dvr .dvr-controls[data-dvr-controls] .live-info {
+  display: none; }
+
+.dvr .dvr-controls[data-dvr-controls] .live-button {
+  display: block; }
+
+.dvr.media-control.live[data-media-control] .media-control-layer[data-controls] .bar-container[data-seekbar] .bar-background[data-seekbar] .bar-fill-2[data-seekbar] {
+  background-color: #005aff; }
+
+.media-control.live[data-media-control] .media-control-layer[data-controls] .bar-container[data-seekbar] .bar-background[data-seekbar] .bar-fill-2[data-seekbar] {
+  background-color: #ff0101; }
+</style><style type="text/css">div.player-error-screen {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #CCCACA;
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; }
+  div.player-error-screen__content[data-error-screen] {
+    font-size: 14px;
+    color: #CCCACA;
+    margin-top: 45px; }
+  div.player-error-screen__title[data-error-screen] {
+    font-weight: bold;
+    line-height: 30px;
+    font-size: 18px; }
+  div.player-error-screen__message[data-error-screen] {
+    width: 90%;
+    margin: 0 auto; }
+  div.player-error-screen__code[data-error-screen] {
+    font-size: 13px;
+    margin-top: 15px; }
+  div.player-error-screen__reload {
+    cursor: pointer;
+    width: 30px;
+    margin: 15px auto 0; }
+</style><style type="text/css">.media-control-notransition {
+  transition: none !important; }
+
+.media-control[data-media-control] {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  pointer-events: none; }
+  .media-control[data-media-control].dragging {
+    pointer-events: auto;
+    cursor: -webkit-grabbing !important;
+    cursor: grabbing !important;
+    cursor: url("closed-hand.cur"), move; }
+    .media-control[data-media-control].dragging * {
+      cursor: -webkit-grabbing !important;
+      cursor: grabbing !important;
+      cursor: url("closed-hand.cur"), move; }
+  .media-control[data-media-control] .media-control-background[data-background] {
+    position: absolute;
+    height: 40%;
+    width: 100%;
+    bottom: 0;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
+    transition: opacity 0.6s ease-out; }
+  .media-control[data-media-control] .media-control-icon {
+    line-height: 0;
+    letter-spacing: 0;
+    speak: none;
+    color: #fff;
+    opacity: 0.5;
+    vertical-align: middle;
+    text-align: left;
+    transition: all 0.1s ease; }
+  .media-control[data-media-control] .media-control-icon:hover {
+    color: white;
+    opacity: 0.75;
+    text-shadow: rgba(255, 255, 255, 0.8) 0 0 5px; }
+  .media-control[data-media-control].media-control-hide .media-control-background[data-background] {
+    opacity: 0; }
+  .media-control[data-media-control].media-control-hide .media-control-layer[data-controls] {
+    bottom: -50px; }
+    .media-control[data-media-control].media-control-hide .media-control-layer[data-controls] .bar-container[data-seekbar] .bar-scrubber[data-seekbar] {
+      opacity: 0; }
+  .media-control[data-media-control] .media-control-layer[data-controls] {
+    position: absolute;
+    bottom: 7px;
+    width: 100%;
+    height: 32px;
+    font-size: 0;
+    vertical-align: middle;
+    pointer-events: auto;
+    transition: bottom 0.4s ease-out; }
+    .media-control[data-media-control] .media-control-layer[data-controls] .media-control-left-panel[data-media-control] {
+      position: absolute;
+      top: 0;
+      left: 4px;
+      height: 100%; }
+    .media-control[data-media-control] .media-control-layer[data-controls] .media-control-center-panel[data-media-control] {
+      height: 100%;
+      text-align: center;
+      line-height: 32px; }
+    .media-control[data-media-control] .media-control-layer[data-controls] .media-control-right-panel[data-media-control] {
+      position: absolute;
+      top: 0;
+      right: 4px;
+      height: 100%; }
+    .media-control[data-media-control] .media-control-layer[data-controls] button.media-control-button {
+      background-color: transparent;
+      border: 0;
+      margin: 0 6px;
+      padding: 0;
+      cursor: pointer;
+      display: inline-block;
+      width: 32px;
+      height: 100%; }
+      .media-control[data-media-control] .media-control-layer[data-controls] button.media-control-button svg {
+        width: 100%;
+        height: 22px; }
+        .media-control[data-media-control] .media-control-layer[data-controls] button.media-control-button svg path {
+          fill: white; }
+      .media-control[data-media-control] .media-control-layer[data-controls] button.media-control-button:focus {
+        outline: none; }
+      .media-control[data-media-control] .media-control-layer[data-controls] button.media-control-button[data-play] {
+        float: left;
+        height: 100%; }
+      .media-control[data-media-control] .media-control-layer[data-controls] button.media-control-button[data-pause] {
+        float: left;
+        height: 100%; }
+      .media-control[data-media-control] .media-control-layer[data-controls] button.media-control-button[data-stop] {
+        float: left;
+        height: 100%; }
+      .media-control[data-media-control] .media-control-layer[data-controls] button.media-control-button[data-fullscreen] {
+        float: right;
+        background-color: transparent;
+        border: 0;
+        height: 100%; }
+      .media-control[data-media-control] .media-control-layer[data-controls] button.media-control-button[data-hd-indicator] {
+        background-color: transparent;
+        border: 0;
+        cursor: default;
+        display: none;
+        float: right;
+        height: 100%; }
+        .media-control[data-media-control] .media-control-layer[data-controls] button.media-control-button[data-hd-indicator].enabled {
+          display: block;
+          opacity: 1.0; }
+          .media-control[data-media-control] .media-control-layer[data-controls] button.media-control-button[data-hd-indicator].enabled:hover {
+            opacity: 1.0;
+            text-shadow: none; }
+      .media-control[data-media-control] .media-control-layer[data-controls] button.media-control-button[data-playpause] {
+        float: left; }
+      .media-control[data-media-control] .media-control-layer[data-controls] button.media-control-button[data-playstop] {
+        float: left; }
+    .media-control[data-media-control] .media-control-layer[data-controls] .media-control-indicator[data-position], .media-control[data-media-control] .media-control-layer[data-controls] .media-control-indicator[data-duration] {
+      display: inline-block;
+      font-size: 10px;
+      color: white;
+      cursor: default;
+      line-height: 32px;
+      position: relative; }
+    .media-control[data-media-control] .media-control-layer[data-controls] .media-control-indicator[data-position] {
+      margin: 0 6px 0 7px; }
+    .media-control[data-media-control] .media-control-layer[data-controls] .media-control-indicator[data-duration] {
+      color: rgba(255, 255, 255, 0.5);
+      margin-right: 6px; }
+      .media-control[data-media-control] .media-control-layer[data-controls] .media-control-indicator[data-duration]:before {
+        content: "|";
+        margin-right: 7px; }
+    .media-control[data-media-control] .media-control-layer[data-controls] .bar-container[data-seekbar] {
+      position: absolute;
+      top: -20px;
+      left: 0;
+      display: inline-block;
+      vertical-align: middle;
+      width: 100%;
+      height: 25px;
+      cursor: pointer; }
+      .media-control[data-media-control] .media-control-layer[data-controls] .bar-container[data-seekbar] .bar-background[data-seekbar] {
+        width: 100%;
+        height: 1px;
+        position: relative;
+        top: 12px;
+        background-color: #666666; }
+        .media-control[data-media-control] .media-control-layer[data-controls] .bar-container[data-seekbar] .bar-background[data-seekbar] .bar-fill-1[data-seekbar] {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 0;
+          height: 100%;
+          background-color: #c2c2c2;
+          transition: all 0.1s ease-out; }
+        .media-control[data-media-control] .media-control-layer[data-controls] .bar-container[data-seekbar] .bar-background[data-seekbar] .bar-fill-2[data-seekbar] {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 0;
+          height: 100%;
+          background-color: #005aff;
+          transition: all 0.1s ease-out; }
+        .media-control[data-media-control] .media-control-layer[data-controls] .bar-container[data-seekbar] .bar-background[data-seekbar] .bar-hover[data-seekbar] {
+          opacity: 0;
+          position: absolute;
+          top: -3px;
+          width: 5px;
+          height: 7px;
+          background-color: rgba(255, 255, 255, 0.5);
+          transition: opacity 0.1s ease; }
+      .media-control[data-media-control] .media-control-layer[data-controls] .bar-container[data-seekbar]:hover .bar-background[data-seekbar] .bar-hover[data-seekbar] {
+        opacity: 1; }
+      .media-control[data-media-control] .media-control-layer[data-controls] .bar-container[data-seekbar].seek-disabled {
+        cursor: default; }
+        .media-control[data-media-control] .media-control-layer[data-controls] .bar-container[data-seekbar].seek-disabled:hover .bar-background[data-seekbar] .bar-hover[data-seekbar] {
+          opacity: 0; }
+      .media-control[data-media-control] .media-control-layer[data-controls] .bar-container[data-seekbar] .bar-scrubber[data-seekbar] {
+        position: absolute;
+        transform: translateX(-50%);
+        top: 2px;
+        left: 0;
+        width: 20px;
+        height: 20px;
+        opacity: 1;
+        transition: all 0.1s ease-out; }
+        .media-control[data-media-control] .media-control-layer[data-controls] .bar-container[data-seekbar] .bar-scrubber[data-seekbar] .bar-scrubber-icon[data-seekbar] {
+          position: absolute;
+          left: 6px;
+          top: 6px;
+          width: 8px;
+          height: 8px;
+          border-radius: 10px;
+          box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.2);
+          background-color: white; }
+    .media-control[data-media-control] .media-control-layer[data-controls] .drawer-container[data-volume] {
+      float: right;
+      display: inline-block;
+      height: 32px;
+      cursor: pointer;
+      margin: 0 6px;
+      box-sizing: border-box; }
+      .media-control[data-media-control] .media-control-layer[data-controls] .drawer-container[data-volume] .drawer-icon-container[data-volume] {
+        float: left;
+        bottom: 0; }
+        .media-control[data-media-control] .media-control-layer[data-controls] .drawer-container[data-volume] .drawer-icon-container[data-volume] .drawer-icon[data-volume] {
+          background-color: transparent;
+          border: 0;
+          box-sizing: content-box;
+          width: 32px;
+          height: 32px;
+          opacity: 0.5; }
+          .media-control[data-media-control] .media-control-layer[data-controls] .drawer-container[data-volume] .drawer-icon-container[data-volume] .drawer-icon[data-volume]:hover {
+            opacity: 0.75; }
+          .media-control[data-media-control] .media-control-layer[data-controls] .drawer-container[data-volume] .drawer-icon-container[data-volume] .drawer-icon[data-volume] svg {
+            height: 24px;
+            position: relative;
+            top: 3px; }
+            .media-control[data-media-control] .media-control-layer[data-controls] .drawer-container[data-volume] .drawer-icon-container[data-volume] .drawer-icon[data-volume] svg path {
+              fill: white; }
+          .media-control[data-media-control] .media-control-layer[data-controls] .drawer-container[data-volume] .drawer-icon-container[data-volume] .drawer-icon[data-volume].muted svg {
+            margin-left: 2px; }
+      .media-control[data-media-control] .media-control-layer[data-controls] .drawer-container[data-volume] .bar-container[data-volume] {
+        float: left;
+        position: relative;
+        overflow: hidden;
+        top: 6px;
+        width: 42px;
+        height: 18px;
+        padding: 3px 0;
+        transition: width .2s ease-out; }
+        .media-control[data-media-control] .media-control-layer[data-controls] .drawer-container[data-volume] .bar-container[data-volume] .bar-background[data-volume] {
+          height: 1px;
+          position: relative;
+          top: 7px;
+          margin: 0 3px;
+          background-color: #666666; }
+          .media-control[data-media-control] .media-control-layer[data-controls] .drawer-container[data-volume] .bar-container[data-volume] .bar-background[data-volume] .bar-fill-1[data-volume] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 100%;
+            background-color: #c2c2c2;
+            transition: all 0.1s ease-out; }
+          .media-control[data-media-control] .media-control-layer[data-controls] .drawer-container[data-volume] .bar-container[data-volume] .bar-background[data-volume] .bar-fill-2[data-volume] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 100%;
+            background-color: #005aff;
+            transition: all 0.1s ease-out; }
+          .media-control[data-media-control] .media-control-layer[data-controls] .drawer-container[data-volume] .bar-container[data-volume] .bar-background[data-volume] .bar-hover[data-volume] {
+            opacity: 0;
+            position: absolute;
+            top: -3px;
+            width: 5px;
+            height: 7px;
+            background-color: rgba(255, 255, 255, 0.5);
+            transition: opacity 0.1s ease; }
+        .media-control[data-media-control] .media-control-layer[data-controls] .drawer-container[data-volume] .bar-container[data-volume] .bar-scrubber[data-volume] {
+          position: absolute;
+          transform: translateX(-50%);
+          top: 0px;
+          left: 0;
+          width: 20px;
+          height: 20px;
+          opacity: 1;
+          transition: all 0.1s ease-out; }
+          .media-control[data-media-control] .media-control-layer[data-controls] .drawer-container[data-volume] .bar-container[data-volume] .bar-scrubber[data-volume] .bar-scrubber-icon[data-volume] {
+            position: absolute;
+            left: 6px;
+            top: 6px;
+            width: 8px;
+            height: 8px;
+            border-radius: 10px;
+            box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.2);
+            background-color: white; }
+        .media-control[data-media-control] .media-control-layer[data-controls] .drawer-container[data-volume] .bar-container[data-volume] .segmented-bar-element[data-volume] {
+          float: left;
+          width: 4px;
+          padding-left: 2px;
+          height: 12px;
+          opacity: 0.5;
+          box-shadow: inset 2px 0 0 white;
+          transition: transform .2s ease-out; }
+          .media-control[data-media-control] .media-control-layer[data-controls] .drawer-container[data-volume] .bar-container[data-volume] .segmented-bar-element[data-volume].fill {
+            box-shadow: inset 2px 0 0 #fff;
+            opacity: 1; }
+          .media-control[data-media-control] .media-control-layer[data-controls] .drawer-container[data-volume] .bar-container[data-volume] .segmented-bar-element[data-volume]:nth-of-type(1) {
+            padding-left: 0; }
+          .media-control[data-media-control] .media-control-layer[data-controls] .drawer-container[data-volume] .bar-container[data-volume] .segmented-bar-element[data-volume]:hover {
+            transform: scaleY(1.5); }
+  .media-control[data-media-control].w320 .media-control-layer[data-controls] .drawer-container[data-volume] .bar-container[data-volume].volume-bar-hide {
+    width: 0;
+    height: 12px;
+    top: 9px;
+    padding: 0; }
+</style><style type="text/css">.player-poster[data-poster] {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  z-index: 998;
+  top: 0;
+  left: 0;
+  background-color: transparent;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: 50% 50%; }
+  .player-poster[data-poster].clickable {
+    cursor: pointer; }
+  .player-poster[data-poster]:hover .play-wrapper[data-poster] {
+    opacity: 1; }
+  .player-poster[data-poster] .play-wrapper[data-poster] {
+    width: 100%;
+    height: 25%;
+    margin: 0 auto;
+    opacity: 0.75;
+    transition: opacity 0.1s ease; }
+    .player-poster[data-poster] .play-wrapper[data-poster] svg {
+      height: 100%; }
+      .player-poster[data-poster] .play-wrapper[data-poster] svg path {
+        fill: #fff; }
+</style><style type="text/css">.seek-time[data-seek-time] {
+  position: absolute;
+  white-space: nowrap;
+  height: 20px;
+  line-height: 20px;
+  font-size: 0;
+  left: -100%;
+  bottom: 55px;
+  background-color: rgba(2, 2, 2, 0.5);
+  z-index: 9999;
+  transition: opacity 0.1s ease; }
+  .seek-time[data-seek-time].hidden[data-seek-time] {
+    opacity: 0; }
+  .seek-time[data-seek-time] [data-seek-time] {
+    display: inline-block;
+    color: white;
+    font-size: 10px;
+    padding-left: 7px;
+    padding-right: 7px;
+    vertical-align: top; }
+  .seek-time[data-seek-time] [data-duration] {
+    display: inline-block;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 10px;
+    padding-right: 7px;
+    vertical-align: top; }
+    .seek-time[data-seek-time] [data-duration]:before {
+      content: "|";
+      margin-right: 7px; }
+</style><style type="text/css">.spinner-three-bounce[data-spinner] {
+  position: absolute;
+  margin: 0 auto;
+  width: 70px;
+  text-align: center;
+  z-index: 999;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  /* center vertically */
+  top: 50%;
+  transform: translateY(-50%); }
+  .spinner-three-bounce[data-spinner] > div {
+    width: 18px;
+    height: 18px;
+    background-color: #FFFFFF;
+    border-radius: 100%;
+    display: inline-block;
+    -webkit-animation: bouncedelay 1.4s infinite ease-in-out;
+            animation: bouncedelay 1.4s infinite ease-in-out;
+    /* Prevent first frame from flickering when animation starts */
+    -webkit-animation-fill-mode: both;
+            animation-fill-mode: both; }
+  .spinner-three-bounce[data-spinner] [data-bounce1] {
+    -webkit-animation-delay: -0.32s;
+            animation-delay: -0.32s; }
+  .spinner-three-bounce[data-spinner] [data-bounce2] {
+    -webkit-animation-delay: -0.16s;
+            animation-delay: -0.16s; }
+
+@-webkit-keyframes bouncedelay {
+  0%, 80%, 100% {
+    transform: scale(0); }
+  40% {
+    transform: scale(1); } }
+
+@keyframes bouncedelay {
+  0%, 80%, 100% {
+    transform: scale(0); }
+  40% {
+    transform: scale(1); } }
+</style><style type="text/css">.clappr-watermark[data-watermark] {
+  position: absolute;
+  min-width: 70px;
+  max-width: 200px;
+  width: 12%;
+  text-align: center;
+  z-index: 10; }
+
+.clappr-watermark[data-watermark] a {
+  outline: none;
+  cursor: pointer; }
+
+.clappr-watermark[data-watermark] img {
+  max-width: 100%; }
+
+.clappr-watermark[data-watermark-bottom-left] {
+  bottom: 10px;
+  left: 10px; }
+
+.clappr-watermark[data-watermark-bottom-right] {
+  bottom: 10px;
+  right: 42px; }
+
+.clappr-watermark[data-watermark-top-left] {
+  top: 10px;
+  left: 10px; }
+
+.clappr-watermark[data-watermark-top-right] {
+  top: 10px;
+  right: 37px; }
+</style>
+<script src="//cdn.jsdelivr.net/npm/mux.js@5.6.7/dist/mux.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/level-selector@latest/dist/level-selector.min.js"></script><style type="text/css">.level_selector[data-level-selector]{float:right;position:relative;height:100%}.level_selector[data-level-selector] button{background-color:transparent;color:#fff;font-family:Roboto,Open Sans,Arial,sans-serif;-webkit-font-smoothing:antialiased;border:none;font-size:12px;height:100%}.level_selector[data-level-selector] button:hover{color:#c9c9c9}.level_selector[data-level-selector] button.changing{-webkit-animation:pulse .5s infinite alternate}.level_selector[data-level-selector]>ul{list-style-type:none;position:absolute;bottom:100%;display:none;background-color:rgba(28,28,28,.9);white-space:nowrap}.level_selector[data-level-selector] li{font-size:12px;color:#eee}.level_selector[data-level-selector] li[data-title]{background-color:#333;padding:8px 25px}.level_selector[data-level-selector] li a{color:#eee;padding:5px 10px;display:block;text-decoration:none}.level_selector[data-level-selector] li a:hover{background-color:hsla(0,0%,100%,.1);color:#fff}.level_selector[data-level-selector] li a:hover a{color:#fff;text-decoration:none}.level_selector[data-level-selector] li.current a{color:#2ecc71}</style>
+<script src="//cdn.jsdelivr.net/npm/clappr-chromecast-plugin@latest/dist/clappr-chromecast-plugin.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/clappr-pip@latest/dist/clappr-pip.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/clappr-playback-rate-plugin@latest/dist/clappr-playback-rate-plugin.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/shaka-player@2.5.10/dist/shaka-player.compiled.min.js"></script>
+<script src="//cdn.jsdelivr.net/gh/clappr/dash-shaka-playback@latest/dist/dash-shaka-playback.external.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/cdnbye-shaka@latest"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script> 
+<style> 
+
+.player-poster[data-poster] {
+  background-size: cover;
+}
+body{
+  margin:0;
+  padding:0;
+}
+
+</style>
+<style></style><style type="text/css">* {user-select: auto !important; -webkit-user-select: auto !important;}</style><input type="hidden" id="inject_idm_text_selection"></head>
+<body><div id="player"><div data-player="" tabindex="9999" class="" style="height: 100%; width: 100%;"><div class="container" data-container=""><div class="player-poster" data-poster=""><div class="play-wrapper" data-poster=""><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" data-poster="" class="poster-icon" style="color: rgb(227, 245, 9); display: none;">
+  <path fill="#010101" d="M1.425.35L14.575 8l-13.15 7.65V.35z" style="fill: rgb(227, 245, 9);"></path>
+</svg></div>
+</div><div data-spinner="" class="spinner-three-bounce" style=""><div data-bounce1=""></div><div data-bounce2=""></div><div data-bounce3=""></div>
+</div><video data-html5-video="" preload="metadata" src="blob:https://vivozly.com/ff11f617-f8a3-4aad-8043-5e51859147ee"></video></div><div class="media-control media-control-hide live" data-media-control="" style="display: none;"><div class="media-control-background" data-background=""></div>
+<div class="media-control-layer" data-controls="">
+  
+  
+  
+  
+  
+  
+  
+  <div class="media-control-center-panel" data-media-control="">
+    
+      <div class="bar-container" data-seekbar="">
+        <div class="bar-background" data-seekbar="">
+          <div class="bar-fill-1" data-seekbar=""></div>
+          <div class="bar-fill-2" data-seekbar="" style="background-color: rgb(44, 215, 202); width: 100%;"></div>
+          <div class="bar-hover" data-seekbar=""></div>
+        </div>
+        <div class="bar-scrubber" data-seekbar="" style="left: 100%;">
+          <div class="bar-scrubber-icon" data-seekbar=""></div>
+        </div>
+      </div>
+  
+  </div>
+  
+  
+  <div class="media-control-left-panel" data-media-control="">
+    
+    <button type="button" class="media-control-button media-control-icon stopped" data-playstop="" aria-label="playstop"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" clip-rule="evenodd" fill="#010101" d="M1.712 1.24h12.6v13.52h-12.6z" style="fill: rgb(227, 245, 9);"></path>
+</svg></button>
+  
+  <div class="dvr-controls" data-dvr-controls=""><div class="live-info">live</div>
+<button type="button" class="live-button" aria-label="back to live">back to live</button>
+</div></div>
+  
+  
+  <div class="media-control-right-panel" data-media-control="">
+    
+    <button type="button" class="media-control-button media-control-icon" data-fullscreen="" aria-label="fullscreen"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+  <path fill="#010101" d="M7.156 8L4 11.156V8.5H3V13h4.5v-1H4.844L8 8.844 7.156 8zM8.5 3v1h2.657L8 7.157 8.846 8 12 4.844V7.5h1V3H8.5z" style="fill: rgb(227, 245, 9);"></path>
+</svg></button><button class="media-control-button media-control-icon pip-button" style="float: right; height: 100%;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0V0z" style="fill: none;"></path><path d="M19 11h-8v6h8v-6zm4 10V3H1v18h22zm-2-1.98H3V4.97h18v14.05z"></path></svg></button><div class="cc-controls" data-cc-controls=""><button type="button" class="cc-button media-control-button media-control-icon" data-cc-button="" aria-label="cc-button"><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 49 41.8" style="enable-background:new 0 0 49 41.8;" xml:space="preserve">
+<path d="M47.1,0H3.2C1.6,0,0,1.2,0,2.8v31.5C0,35.9,1.6,37,3.2,37h11.9l3.2,1.9l4.7,2.7c0.9,0.5,2-0.1,2-1.1V37h22.1
+	c1.6,0,1.9-1.1,1.9-2.7V2.8C49,1.2,48.7,0,47.1,0z M7.2,18.6c0-4.8,3.5-9.3,9.9-9.3c4.8,0,7.1,2.7,7.1,2.7l-2.5,4
+	c0,0-1.7-1.7-4.2-1.7c-2.8,0-4.3,2.1-4.3,4.3c0,2.1,1.5,4.4,4.5,4.4c2.5,0,4.9-2.1,4.9-2.1l2.2,4.2c0,0-2.7,2.9-7.6,2.9
+	C10.8,27.9,7.2,23.5,7.2,18.6z M36.9,27.9c-6.4,0-9.9-4.4-9.9-9.3c0-4.8,3.5-9.3,9.9-9.3C41.7,9.3,44,12,44,12l-2.5,4
+	c0,0-1.7-1.7-4.2-1.7c-2.8,0-4.3,2.1-4.3,4.3c0,2.1,1.5,4.4,4.5,4.4c2.5,0,4.9-2.1,4.9-2.1l2.2,4.2C44.5,25,41.9,27.9,36.9,27.9z"></path>
+</svg></button>
+<ul>
+  
+  <li><a href="#" data-cc-select="-1">Disabled</a></li>
+  
+</ul>
+</div>
+  
+      <div class="drawer-container" data-volume="">
+        <div class="drawer-icon-container" data-volume="">
+          <div class="drawer-icon media-control-icon" data-volume=""><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" clip-rule="evenodd" fill="#010101" d="M11.5 11h-.002v1.502L7.798 10H4.5V6h3.297l3.7-2.502V4.5h.003V11zM11 4.49L7.953 6.5H5v3h2.953L11 11.51V4.49z" style="fill: rgb(227, 245, 9);"></path>
+</svg></div>
+          <span class="drawer-text" data-volume=""></span>
+        </div>
+        
+    <div class="bar-container volume-bar-hide" data-volume="">
+    
+      <div class="segmented-bar-element fill" data-volume="" style="box-shadow: rgb(227, 245, 9) 2px 0px 0px inset;"></div>
+    
+      <div class="segmented-bar-element fill" data-volume="" style="box-shadow: rgb(227, 245, 9) 2px 0px 0px inset;"></div>
+    
+      <div class="segmented-bar-element fill" data-volume="" style="box-shadow: rgb(227, 245, 9) 2px 0px 0px inset;"></div>
+    
+      <div class="segmented-bar-element fill" data-volume="" style="box-shadow: rgb(227, 245, 9) 2px 0px 0px inset;"></div>
+    
+      <div class="segmented-bar-element fill" data-volume="" style="box-shadow: rgb(227, 245, 9) 2px 0px 0px inset;"></div>
+    
+      <div class="segmented-bar-element fill" data-volume="" style="box-shadow: rgb(227, 245, 9) 2px 0px 0px inset;"></div>
+    
+      <div class="segmented-bar-element fill" data-volume="" style="box-shadow: rgb(227, 245, 9) 2px 0px 0px inset;"></div>
+    
+      <div class="segmented-bar-element fill" data-volume="" style="box-shadow: rgb(227, 245, 9) 2px 0px 0px inset;"></div>
+    
+      <div class="segmented-bar-element fill" data-volume="" style="box-shadow: rgb(227, 245, 9) 2px 0px 0px inset;"></div>
+    
+      <div class="segmented-bar-element fill" data-volume="" style="box-shadow: rgb(227, 245, 9) 2px 0px 0px inset;"></div>
+    
+    </div>
+  
+      </div>
+  
+    <button type="button" class="media-control-button media-control-icon" data-hd-indicator="" aria-label="hd-indicator"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+  <path fill="#010101" d="M5.375 7.062H2.637V4.26H.502v7.488h2.135V8.9h2.738v2.848h2.133V4.26H5.375v2.802zm5.97-2.81h-2.84v7.496h2.798c2.65 0 4.195-1.607 4.195-3.77v-.022c0-2.162-1.523-3.704-4.154-3.704zm2.06 3.758c0 1.21-.81 1.896-2.03 1.896h-.83V6.093h.83c1.22 0 2.03.696 2.03 1.896v.02z" style="fill: rgb(227, 245, 9);"></path>
+</svg></button>
+  
+  <div class="level_selector" data-level-selector=""><button data-level-selector-button="">AUTO</button>
+<ul>
+  
+  <li class=""><a href="#" data-level-selector-select="-1">AUTO</a></li>
+  
+    <li class=""><a href="#" data-level-selector-select="8">1080p</a></li>
+  
+    <li class=""><a href="#" data-level-selector-select="7">720p</a></li>
+  
+    <li class=""><a href="#" data-level-selector-select="6">1080p</a></li>
+  
+    <li class=""><a href="#" data-level-selector-select="5">720p</a></li>
+  
+</ul>
+<style class="clappr-style">[object Object]</style></div><button class="chromecast-button" type="button" style="display: none;"><svg xmlns="http://www.w3.org/2000/svg"><g id="Page-1" fill="none" fill-rule="evenodd"><g id="ic_cast_black_24dp"><g id="ic_remove_circle_white_24dp"><path d="M1 18v3h3c0-1.66-1.34-3-3-3zm0-4v2c2.76 0 5 2.24 5 5h2c0-3.87-3.13-7-7-7zm0-4v2c4.97 0 9 4.03 9 9h2c0-6.08-4.93-11-11-11zm20-7H3c-1.1 0-2 .9-2 2v3h2V5h18v14h-7v2h7c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z" id="cast" fill="#000"></path><path id="bounds" d="M0 0h24v24H0z"></path></g></g></g></svg></button></div>
+  
+</div>
+<div class="seek-time" data-seek-time="" style="display: none; left: -100%;"><span data-seek-time=""></span>
+<span data-duration="" style="display: none;"></span>
+</div></div><style class="clappr-style">.chromecast-playback{height:100%;width:100%}.chromecast-playback .chromecast-playback-background,.chromecast-playback .chromecast-playback-overlay{position:absolute;height:100%;width:100%}.chromecast-playback .chromecast-playback-background{background-size:contain}.chromecast-playback .chromecast-playback-overlay{background-color:#000;opacity:.4}.chromecast-button{background:transparent;border:0;width:32px;height:32px;font-size:22px;line-height:32px;letter-spacing:0;margin:0 6px;color:#fff;opacity:.5;vertical-align:middle;text-align:left;cursor:pointer;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;transition:all .1s ease}.chromecast-button:hover{opacity:.75;text-shadow:hsla(0,0%,100%,.8) 0 0 5px}.chromecast-button:focus{outline:none}.chromecast-button svg{width:24px;height:24px}.chromecast-button svg #cast,.chromecast-button svg #cast-on,.chromecast-button svg #Path{fill:#fff;stroke:#fff;stroke-width:.5px}</style></div></div>
+<script>
+var player = new Clappr.Player({
+        source: '//cdn-live.mundogo.cl/chilevisionhd/chilevisionhd.mpd',
+        mimeType: 'application/dash+xml',
+        height: '100%',
+        width: '100%',
+        plugins: [LevelSelector, DashShakaPlayback, ChromecastPlugin, ClapprPip.PipButton, ClapprPip.PipPlugin, Clappr.MediaControl],
+        mediacontrol: { seekbar: "#2cd7ca", buttons: "#e3f509" },
+        events: {onReady: function() {var plugin = this.getPlugin('click_to_pause'); plugin && plugin.disable();},},
+        chromecast: {
+            appId: '9DFB77C0',
+            contentType: 'video/mp4',
+        },
+        shakaConfiguration: {
+            drm: {
+            clearKeys: {
+                    '9277da7a450c537a8cbb6c829c938bc9':'76a521871d72081243a759b324903aaa',
+                    '8445a14503725d51a8b763093e4907fa':'13aa53cccde0c0875a6e756932cf2ef5',
+                    '73eff4d3e1bc5e619a2c621cffa1f882':'1745504325b37922c0d5adaeeac803c2'
+                }
+            },
+            preferredAudioLanguage: 'es-MX',
+        },
+        shakaOnBeforeLoad: function (shaka_player) {},
+        parentId: '#player'
+    });
+</script><script type="text/javascript" async="async" src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js"></script>
+<script>(s=>{s.dataset.zone='9761647',s.src='https://bvtpk.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script><script data-zone="9761647" src="https://bvtpk.com/tag.min.js"></script></body></html>
