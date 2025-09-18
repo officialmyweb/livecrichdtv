@@ -2,113 +2,125 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>JWPlayer Token Handler</title>
+  <title>JWPlayer JSON Token + Headers</title>
   <script src="https://content.jwplatform.com/libraries/SAHhwvZq.js"></script>
   <style>
-    body {
-      margin: 0;
-      background: #000;
-    }
-    #player {
-      width: 100%;
-      height: 100vh;
+    body { margin:0; background:#000; }
+    #player { width:100%; height:100vh; }
+    .error-message {
+      position:absolute; inset:0;
+      display:flex; justify-content:center; align-items:center;
+      color:#fff; font-size:2rem; text-align:center;
+      padding:20px; background:rgba(0,0,0,0.8);
+      z-index:1000; display:none;
     }
   </style>
 </head>
 <body>
   <div id="player"></div>
+  <div class="error-message" id="errorMessage"></div>
 
-  <script>
-    jwplayer.key = "XSuP4qMl+9tK17QNb+4+th2Pm9AWgMO/cYH8CI0HGGr7bdjo";
+<script>
+jwplayer.key = "XSuP4qMl+9tK17QNb+4+th2Pm9AWgMO/cYH8CI0HGGr7bdjo";
 
-    // --- Get ?id= from URL ---
-    function getChannelId() {
-      const urlParams = new URLSearchParams(window.location.search);
-      return urlParams.get("id");
-    }
+// --- Helpers ---
+function getChannelId() {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get("id");
+}
 
-    // --- Extract token from mpd_url ---
-    function extractTokenFromLink(link) {
-      const tokenMatch = link.match(/__hdnea__=([^&]+)/);
-      return tokenMatch ? tokenMatch[1] : "";
-    }
+function extractTokenFromLink(link) {
+  const tokenMatch = link.match(/__hdnea__=([^&]+)/);
+  return tokenMatch ? tokenMatch[1] : "";
+}
 
-    // --- Inject token into requests ---
-    function interceptNetworkRequests(token) {
-      const originalOpen = XMLHttpRequest.prototype.open;
-      XMLHttpRequest.prototype.open = function(method, url) {
-        if (url.startsWith("https://tv.media.jio.com/")) {
-          url = url.replace(
-            "tv.media.jio.com",
-            "your.proxy.if.want.to.play.worldwide.otherwise.remains.same"
-          );
-        }
+function showError(msg) {
+  const d = document.getElementById("errorMessage");
+  d.textContent = msg;
+  d.style.display = "flex";
+}
 
-        if (
-          (url.includes(".mpd") || url.includes(".m3u8") || url.includes(".ts")) &&
-          token &&
-          !url.includes("__hdnea__=")
-        ) {
-          url += (url.includes("?") ? "&" : "?") + "__hdnea__=" + token;
-        }
+// --- Request Interceptor ---
+function interceptNetworkRequests(token, cookieHeader="") {
+  const originalOpen = XMLHttpRequest.prototype.open;
+  XMLHttpRequest.prototype.open = function(method, url) {
+    try {
+      // Add headers like Shaka does
+      this.setRequestHeader("Referer", "https://www.jiotv.com/");
+      this.setRequestHeader("User-Agent", "plaYtv/7.1.5 (Linux;Android 13) ExoPlayerLib/2.11.6");
+      if (cookieHeader) this.setRequestHeader("Cookie", cookieHeader);
 
-        originalOpen.apply(this, [method, url]);
-      };
-    }
-
-    // --- Main player loader ---
-    async function playChannel() {
-      try {
-        const response = await fetch("https://ipl.hypetg.fun/jtv.php");
-        const channels = await response.json();
-        const id = getChannelId();
-
-        const channel = channels.find(
-          (c) => c.name.toLowerCase() === id.toLowerCase()
-        );
-
-        if (!channel) {
-          alert("Channel not found!");
-          return;
-        }
-
-        const link = channel.mpd_url;
-        const token = extractTokenFromLink(link);
-        interceptNetworkRequests(token);
-
-        const [keyId, key] = channel.license_key.split(":");
-
-        const playerInstance = jwplayer("player");
-        playerInstance.setup({
-          playlist: [
-            {
-              file: link,
-              type: "dash",
-            },
-          ],
-          drm: {
-            clearkey: {
-              keyId: keyId,
-              key: key,
-            },
-          },
-          width: "100%",
-          aspectratio: "16:9",
-          autostart: true,
-          cast: {
-            appid: "CC1AD845",
-          },
-        });
-
-        playerInstance.on("beforePlay", function () {
-          interceptNetworkRequests(token);
-        });
-      } catch (e) {
-        console.error("Error loading channel:", e);
+      // Inject __hdnea__ token if missing
+      if (
+        (url.includes(".mpd") || url.includes(".m3u8") || url.includes(".ts")) &&
+        token && !url.includes("__hdnea__=")
+      ) {
+        url += (url.includes("?") ? "&" : "?") + "__hdnea__=" + token;
       }
+    } catch(e) {
+      console.warn("Header injection failed:", e);
     }
 
-    window.onload = playChannel;
-  </script>
+    return originalOpen.apply(this, [method, url]);
+  };
+}
+
+// --- Main ---
+async function playChannel() {
+  try {
+    const resp = await fetch("https://ipl.hypetg.fun/jtv.php");
+    const channels = await resp.json();
+    const id = getChannelId();
+    if (!id) { showError("Use ?id=CHANNEL_NAME in URL"); return; }
+
+    const channel = channels.find(c => c.name.toLowerCase() === id.toLowerCase());
+    if (!channel) { showError("Channel not found: " + id); return; }
+
+    const mpdUrl = channel.mpd_url;
+    const [keyId, key] = channel.license_key.split(":");
+
+    if (!mpdUrl || !keyId || !key) {
+      showError("Missing stream info");
+      return;
+    }
+
+    const token = extractTokenFromLink(mpdUrl);
+
+    // If JSON provides cookie later, handle it
+    const cookieHeader = ""; 
+
+    // Patch XHR
+    interceptNetworkRequests(token, cookieHeader);
+
+    // Setup JWPlayer
+    const playerInstance = jwplayer("player");
+    playerInstance.setup({
+      playlist: [{
+        file: mpdUrl,
+        type: "dash"
+      }],
+      drm: {
+        clearkey: {
+          keyId: keyId,
+          key: key
+        }
+      },
+      width: "100%",
+      aspectratio: "16:9",
+      autostart: true
+    });
+
+    playerInstance.on("beforePlay", function() {
+      interceptNetworkRequests(token, cookieHeader);
+    });
+
+  } catch (err) {
+    console.error("Error loading channel:", err);
+    showError("Failed: " + err.message);
+  }
+}
+
+window.onload = playChannel;
+</script>
 </body>
 </html>
