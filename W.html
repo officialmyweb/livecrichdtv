@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Shaka Player JSON</title>
+<title>Shaka Player JSON + Token</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.11/shaka-player.ui.min.js" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.11/controls.min.css" crossorigin="anonymous">
 <style>
@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const ui = new shaka.ui.Overlay(player, container, video);
   ui.configure({ controlPanelElements:['play_pause','time_and_duration','mute','volume','spacer','language','captions','picture_in_picture','quality','fullscreen'] });
 
-  let mpdUrl="", keyId="", key="";
+  let mpdUrl="", keyId="", key="", cookieHeader="";
 
   try {
     const apiUrl = "https://round-cloud-0d40.pafidod901.workers.dev/";
@@ -54,6 +54,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       keyId = parts[0];
       key = parts[1];
     }
+
+    // 👇 If your worker also passes cookie/tokens in JSON, grab here
+    if (channel.cookie) cookieHeader = channel.cookie;
+
   } catch(err) {
     showError("Failed to fetch channel list: "+err.message);
     return;
@@ -74,12 +78,24 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
+  // 🔑 Preserve full request filter logic
   player.getNetworkingEngine().registerRequestFilter((type, request)=>{
     request.headers['Referer']='https://www.jiotv.com/';
     request.headers['User-Agent']="plaYtv/7.1.5 (Linux;Android 13) ExoPlayerLib/2.11.6";
+    if (cookieHeader) request.headers['Cookie']=cookieHeader;
+
+    if ((type===shaka.net.NetworkingEngine.RequestType.MANIFEST || 
+         type===shaka.net.NetworkingEngine.RequestType.SEGMENT) && 
+         request.uris[0] && !request.uris[0].includes('hdnea=')) {
+      const sep = request.uris[0].includes('?') ? '&' : '?';
+      request.uris[0] += sep + cookieHeader;
+    }
   });
 
-  player.addEventListener('error',(e)=>{ console.error('Shaka Error', e.detail); showError("Playback failed. Key or token may be invalid."); });
+  player.addEventListener('error',(e)=>{ 
+    console.error('Shaka Error', e.detail); 
+    showError("Playback failed. Key or token may be invalid."); 
+  });
 
   try {
     await player.load(mpdUrl);
