@@ -1,67 +1,101 @@
+<!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <title> WEB PLAYER</title>
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="//content.jwplatform.com/libraries/SAHhwvZq.js"></script>
+  <title>Live Stream Player</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+  <meta name="referrer" content="no-referrer">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plyr@3.6.12/dist/plyr.css">
   <style>
     body {
-      margin: 0px;
-      background: #000;
+      background-color: #000000;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
     }
-
-    .jwplayer {
-      position: absolute !important;
+    html, body {
+      height: 100%;
     }
-
-    .jwplayer.jw-flag-aspect-mode {
-      min-height: 100%;
-      max-height: 100%;
+    video {
+      width: 100%;
+      height: 100%;
+      max-width: 100%;
+    }
+    .plyr {
+      height: 100%;
     }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@1.1.4/dist/hls.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/plyr@3.6.12/dist/plyr.min.js"></script>
 </head>
-
 <body>
-  <div id="jwplayerDiv"></div>
-  <script type="text/javascript">
-    // Function to get URL parameter
-    function getUrlParameter(name) {
-      name = name.replace(/[\[\]]/g, "\\$&");
-      var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-        results = regex.exec(window.location.href);
-      if (!results) return null;
-      if (!results[2]) return '';
-      return decodeURIComponent(results[2].replace(/\+/g, " "));
-    }
+  <video id="player" controls playsinline></video>
 
-    // M3U8 mapping
-    var streams = {
-      "M1": "https://d1zq5no55rw5ua.cloudfront.net/136742_english_hls_cd7ccd163687982adfreeta-di_h264/index.m3u8",
-      "M2": "https://d1zq5no55rw5ua.cloudfront.net/136742_hindi_hls_03dea3461951169ta-di_h264/index.m3u8"
-    };
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const video = document.getElementById('player');
 
-    // Get id from URL
-    var streamId = getUrlParameter('id');
-    var m3uUrl = streams[streamId];
+      // Define your 5 M3U8 links here
+      const streams = {
+        "M1": "https://dai.fancode.com/primary/136742_english_hls_cd7ccd163687982adfreeta-di_h264/index.m3u8",
+        "M2": "https://dai.fancode.com/primary/136742_hindi_hls_03dea3461951169adfreeta-di_h264/index.m3u8",
+        "M3": "https://example.com/stream3/index.m3u8",
+        "M4": "https://example.com/stream4/index.m3u8",
+        "M5": "https://example.com/stream5/index.m3u8"
+      };
 
-    if (m3uUrl) {
-      jwplayer("jwplayerDiv").setup({
-        file: m3uUrl,
-        position: 'bottom',
-        autostart: true,
-        stretching: "uniform",
-        width: "100%",
-        height: "100%",
-        type: "hls",
-      });
-    } else {
-      document.body.innerHTML = "<h2 style='color:white;text-align:center;margin-top:20%;'>Invalid or Missing Stream ID</h2>";
-    }
+      // Get ID from URL (example: ?id=M1)
+      const urlParams = new URLSearchParams(window.location.search);
+      const streamId = urlParams.get('id') || "M1"; // default M1
+      const source = streams[streamId];
+
+      if (!source) {
+        document.body.innerHTML = "<p style='color:white;text-align:center'>Invalid Stream ID</p>";
+        return;
+      }
+
+      if (Hls.isSupported()) {
+        const hls = new Hls({ maxMaxBufferLength: 100 });
+        hls.loadSource(source);
+        hls.attachMedia(video);
+
+        hls.on(Hls.Events.MANIFEST_PARSED, () => {
+          const availableQualities = hls.levels.map(level => level.height);
+          const defaultQuality = availableQualities[0];
+
+          const player = new Plyr(video, {
+            controls: ['play-large', 'play', 'mute', 'volume', 'settings', 'fullscreen'],
+            quality: {
+              default: defaultQuality,
+              options: availableQualities,
+              forced: true,
+              onChange: (quality) => {
+                hls.levels.forEach((level, levelIndex) => {
+                  if (level.height === quality) {
+                    hls.currentLevel = levelIndex;
+                  }
+                });
+              }
+            }
+          });
+
+          // Orientation lock on fullscreen
+          document.addEventListener('fullscreenchange', () => {
+            if (document.fullscreenElement) {
+              if (screen.orientation && screen.orientation.lock) {
+                screen.orientation.lock('landscape').catch(err => {
+                  console.error('Error locking orientation:', err);
+                });
+              }
+            }
+          });
+        });
+      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        video.src = source;
+        new Plyr(video);
+      } else {
+        document.body.innerHTML = '<p>Your browser does not support HLS playback.</p>';
+      }
+    });
   </script>
-
-
 </body>
-
 </html>
