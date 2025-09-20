@@ -1,1 +1,70 @@
-.
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Live Public Player</title>
+    <meta charset="UTF-8">
+    <meta name="referrer" content="no-referrer">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.6/shaka-player.ui.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.6/controls.min.css" rel="stylesheet">
+    <script src="streams.js"></script> 
+    <style type="text/css">* {user-select: auto !important; -webkit-user-select: auto !important;}</style>
+</head>
+<body bgcolor="black" style="margin:0;">
+<center>
+    <div data-shaka-player-container="" style="width: 100%; height: 100%; cursor: none;" class="shaka-mobile shaka-video-container" shaka-controls="true">
+        <video poster="#" autoplay="" data-shaka-player="" id="video" style="width: 100%; height: 100%;" class="shaka-video"></video>
+    </div>
+</center>
+
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const id = urlParams.get("id") || "M1";
+    const stream = streams[id];
+
+    const manifestUri = stream.mpd;
+
+    async function init() {
+      const video = document.getElementById('video');
+      const ui = video['ui'];
+      const controls = ui.getControls();
+      const player = controls.getPlayer();
+      const config = {
+        'controlPanelElements': ['play_pause', 'time_and_duration', 'spacer', 'mute', 'picture_in_picture', 'playback_rate', 'quality', 'fullscreen'],
+        'playbackRates': [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2],
+      }
+      ui.configure(config);
+      player.configure({
+        drm: {
+          clearKeys: stream.keys
+        }
+      });
+      window.player = player;
+      window.ui = ui;
+      player.addEventListener('error', onPlayerErrorEvent);
+      controls.addEventListener('error', onUIErrorEvent);
+      try {
+        await player.load(manifestUri);
+        console.log('The video has now been loaded!');
+      } catch (error) {
+        onPlayerError(error);
+      }
+    }
+
+    function onPlayerErrorEvent(errorEvent) {
+      onPlayerError(event.detail);
+    }
+    function onPlayerError(error) {
+      console.error('Error code', error.code, 'object', error);
+    }
+    function onUIErrorEvent(errorEvent) {
+      onPlayerError(event.detail);
+    }
+    function initFailed(errorEvent) {
+      console.error('Unable to load the UI library!');
+    }
+    document.addEventListener('shaka-ui-loaded', init);
+    document.addEventListener('shaka-ui-load-failed', initFailed);
+</script>
+</body>
+</html>
