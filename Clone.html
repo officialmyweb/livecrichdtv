@@ -4,9 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>EpicSports</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@500;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Roboto', sans-serif;
       margin: 0;
       background: #f2f2f2;
       color: #000;
@@ -19,18 +20,40 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      font-family: 'Montserrat', sans-serif;
     }
     header h1 {
       margin: 0;
-      font-size: 22px;
+      font-size: 24px;
       color: #1a1a4f;
+      letter-spacing: 1px;
     }
     .theme-toggle {
       cursor: pointer;
-      font-size: 18px;
+      width: 50px;
+      height: 26px;
+      border-radius: 50px;
+      background: #ccc;
+      position: relative;
+      transition: background 0.3s;
       border: none;
-      background: none;
-      color: #333;
+    }
+    .theme-toggle::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 22px;
+      height: 22px;
+      background: #fff;
+      border-radius: 50%;
+      transition: transform 0.3s;
+    }
+    .theme-toggle.active {
+      background: #666;
+    }
+    .theme-toggle.active::after {
+      transform: translateX(24px);
     }
     .btn {
       display: block;
@@ -42,6 +65,7 @@
       border-radius: 5px;
       text-decoration: none;
       font-weight: bold;
+      font-family: 'Open Sans', sans-serif;
     }
     .whatsapp {
       background: #25D366;
@@ -50,6 +74,17 @@
     .telegram {
       background: #0088cc;
       color: white;
+    }
+    .live-matches-btn {
+      background: #000;
+      color: #fff;
+      font-size: 18px;
+      text-align: center;
+      padding: 12px;
+      width: 90%;
+      margin: 20px auto 10px auto;
+      border-radius: 5px;
+      font-family: 'Montserrat', sans-serif;
     }
     .ad {
       margin: 15px auto;
@@ -68,6 +103,12 @@
       cursor: pointer;
       text-decoration: none;
       color: inherit;
+      font-family: 'Open Sans', sans-serif;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .match-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     }
     .match-card img {
       width: 50px;
@@ -84,6 +125,7 @@
     .match-card .details span {
       font-weight: bold;
       color: #333;
+      font-family: 'Montserrat', sans-serif;
     }
     .disclaimer {
       background: #f9f9f9;
@@ -95,11 +137,13 @@
       font-size: 14px;
       color: #333;
       line-height: 1.5;
+      font-family: 'Roboto', sans-serif;
     }
     .disclaimer h3 {
       margin-top: 0;
       color: #1a1a4f;
       font-size: 16px;
+      font-family: 'Montserrat', sans-serif;
     }
     /* Dark Mode */
     body.dark {
@@ -119,12 +163,16 @@
       border: 1px solid #444;
       color: #bbb;
     }
+    body.dark .live-matches-btn {
+      background: #000;
+      color: #fff;
+    }
   </style>
 </head>
 <body>
   <header>
     <h1>EpicSports</h1>
-    <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+    <button class="theme-toggle" onclick="toggleTheme()"></button>
   </header>
 
   <a href="#" class="btn whatsapp">Join WhatsApp Channel</a>
@@ -133,6 +181,9 @@
   <div class="ad">
     <img src="https://via.placeholder.com/320x100?text=Ad+Banner" alt="Ad Banner">
   </div>
+
+  <!-- Today's Live Matches Button -->
+  <div class="live-matches-btn">Today's Live Matches</div>
 
   <!-- Today Matches Only -->
   <a href="https://example.com/stream1" class="match-card">
@@ -178,11 +229,7 @@
     function toggleTheme() {
       document.body.classList.toggle("dark");
       const btn = document.querySelector(".theme-toggle");
-      if (document.body.classList.contains("dark")) {
-        btn.textContent = "☀️";
-      } else {
-        btn.textContent = "🌙";
-      }
+      btn.classList.toggle("active");
     }
   </script>
 </body>
