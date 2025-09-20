@@ -3,23 +3,34 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EpicSports Clone</title>
+  <title>EpicSports</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       margin: 0;
       background: #f2f2f2;
+      color: #000;
+      transition: background 0.3s, color 0.3s;
     }
     header {
       background: #fff;
-      padding: 10px;
-      text-align: center;
+      padding: 12px 20px;
       border-bottom: 1px solid #ddd;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
     header h1 {
       margin: 0;
-      font-size: 24px;
+      font-size: 22px;
       color: #1a1a4f;
+    }
+    .theme-toggle {
+      cursor: pointer;
+      font-size: 18px;
+      border: none;
+      background: none;
+      color: #333;
     }
     .btn {
       display: block;
@@ -44,22 +55,6 @@
       margin: 15px auto;
       text-align: center;
     }
-    .tabs {
-      display: flex;
-      justify-content: center;
-      margin: 10px 0;
-    }
-    .tabs button {
-      flex: 1;
-      padding: 12px;
-      border: none;
-      cursor: pointer;
-      font-size: 16px;
-    }
-    .tabs button.active {
-      background: #1a1a4f;
-      color: white;
-    }
     .match-card {
       background: white;
       margin: 10px auto;
@@ -70,6 +65,9 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
     }
     .match-card img {
       width: 50px;
@@ -103,11 +101,30 @@
       color: #1a1a4f;
       font-size: 16px;
     }
+    /* Dark Mode */
+    body.dark {
+      background: #121212;
+      color: #e0e0e0;
+    }
+    body.dark header {
+      background: #1e1e1e;
+      border-bottom: 1px solid #444;
+    }
+    body.dark .match-card {
+      background: #1e1e1e;
+      box-shadow: 0 2px 5px rgba(255,255,255,0.05);
+    }
+    body.dark .disclaimer {
+      background: #1e1e1e;
+      border: 1px solid #444;
+      color: #bbb;
+    }
   </style>
 </head>
 <body>
   <header>
-    <h1>EPICSPORTS</h1>
+    <h1>EpicSports</h1>
+    <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
   </header>
 
   <a href="#" class="btn whatsapp">Join WhatsApp Channel</a>
@@ -117,40 +134,35 @@
     <img src="https://via.placeholder.com/320x100?text=Ad+Banner" alt="Ad Banner">
   </div>
 
-  <div class="tabs">
-    <button class="active">Yesterday</button>
-    <button>Today</button>
-    <button>Upcoming</button>
-  </div>
-
-  <div class="match-card">
+  <!-- Today Matches Only -->
+  <a href="https://example.com/stream1" class="match-card">
     <img src="https://upload.wikimedia.org/wikipedia/en/0/0c/Liverpool_FC.svg" alt="Liverpool">
     <div class="details">
       <p>Liverpool <span>VS</span> Everton</p>
       <p>5:00 PM</p>
     </div>
     <img src="https://upload.wikimedia.org/wikipedia/en/7/7c/Everton_FC_logo.svg" alt="Everton">
-  </div>
+  </a>
 
-  <div class="match-card">
+  <a href="https://example.com/stream2" class="match-card">
     <img src="https://upload.wikimedia.org/wikipedia/en/e/e7/TSG_1899_Hoffenheim_logo.svg" alt="Hoffenheim">
     <div class="details">
       <p>Hoffenheim <span>VS</span> Bayern Munich</p>
       <p>7:00 PM</p>
     </div>
     <img src="https://upload.wikimedia.org/wikipedia/en/1/1f/FC_Bayern_München_logo_%282017%29.svg" alt="Bayern">
-  </div>
+  </a>
 
-  <div class="match-card">
+  <a href="https://example.com/stream3" class="match-card">
     <img src="https://upload.wikimedia.org/wikipedia/en/f/fd/Brighton_%26_Hove_Albion_logo.svg" alt="Brighton">
     <div class="details">
       <p>Brighton <span>VS</span> Tottenham</p>
       <p>7:30 PM</p>
     </div>
     <img src="https://upload.wikimedia.org/wikipedia/en/b/b4/Tottenham_Hotspur.svg" alt="Tottenham">
-  </div>
+  </a>
 
-  <!-- Disclaimer Section -->
+  <!-- Disclaimer -->
   <div class="disclaimer">
     <h3>EpicSports Disclaimer</h3>
     <p>
@@ -161,5 +173,17 @@
       of the content provided through third-party embeds.
     </p>
   </div>
+
+  <script>
+    function toggleTheme() {
+      document.body.classList.toggle("dark");
+      const btn = document.querySelector(".theme-toggle");
+      if (document.body.classList.contains("dark")) {
+        btn.textContent = "☀️";
+      } else {
+        btn.textContent = "🌙";
+      }
+    }
+  </script>
 </body>
 </html>
