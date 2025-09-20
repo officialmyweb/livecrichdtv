@@ -1,21 +1,17 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Live Public Player</title>
+<title>Live Player</title>
     <meta charset="UTF-8">
     <meta name="referrer" content="no-referrer">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.6/shaka-player.ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.6/shaka-player.ui.min.js"></script><style type="text/css">* {user-select: auto !important; -webkit-user-select: auto !important;}</style><input type="hidden" id="inject_idm_text_selection"><style></style>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.6/controls.min.css" rel="stylesheet">
-    <script src="streams.js"></script> 
-    <style type="text/css">* {user-select: auto !important; -webkit-user-select: auto !important;}</style>
+    <script src="streams.js"></script>
 </head>
 <body bgcolor="black" style="margin:0;">
 <center>
     <div data-shaka-player-container="" style="width: 100%; height: 100%; cursor: none;" class="shaka-mobile shaka-video-container" shaka-controls="true">
-        <video poster="#" autoplay="" data-shaka-player="" id="video" style="width: 100%; height: 100%;" class="shaka-video"></video>
-    </div>
+        <video poster="#" autoplay="" data-shaka-player="" id="video" style="width: 100%; height: 100%;" class="shaka-video" src="blob:https://t20wc.pages.dev/da763d4e-fd51-4e2a-a817-2b73e4643682"></video>
 </center>
+
 
 <script>
     const urlParams = new URLSearchParams(window.location.search);
