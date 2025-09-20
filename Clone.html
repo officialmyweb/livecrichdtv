@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EpicSports Clone</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f2f2f2;
+    }
+    header {
+      background: #fff;
+      padding: 10px;
+      text-align: center;
+      border-bottom: 1px solid #ddd;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 24px;
+      color: #1a1a4f;
+    }
+    .btn {
+      display: block;
+      margin: 10px auto;
+      width: 90%;
+      padding: 12px;
+      text-align: center;
+      font-size: 16px;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .whatsapp {
+      background: #25D366;
+      color: white;
+    }
+    .telegram {
+      background: #0088cc;
+      color: white;
+    }
+    .ad {
+      margin: 15px auto;
+      text-align: center;
+    }
+    .tabs {
+      display: flex;
+      justify-content: center;
+      margin: 10px 0;
+    }
+    .tabs button {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .tabs button.active {
+      background: #1a1a4f;
+      color: white;
+    }
+    .match-card {
+      background: white;
+      margin: 10px auto;
+      padding: 15px;
+      border-radius: 5px;
+      width: 90%;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .match-card img {
+      width: 50px;
+      height: 50px;
+    }
+    .match-card .details {
+      text-align: center;
+      flex: 1;
+    }
+    .match-card .details p {
+      margin: 5px 0;
+      font-size: 16px;
+    }
+    .match-card .details span {
+      font-weight: bold;
+      color: #333;
+    }
+    .disclaimer {
+      background: #f9f9f9;
+      padding: 15px;
+      margin: 20px auto;
+      width: 90%;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 14px;
+      color: #333;
+      line-height: 1.5;
+    }
+    .disclaimer h3 {
+      margin-top: 0;
+      color: #1a1a4f;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>EPICSPORTS</h1>
+  </header>
+
+  <a href="#" class="btn whatsapp">Join WhatsApp Channel</a>
+  <a href="#" class="btn telegram">Join Telegram</a>
+
+  <div class="ad">
+    <img src="https://via.placeholder.com/320x100?text=Ad+Banner" alt="Ad Banner">
+  </div>
+
+  <div class="tabs">
+    <button class="active">Yesterday</button>
+    <button>Today</button>
+    <button>Upcoming</button>
+  </div>
+
+  <div class="match-card">
+    <img src="https://upload.wikimedia.org/wikipedia/en/0/0c/Liverpool_FC.svg" alt="Liverpool">
+    <div class="details">
+      <p>Liverpool <span>VS</span> Everton</p>
+      <p>5:00 PM</p>
+    </div>
+    <img src="https://upload.wikimedia.org/wikipedia/en/7/7c/Everton_FC_logo.svg" alt="Everton">
+  </div>
+
+  <div class="match-card">
+    <img src="https://upload.wikimedia.org/wikipedia/en/e/e7/TSG_1899_Hoffenheim_logo.svg" alt="Hoffenheim">
+    <div class="details">
+      <p>Hoffenheim <span>VS</span> Bayern Munich</p>
+      <p>7:00 PM</p>
+    </div>
+    <img src="https://upload.wikimedia.org/wikipedia/en/1/1f/FC_Bayern_München_logo_%282017%29.svg" alt="Bayern">
+  </div>
+
+  <div class="match-card">
+    <img src="https://upload.wikimedia.org/wikipedia/en/f/fd/Brighton_%26_Hove_Albion_logo.svg" alt="Brighton">
+    <div class="details">
+      <p>Brighton <span>VS</span> Tottenham</p>
+      <p>7:30 PM</p>
+    </div>
+    <img src="https://upload.wikimedia.org/wikipedia/en/b/b4/Tottenham_Hotspur.svg" alt="Tottenham">
+  </div>
+
+  <!-- Disclaimer Section -->
+  <div class="disclaimer">
+    <h3>EpicSports Disclaimer</h3>
+    <p>
+      All content, including match links and streams, is provided solely for informational and educational purposes. 
+      We do not host or upload any video content on our servers. All embedded links are publicly available on the 
+      internet and belong to their respective owners. If you believe any content violates your rights, please contact 
+      the appropriate content host directly. EpicSports is not responsible for any copyright issues or the accuracy 
+      of the content provided through third-party embeds.
+    </p>
+  </div>
+</body>
+</html>
