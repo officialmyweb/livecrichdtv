@@ -1,28 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
-  <title>M3U8 Player</title>
+  <title>MOMIXTV WEB PLAYER</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="//content.jwplatform.com/libraries/SAHhwvZq.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <style>
-    body { margin:0; background:#000; display:flex; justify-content:center; align-items:center; height:100vh; }
-    video { width:100%; max-height:100vh; background:#000; }
+    body {
+      margin: 0;
+      background: #000;
+    }
+
+    .jwplayer,
+    video {
+      position: absolute !important;
+      width: 100% !important;
+      height: 100% !important;
+      background: #000;
+    }
   </style>
 </head>
-<body>
-  <video id="video" controls autoplay></video>
-  <script>
-    var video = document.getElementById('video');
-    var m3u8Url = "https://d259gr1toiupmi.cloudfront.net/out/v1/bc731540280947c5807ec54413bfd5f1/index.m3u8";
 
-    if (Hls.isSupported()) {
-      var hls = new Hls();
-      hls.loadSource(m3u8Url);
-      hls.attachMedia(video);
-    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-      // Safari native support
-      video.src = m3u8Url;
+<body>
+  <div id="jwplayerDiv"></div>
+  <video id="hlsVideo" controls autoplay style="display:none;"></video>
+
+  <script type="text/javascript">
+    // Function to get URL parameter
+    function getUrlParameter(name) {
+      name = name.replace(/[\[\]]/g, "\\$&");
+      var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(window.location.href);
+      if (!results) return null;
+      if (!results[2]) return '';
+      return decodeURIComponent(results[2].replace(/\+/g, " "));
+    }
+
+    // Show the Telegram prompt before player initialization
+    if (confirm("Join Our Telegram Channel @MomixTv")) {
+      window.location.href = "https://t.me/momixtv";
+    } else {
+      var m3uUrl = getUrlParameter('m3u');
+
+      // Try Hls.js first (better for Chrome)
+      if (Hls.isSupported()) {
+        document.getElementById("hlsVideo").style.display = "block";
+        var video = document.getElementById("hlsVideo");
+        var hls = new Hls({
+          xhrSetup: function (xhr, url) {
+            // Add Referer + UA like 1DM
+            xhr.setRequestHeader("Referer", "https://www.fancode.com/");
+            xhr.setRequestHeader("User-Agent", navigator.userAgent);
+          }
+        });
+        hls.loadSource(m3uUrl);
+        hls.attachMedia(video);
+      } else {
+        // Fallback to JWPlayer
+        jwplayer("jwplayerDiv").setup({
+          file: m3uUrl,
+          position: 'bottom',
+          autostart: true,
+          stretching: "uniform",
+          width: "100%",
+          type: "hls"
+        });
+      }
     }
   </script>
+
+  <!-- Disable developer tools (optional) -->
+  <script disable-devtool-auto='true'
+          src='https://cdn.jsdelivr.net/npm/disable-devtool'
+          clear-log='true'
+          disable-select='true'
+          disable-copy='true'
+          disable-cut='true'
+          disable-paste='true'></script>
+
 </body>
 </html>
