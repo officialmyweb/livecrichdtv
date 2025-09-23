@@ -45,14 +45,14 @@
 </head>
 <body>
 
-  <iframe id="videoFrame" src="https://dish.slivcdn.com/hls/live/2011747/TEN1HD/master_3500.m3u8" allowfullscreen></iframe>
+  <iframe id="videoFrame" src="https://liveakdai.slivcdn.com/hls/live/2119931/cricacc12309/ENG/std_lrh-800300010.m3u8?hdnea=exp=1758681437~acl=/*~id=01072750521879031152405317961326~hmac=d190ecf877ec3a6d18f3cfcfc0a4e659394a6187a84fe7ea8aa1ed2d99315919" allowfullscreen></iframe>
 
-  <!-- Quality buttons -->
+  <!-- Language buttons -->
   <div class="button-group">
-    <button id="btn1080p" class="active" onclick="setQuality('1080p')">1080p</button>
-    <button id="btn720p" onclick="setQuality('720p')">720p</button>
-    <button id="btn360p" onclick="setQuality('360p')">360p</button>
-    <button id="btn240p" onclick="setQuality('240p')">240p</button>
+    <button id="btnEnglish" class="active" onclick="setQuality('English')">English</button>
+    <button id="btnHindi" onclick="setQuality('Hindi')">Hindi</button>
+    <button id="btnTamil" onclick="setQuality('Tamil')">Tamil</button>
+    <button id="btnTelugu" onclick="setQuality('Telugu')">Telugu</button>
   </div>
 
   <script>
@@ -60,13 +60,13 @@
       window.location.href = "https://telegram.me/cricxfootball";
     }
 
-    let currentQuality = '1080p';
+    let currentQuality = 'English';
 
     const sources = {
-      '1080p': 'https://dish.slivcdn.com/hls/live/2011747/TEN1HD/master_3500.m3u8',
-      '720p':  'https://dish.slivcdn.com/hls/live/2011747/TEN1HD/master_1300.m3u8',
-      '360p':  'https://dish.slivcdn.com/hls/live/2011747/TEN1HD/master_664.m3u8',
-      '240p':  'https://dish.slivcdn.com/hls/live/2011747/TEN1HD/master_224.m3u8'
+      'English': 'https://liveakdai.slivcdn.com/hls/live/2119931/cricacc12309/ENG/std_lrh-800300010.m3u8?hdnea=exp=1758681437~acl=/*~id=01072750521879031152405317961326~hmac=d190ecf877ec3a6d18f3cfcfc0a4e659394a6187a84fe7ea8aa1ed2d99315919',
+      'Hindi':  'https://liveakdai.slivcdn.com/hls/live/2119921/cricacc12309/HIN/std_lrh-800300010.m3u8?hdnea=exp=1758681437~acl=/*~id=01072750521879031152405317961326~hmac=d190ecf877ec3a6d18f3cfcfc0a4e659394a6187a84fe7ea8aa1ed2d99315919',
+      'Tamil':  'https://liveakdai.slivcdn.com/hls/live/2119951/cricacc12309/TAM/std_lrh-800300010.m3u8?hdnea=exp=1758681437~acl=/*~id=01072750521879031152405317961326~hmac=d190ecf877ec3a6d18f3cfcfc0a4e659394a6187a84fe7ea8aa1ed2d99315919',
+      'Telugu': 'https://liveakdai.slivcdn.com/hls/live/2119941/cricacc12309/TEL/std_lrh-800300010.m3u8?hdnea=exp=1758681437~acl=/*~id=01072750521879031152405317961326~hmac=d190ecf877ec3a6d18f3cfcfc0a4e659394a6187a84fe7ea8aa1ed2d99315919'
     };
 
     function updateStream() {
@@ -76,8 +76,8 @@
 
     function setQuality(q) {
       currentQuality = q;
-      ['1080p', '720p', '360p', '240p'].forEach(res => {
-        document.getElementById('btn' + res).classList.remove('active');
+      ['English', 'Hindi', 'Tamil', 'Telugu'].forEach(lang => {
+        document.getElementById('btn' + lang).classList.remove('active');
       });
       document.getElementById('btn' + q).classList.add('active');
       updateStream();
@@ -86,3 +86,4 @@
 
 </body>
 </html>
+
