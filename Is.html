@@ -3,87 +3,82 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Telegram-cricXfootball</title>
+  <title>SonyLiv Matches</title>
   <style>
     body {
       font-family: Arial, sans-serif;
+      background: #111;
+      color: #fff;
       text-align: center;
+    }
+    .container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
       padding: 20px;
-      background-color: #000;
-      color: white;
     }
-    iframe {
-      width: 100%;
-      max-width: 800px;
-      height: 450px;
-      border: 4px solid #fff;
+    .match-card {
+      background: #222;
       border-radius: 10px;
-      margin-bottom: 20px;
-      box-shadow: 0 0 10px #00ffcc;
+      padding: 15px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
     }
-    .button-group {
-      margin: 10px 0;
+    .match-card img {
+      max-width: 100%;
+      border-radius: 10px;
     }
-    button {
-      padding: 10px 20px;
-      margin: 5px;
-      font-size: 16px;
-      cursor: pointer;
-      border: none;
+    .title {
+      font-size: 18px;
+      font-weight: bold;
+      margin: 10px 0 5px;
+    }
+    .subtitle {
+      font-size: 14px;
+      color: #bbb;
+      margin-bottom: 10px;
+    }
+    a {
+      display: inline-block;
+      padding: 8px 12px;
+      background: #ff4500;
+      color: #fff;
+      text-decoration: none;
       border-radius: 6px;
-      background-color: #007bff;
-      color: white;
-      transition: background 0.3s;
     }
-    button.active {
-      background-color: #28a745;
-    }
-    button:hover {
-      background-color: #0056b3;
+    a:hover {
+      background: #ff6600;
     }
   </style>
 </head>
 <body>
-
-  <iframe id="videoFrame" src="https://liveakdai.slivcdn.com/hls/live/2119931/cricacc12309/ENG/std_lrh-800300010.m3u8?hdnea=exp=1758681437~acl=/*~id=01072750521879031152405317961326~hmac=d190ecf877ec3a6d18f3cfcfc0a4e659394a6187a84fe7ea8aa1ed2d99315919" allowfullscreen></iframe>
-
-  <!-- Language buttons -->
-  <div class="button-group">
-    <button id="btnEnglish" class="active" onclick="setQuality('English')">English</button>
-    <button id="btnHindi" onclick="setQuality('Hindi')">Hindi</button>
-    <button id="btnTamil" onclick="setQuality('Tamil')">Tamil</button>
-    <button id="btnTelugu" onclick="setQuality('Telugu')">Telugu</button>
-  </div>
+  <h1>SonyLiv Live Matches</h1>
+  <div id="matches" class="container"></div>
 
   <script>
-    if (confirm("Join Our Telegram Channel @cricxfootball")) {
-      window.location.href = "https://telegram.me/cricxfootball";
+    async function loadMatches() {
+      try {
+        const res = await fetch("https://raw.githubusercontent.com/drmlive/sliv-live-events/main/sonyliv.json");
+        const data = await res.json();
+        const container = document.getElementById("matches");
+
+        data.matches.forEach(match => {
+          const card = document.createElement("div");
+          card.className = "match-card";
+
+          card.innerHTML = `
+            <img src="${match.src}" alt="${match.match_name}">
+            <div class="title">${match.match_name}</div>
+            <div class="subtitle">${match.event_name} | ${match.broadcast_channel} (${match.audioLanguageName})</div>
+            <a href="${match.video_url}" target="_blank">Watch</a>
+          `;
+          container.appendChild(card);
+        });
+      } catch (err) {
+        console.error("Error loading matches:", err);
+      }
     }
 
-    let currentQuality = 'English';
-
-    const sources = {
-      'English': 'https://liveakdai.slivcdn.com/hls/live/2119931/cricacc12309/ENG/std_lrh-800300010.m3u8?hdnea=exp=1758681437~acl=/*~id=01072750521879031152405317961326~hmac=d190ecf877ec3a6d18f3cfcfc0a4e659394a6187a84fe7ea8aa1ed2d99315919',
-      'Hindi':  'https://liveakdai.slivcdn.com/hls/live/2119921/cricacc12309/HIN/std_lrh-800300010.m3u8?hdnea=exp=1758681437~acl=/*~id=01072750521879031152405317961326~hmac=d190ecf877ec3a6d18f3cfcfc0a4e659394a6187a84fe7ea8aa1ed2d99315919',
-      'Tamil':  'https://liveakdai.slivcdn.com/hls/live/2119951/cricacc12309/TAM/std_lrh-800300010.m3u8?hdnea=exp=1758681437~acl=/*~id=01072750521879031152405317961326~hmac=d190ecf877ec3a6d18f3cfcfc0a4e659394a6187a84fe7ea8aa1ed2d99315919',
-      'Telugu': 'https://liveakdai.slivcdn.com/hls/live/2119941/cricacc12309/TEL/std_lrh-800300010.m3u8?hdnea=exp=1758681437~acl=/*~id=01072750521879031152405317961326~hmac=d190ecf877ec3a6d18f3cfcfc0a4e659394a6187a84fe7ea8aa1ed2d99315919'
-    };
-
-    function updateStream() {
-      const iframe = document.getElementById("videoFrame");
-      iframe.src = sources[currentQuality];
-    }
-
-    function setQuality(q) {
-      currentQuality = q;
-      ['English', 'Hindi', 'Tamil', 'Telugu'].forEach(lang => {
-        document.getElementById('btn' + lang).classList.remove('active');
-      });
-      document.getElementById('btn' + q).classList.add('active');
-      updateStream();
-    }
+    loadMatches();
   </script>
-
 </body>
 </html>
-
