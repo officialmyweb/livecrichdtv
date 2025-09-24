@@ -3,20 +3,15 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Bangladesh vs India — Non-blocking Embed</title>
+  <title>Telegram-Live-Cric-Hd</title>
   <style>
-    body {
-      margin:0;
-      background:#000;
-      color:#fff;
-      font-family:sans-serif;
-    }
+    body { margin:0; background:#000; color:#fff; font-family:sans-serif; }
     .embed-wrap {
       position:relative;
       width:100%;
       max-width:1200px;
       margin:auto;
-      padding-top:56.25%; /* 16:9 */
+      padding-top:56.25%; /* 16:9 aspect ratio */
       background:#000;
     }
     iframe {
@@ -24,51 +19,40 @@
       top:0; left:0;
       width:100%; height:100%;
       border:0;
-      /* 👇 Disable pointer events by default */
-      pointer-events:none;
     }
-    .overlay {
+    /* Transparent shield to block first unwanted click */
+    .click-shield {
       position:absolute;
       top:0; left:0;
       width:100%; height:100%;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      background:rgba(0,0,0,0.4);
-      color:#fff;
-      font-size:16px;
+      background:transparent;
       cursor:pointer;
-      z-index:10;
+      z-index:5;
     }
   </style>
 </head>
 <body>
-  <h2 style="text-align:center;">Bangladesh vs India Player</h2>
+  <h2 style="text-align:center;">India Vs Bangladesh</h2>
   <div class="embed-wrap">
     <iframe 
-      id="player"
+      id="safePlayer"
       src="https://embedsports.top/embed/charlie/india-vs-bangladesh-1629462099/1"
+      title="Bangladesh vs India Player"
+      scrolling="no"
       allow="encrypted-media; picture-in-picture; fullscreen"
       allowfullscreen
       loading="lazy"
     ></iframe>
-    <div class="overlay" id="overlay">▶ Tap to enable player</div>
+    <div class="click-shield" id="shield"></div>
   </div>
 
   <script>
-    const overlay = document.getElementById('overlay');
-    const iframe = document.getElementById('player');
-
-    overlay.addEventListener('click', () => {
-      iframe.style.pointerEvents = 'auto';  // allow interaction
-      overlay.style.display = 'none';       // hide overlay
+    if (confirm("Join Our Telegram Channel @livecrichdofficial")) {window.location.href = "https://telegram.me/livecrichdofficial";}
+    
+    // Remove shield after first click
+    document.getElementById('shield').addEventListener('click', function(){
+      this.style.display = 'none';
     });
-
-    // Optional: after 60s disable again to avoid ads hijacking
-    // setTimeout(() => {
-    //   iframe.style.pointerEvents = 'none';
-    //   overlay.style.display = 'flex';
-    // }, 60000);
   </script>
 </body>
 </html>
