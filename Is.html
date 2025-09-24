@@ -1,53 +1,33 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Telegram-Live-Cric-Hd</title>
+  <meta charset="UTF-8">
+  <title>JWPlayer MPD + ClearKey</title>
+  <script src="https://content.jwplatform.com/libraries/SAHhwvZq.js"></script>
   <style>
-    body { margin:0; background:#000; color:#fff; font-family:sans-serif; }
-    .embed-wrap {
-      position:relative;
-      width:100%;
-      max-width:1200px;
-      margin:auto;
-      padding-top:56.25%; /* 16:9 aspect ratio */
-      background:#000;
-    }
-    iframe {
-      position:absolute;
-      top:0; left:0;
-      width:100%; height:100%;
-      border:0;
-    }
-    /* Transparent shield to block first unwanted click */
-    .click-shield {
-      position:absolute;
-      top:0; left:0;
-      width:100%; height:100%;
-      background:transparent;
-      cursor:pointer;
-      z-index:5;
-    }
+    body { margin:0; background:#000; }
+    #player { width:100%; height:100vh; }
   </style>
 </head>
 <body>
-  <h2 style="text-align:center;">India Vs Bangladesh</h2>
-  <div class="embed-wrap">
-    <iframe 
-      id="safePlayer"
-      src="https://embedsports.top/embed/alpha/bangladesh-vs-india/1"
-      title="Bangladesh vs India Player"
-      scrolling="no"
-      allow="encrypted-media; picture-in-picture; fullscreen"
-      allowfullscreen
-      loading="lazy"
-    ></iframe>
-    <div class="click-shield" id="shield"></div>
-  </div>
+  <div id="player"></div>
 
   <script>
-    if (confirm("Join Our Telegram Channel @livecrichdofficial")) {window.location.href = "https://telegram.me/livecrichdofficial";}
+    jwplayer.key = "XSuP4qMl+9tK17QNb+4+th2Pm9AWgMO/cYH8CI0HGGr7bdjo";
+
+    jwplayer("player").setup({
+      file: "https://ev-fast-mpd.starzplayarabia.com/live/eds/CricLifeMax/DASH/CricLifeMax.mpd",
+      type: "dash",
+      drm: {
+        clearkey: {
+          keyId: "ad59b720bd4b44d063686212b99484b5",
+          key:   "e1744990edf98acc729c0773a3766583"
+        }
+      },
+      width: "100%",
+      aspectratio: "16:9",
+      autostart: true
+    });
   </script>
 </body>
 </html>
