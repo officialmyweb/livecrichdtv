@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>No Scroll iFrame Example</title>
+  <title>Safe iFrame</title>
   <style>
     body {
       margin: 0;
@@ -13,12 +13,17 @@
       width: 100%;
       height: 100vh;
       border: none;
-      overflow: hidden; /* prevents scrollbars */
+      overflow: hidden; /* prevent scrollbars */
     }
   </style>
 </head>
 <body>
   <!-- Replace the URL with your desired page -->
-  <iframe src="https://myuser735.ifrem.net/iframe/frame.php" scrolling="no"></iframe>
+  <iframe 
+    src="https://myuser735.ifrem.net/iframe/frame.php" 
+    scrolling="no"
+    sandbox="allow-same-origin allow-scripts"
+    referrerpolicy="no-referrer"
+  ></iframe>
 </body>
 </html>
