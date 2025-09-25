@@ -2,32 +2,34 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Telegram-Live-Cric-Hd</title>
+  <title>JWPlayer MPD + ClearKey</title>
+  <script src="https://content.jwplatform.com/libraries/SAHhwvZq.js"></script>
   <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background: #000;
-    }
-    iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-      overflow: hidden; /* prevent scrollbars */
-    }
+    body { margin:0; background:#000; }
+    #player { width:100%; height:100vh; }
   </style>
 </head>
 <body>
+  <div id="player"></div>
+
   <script>
-    if (confirm("Join Our Telegram Channel @livecrichdofficial")) {window.location.href = "https://telegram.me/livecrichdofficial";}
-    
+    jwplayer.key = "XSuP4qMl+9tK17QNb+4+th2Pm9AWgMO/cYH8CI0HGGr7bdjo";
+
+    jwplayer("player").setup({
+      file: "https://sundirectgo-live.pc.cdn.bitgravity.com/src35/dth.mpd",
+      type: "dash",
+      drm: {
+        clearkey: {
+          keyId: "162e06450b01432dbf9a98cc8c06e637",
+          key:   "fb10bbb01a468e7c41614fc0803648aa"
+        }
+      },
+      width: "100%",
+      aspectratio: "16:9",
+      autostart: "viewable",   // safer for iframes
+      mute: true,              // required to autoplay in iframe
+      preload: "auto"
+    });
   </script>
-  <!-- Replace the URL with your desired page -->
-  <iframe 
-    src="https://myuser735.ifrem.net/iframe/frame.php" 
-    scrolling="no"
-    sandbox="allow-same-origin allow-scripts"
-    referrerpolicy="no-referrer"
-  ></iframe>
 </body>
 </html>
