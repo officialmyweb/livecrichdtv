@@ -2,19 +2,20 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Clappr MPD + ClearKey</title>
-  <script src="https://cdn.jsdelivr.net/npm/clappr@latest/dist/clappr.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/dash-shaka-playback@latest/dist/dash-shaka-playback.min.js"></script>
+  <title>JWPlayer MPD + ClearKey</title>
+  <script src="https://content.jwplatform.com/libraries/SAHhwvZq.js"></script>
   <style>
-    body, html {
-      margin: 0;
-      padding: 0;
-      background: #000;
-      height: 100%;
+    html, body {
+      margin:0; 
+      padding:0; 
+      width:100%; 
+      height:100%; 
+      background:#000; 
+      overflow:hidden;
     }
-    #player {
-      width: 100%;
-      height: 100%;
+    #player { 
+      width:100%; 
+      height:100%; 
     }
   </style>
 </head>
@@ -22,25 +23,36 @@
   <div id="player"></div>
 
   <script>
-    var player = new Clappr.Player({
-      parentId: "#player",
-      source: "https://sundirectgo-live.pc.cdn.bitgravity.com/src35/dth.mpd",  // replace with your MPD link
-      autoPlay: true,
-      width: "100%",
-      height: "100%",
-      plugins: [DashShakaPlayback],
-      playback: {
-        playInline: true,
-        shakaConfiguration: {
-          drm: {
-            clearKeys: {
-              // Replace with real keys:
-              "162e06450b01432dbf9a98cc8c06e637": "fb10bbb01a468e7c41614fc0803648aa"
-            }
-          }
+    // JWPlayer license
+    jwplayer.key = "XSuP4qMl+9tK17QNb+4+th2Pm9AWgMO/cYH8CI0HGGr7bdjo";
+
+    // Setup player
+    const playerInstance = jwplayer("player").setup({
+      file: "https://ev-fast-mpd.starzplayarabia.com/live/eds/CricLifeMax/DASH/CricLifeMax.mpd",
+      type: "dash",
+      drm: {
+        clearkey: {
+          keyId: "ad59b720bd4b44d063686212b99484b5",
+          key:   "e1744990edf98acc729c0773a3766583"
         }
-      }
+      },
+      width: "100%",
+      aspectratio: "16:9",
+      autostart: "viewable",
+      mute: true,       // required for autoplay in iframe
+      preload: "auto"
     });
+
+    // Detect if in iframe and request autoplay explicitly
+    if (window.self !== window.top) {
+      playerInstance.on('ready', function() {
+        playerInstance.play(true).catch(() => {
+          console.warn("Autoplay blocked, muted fallback applied");
+          playerInstance.setMute(true);
+          playerInstance.play(true);
+        });
+      });
+    }
   </script>
 </body>
 </html>
