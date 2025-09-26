@@ -2,57 +2,87 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>JWPlayer MPD + ClearKey</title>
-  <script src="https://content.jwplatform.com/libraries/SAHhwvZq.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Telegram-Live-Cric-Hd</title>
   <style>
-    html, body {
-      margin:0; 
-      padding:0; 
-      width:100%; 
-      height:100%; 
-      background:#000; 
-      overflow:hidden;
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+      background-color: #000;
+      color: white;
     }
-    #player { 
-      width:100%; 
-      height:100%; 
+    iframe {
+      width: 100%;
+      max-width: 800px;
+      height: 450px;
+      border: 4px solid #fff;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      box-shadow: 0 0 10px #00ffcc;
+    }
+    .button-group {
+      margin: 10px 0;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 6px;
+      background-color: #007bff;
+      color: white;
+      transition: background 0.3s;
+    }
+    button.active {
+      background-color: #28a745;
+    }
+    button:hover {
+      background-color: #0056b3;
     }
   </style>
 </head>
 <body>
-  <div id="player"></div>
+
+  <!-- Video Frame -->
+  <iframe id="videoFrame" allowfullscreen></iframe>
+
+  <!-- Language buttons -->
+  <div class="button-group">
+    <button id="btnEnglish" class="active" onclick="setQuality('English')">English</button>
+    <button id="btnHindi" onclick="setQuality('Hindi')">Hindi</button>
+  </div>
 
   <script>
-    // JWPlayer license
-    jwplayer.key = "XSuP4qMl+9tK17QNb+4+th2Pm9AWgMO/cYH8CI0HGGr7bdjo";
-
-    // Setup player
-    const playerInstance = jwplayer("player").setup({
-      file: "https://ev-fast-mpd.starzplayarabia.com/live/eds/CricLifeMax/DASH/CricLifeMax.mpd",
-      type: "dash",
-      drm: {
-        clearkey: {
-          keyId: "ad59b720bd4b44d063686212b99484b5",
-          key:   "e1744990edf98acc729c0773a3766583"
-        }
-      },
-      width: "100%",
-      aspectratio: "16:9",
-      autostart: "viewable",
-      mute: true,       // required for autoplay in iframe
-      preload: "auto"
-    });
-
-    // Detect if in iframe and request autoplay explicitly
-    if (window.self !== window.top) {
-      playerInstance.on('ready', function() {
-        playerInstance.play(true).catch(() => {
-          console.warn("Autoplay blocked, muted fallback applied");
-          playerInstance.setMute(true);
-          playerInstance.play(true);
-        });
-      });
+    if (confirm("Join Our Telegram Channel @livecrichdofficial")) {
+      window.location.href = "https://telegram.me/livecrichdofficial";
     }
+
+    // Default stream is English
+    let currentQuality = 'English';
+
+    const sources = {
+      'English': 'https://liveakmt-p.slivcdn.com/hls/live/2119931/cricacc12609/ENG/std_lrh-800300010.m3u8?hdnea=exp=1758940626~acl=/*~id=96422605158479629396934164991304~hmac=5349b796912ec3a65a236c517abb077a38c5b4f8296592184ec66c93c9ca1489',
+      'Hindi':   'https://liveakmt-p.slivcdn.com/hls/live/2119921/cricacc12609/HIN/std_lrh-800300010.m3u8?hdnea=exp=1758940626~acl=/*~id=96422605158479629396934164991304~hmac=5349b796912ec3a65a236c517abb077a38c5b4f8296592184ec66c93c9ca1489'
+    };
+
+    function updateStream() {
+      document.getElementById("videoFrame").src = sources[currentQuality];
+    }
+
+    function setQuality(q) {
+      currentQuality = q;
+      ['English', 'Hindi'].forEach(lang => {
+        document.getElementById('btn' + lang).classList.remove('active');
+      });
+      document.getElementById('btn' + q).classList.add('active');
+      updateStream();
+    }
+
+    // Load default English on start
+    updateStream();
   </script>
+
 </body>
 </html>
