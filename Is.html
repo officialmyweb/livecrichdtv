@@ -56,18 +56,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   const ui = new shaka.ui.Overlay(player, container, video);
 ui.configure({
-  controlPanelElements: [
-    'play_pause','time_and_duration','mute','volume',
-    'spacer','language','captions','picture_in_picture',
-    'quality','fullscreen'
-  ],
-  volumeBarColors: { base: '#fff', level: '#fff' }, // white volume sliders
-  seekBarColors: { 
-    base: '#fff',       // the full bar background
-    buffered: 'brown',  // the loaded portion color
-    played: '#fff'      // the portion already played
-  }
-});
+            controlPanelElements: [
+                'play_pause', 'mute', 'spacer', 'time_and_duration', 
+                'quality', 'fullscreen', 'picture_in_picture', 
+                'overflow_menu'
+            ],
+            overflowMenuButtons: ['captions', 'cast', 'quality', 'language']
+        });
+
 
 
 
