@@ -7,7 +7,7 @@ const STREAMS = {
   },
   E1: {
     mpd: "https://jiotvmblive.cdn.jio.com/bpk-tv/Asia_Cup_English_MOB/WDVLive/index.mpd",
-    key: { "978bf56658595ff5a65b960a753beaab":"59af29130ecb16505dec2b00b84c817b" }
+    key: { "59af29130ecb16505dec2b00b84c817b":"978bf56658595ff5a65b960a753beaab" }
   },
   T1: {
     mpd: "https://jiotvmblive.cdn.jio.com/bpk-tv/Asia_Cup_Tamil_MOB/WDVLive/index.mpd",
