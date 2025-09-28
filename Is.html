@@ -146,6 +146,20 @@ ui.configure({
 
   document.addEventListener('visibilitychange',()=>{ if(!document.hidden && video.paused) attemptAutoplay(); });
 });
+
+  function configureDRMAndAddLogo() {
+        const logo = document.createElement("img");
+        logo.src = "https://i.ibb.co/7VF2dfy/1000000077-removebg-preview.png";
+        logo.alt = "Logo";
+        logo.className = "logo";
+        logo.addEventListener("click", function() {
+            window.location.href = "https://telegram.me/livecrichdofficial";
+        });
+
+        const videoContainer = document.querySelector(".shaka-video-container");
+        videoContainer.appendChild(logo);
+  }
+  
 </script>
 
 </body>
