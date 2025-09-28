@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Shaka Player Hindi JSON</title>
+<title>Shaka Player Hoded</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.11/shaka-player.ui.min.js" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.11/controls.min.css" crossorigin="anonymous">
 <style>
@@ -37,26 +37,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     seekBarColors:{ base:'rgb(41,41,163)', buffered:'rgb(35,99,3)', played:'rgba(63,187,1,1)' }
   });
 
-  // --- Fetch Hindi channel token from JSON ---
-  let streamUrl = "";
-  let cookieHeader = "";
+  // --- HARD CODED Hindi Channel ---
+  const streamUrl = "https://jiotvmblive.cdn.jio.com/bpk-tv/Asia_Cup_Hindi_MOB/WDVLive/index.mpd?__hdnea__=st=1759042857~exp=1759129257~acl=/*~hmac=03cb725f1f6ea7a45ba2fab3f33333c6ac54df643613072c7324679a2e4be38f";
+  const cookieHeader = "__hdnea__=st=1759042857~exp=1759129257~acl=/*~hmac=03cb725f1f6ea7a45ba2fab3f33333c6ac54df643613072c7324679a2e4be38f";
 
-  try {
-    const res = await fetch('https://pkll.xojiv79335.workers.dev/', { cache:'no-store' });
-    const data = await res.json();
-    const hindi = data.find(ch => ch.channel_id==='1001'); // Hindi
-    if (!hindi) throw new Error('Hindi channel not found');
-    streamUrl = hindi.channel_url;
-    cookieHeader = hindi.cookie; // __hdnea__ token
-    console.log('Stream URL:', streamUrl);
-    console.log('Token:', cookieHeader);
-  } catch(e) {
-    console.error('Failed to fetch JSON:', e);
-    return;
-  }
-
-  // --- Optional ClearKey DRM, same as your Hindi working code ---
-  let drmConfig = { clearKeys: { "31b13c6f241055aaa965263f3115e684":"61f0cbc9599925a7be93d45e30b8ebe9" } };
+  const drmConfig = {
+    clearKeys: {
+      "31b13c6f241055aaa965263f3115e684":"61f0cbc9599925a7be93d45e30b8ebe9"
+    }
+  };
 
   player.configure({
     drm: drmConfig,
@@ -70,14 +59,13 @@ document.addEventListener('DOMContentLoaded', async () => {
       segmentPrefetchLimit:2,
       useNativeHlsOnSafari:true
     },
-    manifest: { retryParameters:{ timeout:8000,maxAttempts:3 } }
+    manifest:{ retryParameters:{ timeout:8000,maxAttempts:3 } }
   });
 
-  // --- Append token to manifest & segment requests like your working Hindi code ---
+  // --- Append cookie to all requests ---
   player.getNetworkingEngine().registerRequestFilter((type, request) => {
-    request.headers['Referer']='https://www.jiotv.com/';
-    request.headers['User-Agent']="plaYtv/7.1.5 (Linux;Android 13) ExoPlayerLib/2.11.6";
-
+    request.headers['Referer'] = 'https://www.jiotv.com/';
+    request.headers['User-Agent'] = "plaYtv/7.1.5 (Linux;Android 13) ExoPlayerLib/2.11.6";
     if(cookieHeader && (type===shaka.net.NetworkingEngine.RequestType.MANIFEST || type===shaka.net.NetworkingEngine.RequestType.SEGMENT)){
       const sep = request.uris[0].includes('?') ? '&' : '?';
       request.uris[0] += sep + cookieHeader;
@@ -92,16 +80,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     catch { try { video.muted=true; await video.play(); return true; } catch { return false; } }
   };
 
-  // --- Fullscreen on mobile ---
   video.addEventListener('play', ()=>{ if(window.self===window.top && !document.fullscreenElement && window.innerWidth<=768) container.requestFullscreen().catch(()=>{}); }, {once:true});
   video.addEventListener('loadedmetadata', ()=>{ video.volume=0.8; });
 
-  // --- Enable sound after user interaction ---
   let hasUserInteracted=false;
   const enableSoundOnInteraction = ()=>{ if(!hasUserInteracted && video.muted){ video.muted=false; hasUserInteracted=true; } };
   ['click','touchstart','keydown'].forEach(ev=>document.addEventListener(ev, enableSoundOnInteraction, {once:true}));
 
-  // --- Load stream ---
+  // --- Load hardcoded stream ---
   try {
     enableAutoplay();
     await player.load(streamUrl);
