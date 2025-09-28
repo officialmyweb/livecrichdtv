@@ -3,86 +3,105 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Telegram-Live-Cric-Hd</title>
+  <title>Dynamic Shaka Player</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.11/shaka-player.ui.min.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.11/controls.min.css" crossorigin="anonymous">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 20px;
-      background-color: #000;
-      color: white;
-    }
-    iframe {
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
       width: 100%;
-      max-width: 800px;
-      height: 450px;
-      border: 4px solid #fff;
-      border-radius: 10px;
-      margin-bottom: 20px;
-      box-shadow: 0 0 10px #00ffcc;
+      background: #000;
+      overflow: hidden;
     }
-    .button-group {
-      margin: 10px 0;
+    .shaka-video-container {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
     }
-    button {
-      padding: 10px 20px;
-      margin: 5px;
-      font-size: 16px;
-      cursor: pointer;
-      border: none;
-      border-radius: 6px;
-      background-color: #007bff;
-      color: white;
-      transition: background 0.3s;
-    }
-    button.active {
-      background-color: #28a745;
-    }
-    button:hover {
-      background-color: #0056b3;
+    video {
+      width: 100%;
+      height: 100%;
+      background: #000;
+      object-fit: contain;
     }
   </style>
 </head>
 <body>
-
-  <!-- Video Frame -->
-  <iframe id="videoFrame" allowfullscreen></iframe>
-
-  <!-- Language buttons -->
-  <div class="button-group">
-    <button id="btnEnglish" class="active" onclick="setQuality('English')">English</button>
-    <button id="btnHindi" onclick="setQuality('Hindi')">Hindi</button>
+  <div class="shaka-video-container">
+    <video autoplay playsinline></video>
   </div>
 
   <script>
-    if (confirm("Join Our Telegram Channel @livecrichdofficial")) {
-      window.location.href = "https://telegram.me/livecrichdofficial";
-    }
+    document.addEventListener('DOMContentLoaded', async () => {
+      shaka.polyfill.installAll();
+      if (!shaka.Player.isBrowserSupported()) {
+        console.error("Browser not supported");
+        return;
+      }
 
-    // Default stream is English
-    let currentQuality = 'English';
+      const urlParams = new URLSearchParams(window.location.search);
+      const channelId = urlParams.get("id") || "1001"; // default Hindi
+      console.log("Requested channel ID:", channelId);
 
-    const sources = {
-      'English': 'https://liveakmt-p.slivcdn.com/hls/live/2119931/cricacc12609/ENG/std_lrh-800300010.m3u8?hdnea=exp=1758940626~acl=/*~id=96422605158479629396934164991304~hmac=5349b796912ec3a65a236c517abb077a38c5b4f8296592184ec66c93c9ca1489',
-      'Hindi':   'https://liveakmt-p.slivcdn.com/hls/live/2119921/cricacc12609/HIN/std_lrh-800300010.m3u8?hdnea=exp=1758940626~acl=/*~id=96422605158479629396934164991304~hmac=5349b796912ec3a65a236c517abb077a38c5b4f8296592184ec66c93c9ca1489'
-    };
+      const video = document.querySelector("video");
+      const player = new shaka.Player(video);
 
-    function updateStream() {
-      document.getElementById("videoFrame").src = sources[currentQuality];
-    }
-
-    function setQuality(q) {
-      currentQuality = q;
-      ['English', 'Hindi'].forEach(lang => {
-        document.getElementById('btn' + lang).classList.remove('active');
+      const container = document.querySelector(".shaka-video-container");
+      const ui = new shaka.ui.Overlay(player, container, video);
+      ui.configure({
+        controlPanelElements: [
+          "play_pause", "time_and_duration", "mute", "volume",
+          "spacer", "quality", "fullscreen"
+        ]
       });
-      document.getElementById('btn' + q).classList.add('active');
-      updateStream();
-    }
 
-    // Load default English on start
-    updateStream();
+      async function getChannelConfig(id) {
+        const res = await fetch("https://pkll.xojiv79335.workers.dev/", {cache:"no-store"});
+        const data = await res.json();
+        return data.find(ch => ch.channel_id === id);
+      }
+
+      const channel = await getChannelConfig(channelId);
+      if (!channel) {
+        console.error("Channel not found for id", channelId);
+        return;
+      }
+
+      console.log("Loaded channel:", channel.channel_name);
+
+      player.configure({
+        drm: {
+          clearKeys: { [channel.keyId]: channel.key }
+        },
+        streaming: {
+          lowLatencyMode: true,
+          bufferingGoal: 15,
+          rebufferingGoal: 2
+        }
+      });
+
+      player.getNetworkingEngine().registerRequestFilter((type, request) => {
+        request.headers["Referer"] = "https://www.jiotv.com/";
+        request.headers["User-Agent"] = "plaYtv/7.1.5 (Linux;Android 13) ExoPlayerLib/2.11.6";
+        if (channel.cookie) {
+          if (type === shaka.net.NetworkingEngine.RequestType.MANIFEST ||
+              type === shaka.net.NetworkingEngine.RequestType.SEGMENT) {
+            const separator = request.uris[0].includes("?") ? "&" : "?";
+            request.uris[0] += separator + channel.cookie;
+          }
+        }
+      });
+
+      try {
+        await player.attach(video);
+        await player.load(channel.channel_url);
+      } catch (err) {
+        console.error("Playback error:", err);
+      }
+    });
   </script>
-
 </body>
 </html>
