@@ -1,264 +1,165 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>DPlayer</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dplayer/dist/DPlayer.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@1.4.0/dist/hls.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/dplayer@1.26.0/dist/DPlayer.min.js"></script>
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      background: #000;
-      height: 100%;
-      width: 100%;
-      overflow: hidden;
-    }
-
-    #dplayer {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-    }
-
-    .dplayer-video-normal { object-fit: contain !important; }
-    .dplayer-video-zoomed { object-fit: cover !important; }
-
-    .dplayer-icons-right .dplayer-zoom,
-    .dplayer-icons-right .dplayer-quality {
-      display: inline-block;
-      width: 40px;
-      height: 100%;
-      text-align: center;
-      cursor: pointer;
-      vertical-align: middle;
-      color: #fff;
-      position: relative;
-      margin-right: 4px;
-    }
-
-    .dplayer-icons-right .dplayer-zoom:hover,
-    .dplayer-icons-right .dplayer-quality:hover {
-      color: #b7daff;
-    }
-
-    .dplayer-icons-right .dplayer-zoom svg,
-    .dplayer-icons-right .dplayer-quality svg {
-      width: 20px;
-      height: 20px;
-      margin-top: 10px;
-      stroke: currentColor;
-      stroke-width: 2;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      fill: none;
-    }
-
-    .dplayer-quality-menu {
-      position: absolute;
-      right: 0;
-      bottom: 50px;
-      background: rgba(28, 28, 28, 0.9);
-      border-radius: 2px;
-      padding: 5px 0;
-      display: none;
-      min-width: 100px;
-      z-index: 100;
-    }
-
-    .dplayer-quality-menu.show { display: block; }
-
-    .dplayer-quality-menu-item {
-      padding: 5px 15px;
-      font-size: 12px;
-      cursor: pointer;
-      color: #fff;
-    }
-
-    .dplayer-quality-menu-item:hover {
-      background: rgba(255, 255, 255, 0.1);
-    }
-
-    .dplayer-quality-menu-item.active {
-      color: #b7daff;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Telegram-Live-Cric-Hd</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.11/shaka-player.ui.min.js" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.11/controls.min.css" crossorigin="anonymous">
+<script src="streams.js"></script>
 </head>
 <body>
-  <div id="dplayer"></div>
+<style>
+html, body {
+    width: 100%;
+    height: 100%;
+    background: #000;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    font-family: system-ui, -apple-system, sans-serif;
+}
 
-  <script>
-    let dp, zoomed = false, currentQuality = '1080p', sources = {};
-    const qualityMap = {
-      '240': '240p',
-      '360': '360p',
-      '480': '480p',
-      '540': '540p',
-      '720': '720p',
-      '1080': '1080p'
-    };
+.shaka-video-container {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
 
-    const zoomSVG = `
-      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path d="M15 4V7C15 8.1 15.9 9 17 9H20M9 4V7C9 8.1 8.1 9 7 9H4M15 20V17C15 15.9 15.9 15 17 15H20M9 20V17C9 15.9 8.1 15 7 15H4"/>
-      </svg>
-    `;
+video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: #000;
+    display: block;
+}
 
-    const qualitySVG = `
-      <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-        <path d="M28 6L4 6M28 16L4 16M28 26L4 26M24 3L24 9M8 13L8 19M20 23L20 29"/>
-      </svg>
-    `;
+.logo {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 120px;
+    height: auto;
+    cursor: pointer;
+    z-index: 9999;
+}
+</style>
 
-    async function loadMasterPlaylist(url) {
-      try {
-        const res = await fetch(url);
-        const text = await res.text();
-        const lines = text.split('\n');
+<div class="shaka-video-container">
+  <video autoplay playsinline></video>
+</div>
 
-        sources = { 'Auto': url };
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+  shaka.polyfill.installAll();
+  if (!shaka.Player.isBrowserSupported()) { console.error('Browser not supported'); return; }
 
-        for (let i = 0; i < lines.length; i++) {
-          if (lines[i].startsWith('#EXT-X-STREAM-INF')) {
-            const resolutionMatch = lines[i].match(/RESOLUTION=(\d+)x(\d+)/);
-            const nextLine = lines[i + 1];
-            if (resolutionMatch && nextLine && nextLine.startsWith('http')) {
-              const height = resolutionMatch[2];
-              const label = qualityMap[height] || `${height}p`;
-              sources[label] = nextLine.trim();
-            }
-          }
-        }
+  const video = document.querySelector('video');
+  const container = document.querySelector('.shaka-video-container');
+  const player = new shaka.Player();
+  await player.attach(video);
 
-        if (Object.keys(sources).length === 0) throw new Error("No streams found.");
+  // UI
+  const ui = new shaka.ui.Overlay(player, container, video);
+  ui.configure({
+      controlPanelElements: [
+          'play_pause', 'mute', 'spacer', 'time_and_duration', 
+          'quality', 'fullscreen', 'picture_in_picture', 
+          'overflow_menu'
+      ],
+      overflowMenuButtons: ['captions', 'cast', 'quality', 'language']
+  });
 
-        if (sources['720p']) {
-          currentQuality = '720p';
-        } else {
-          currentQuality = Object.keys(sources)[0];
-        }
+  // --- Fetch token from external file ---
+  let cookieHeader = "";
+  async function fetchTokenFromSite() {
+    try {
+      const res = await fetch('https://livecrichdtv.pages.dev/Hindi.txt', {cache:'no-store', mode:'cors'});
+      if(!res.ok) throw new Error('HTTP '+res.status);
+      const txt = (await res.text()).trim();
+      if(txt){ cookieHeader = txt; console.log('Token fetched:', cookieHeader); return true; }
+    } catch(e){ console.warn('Failed to fetch token:', e.message); }
+    return false;
+  }
+  await fetchTokenFromSite();
+  setInterval(fetchTokenFromSite, 5*60*1000);
 
-        initPlayer(sources[currentQuality]);
+  // --- Read channel from URL parameter ---
+  function getChannelId() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('id') || 'C1';
+  }
+  const channelId = getChannelId();
+  const stream = STREAMS[channelId];
+  if(!stream) { console.error('Channel not found:', channelId); return; }
 
-        setTimeout(() => {
-          if (dp && dp.video) {
-            dp.video.muted = false;
-            dp.video.volume = 1;
-          }
-        }, 800);
+  // --- Configure DRM & streaming ---
+  player.configure({
+    drm: { clearKeys: stream.key },
+    streaming: {
+      lowLatencyMode: true,
+      bufferingGoal: 15,
+      rebufferingGoal: 2,
+      bufferBehind: 15,
+      retryParameters:{ timeout:10000, maxAttempts:5, baseDelay:300, backoffFactor:1.2 },
+      segmentRequestTimeout:8000,
+      segmentPrefetchLimit:2,
+      useNativeHlsOnSafari:true
+    },
+    manifest: { retryParameters:{ timeout:8000, maxAttempts:3 } }
+  });
 
-      } catch (err) {
-        alert(`Error loading stream: ${err.message}`);
-      }
+  // --- Add cookies & headers to requests ---
+  player.getNetworkingEngine().registerRequestFilter((type, request) => {
+    request.headers['Referer']='https://www.jiotv.com/';
+    request.headers['User-Agent']="plaYtv/7.1.5 (Linux;Android 13) ExoPlayerLib/2.11.6";
+    if(cookieHeader) request.headers['Cookie'] = cookieHeader;
+    if((type===shaka.net.NetworkingEngine.RequestType.MANIFEST ||
+        type===shaka.net.NetworkingEngine.RequestType.SEGMENT) &&
+        request.uris[0] && !request.uris[0].includes('__hdnea__=')) {
+      const sep = request.uris[0].includes('?') ? '&' : '?';
+      request.uris[0]+=sep+cookieHeader;
     }
+  });
 
-    function initPlayer(url) {
-      if (dp) dp.destroy();
-      dp = new DPlayer({
-        container: document.getElementById('dplayer'),
-        autoplay: true,
-        video: {
-          url,
-          type: 'hls',
-          pic: "#"
-        },
-        theme: '#b7daff'
-      });
+  // --- Load the stream ---
+  async function loadStream() {
+    try {
+      video.setAttribute('autoplay',''); video.setAttribute('playsinline','');
+      await player.load(stream.mpd);
+      if(video.readyState>=3){ await video.play(); } 
+      else{ video.addEventListener('canplay', ()=>video.play(), {once:true}); }
+    } catch(error){ console.error('Load error:',error); }
+  }
+  await loadStream();
 
-      dp.video.classList.add('dplayer-video-normal');
-      setTimeout(addCustomControls, 500);
+  // --- Add logo ---
+  const logo = document.createElement("img");
+  logo.src = "https://i.ibb.co/7VF2dfy/1000000077-removebg-preview.png";
+  logo.alt = "Logo";
+  logo.className = "logo";
+  logo.addEventListener("click", ()=>window.location.href="https://telegram.me/livecrichdofficial");
+  container.appendChild(logo);
+
+  // --- Autoplay fix & fullscreen for mobiles ---
+  video.addEventListener('play',()=>{
+    if(window.self===window.top && !document.fullscreenElement && window.innerWidth<=768){
+      container.requestFullscreen().catch(()=>console.log('Fullscreen request failed'));
     }
+  },{once:true});
 
-    function addCustomControls() {
-      const controls = document.querySelector(".dplayer-icons-right");
-      if (!controls) return setTimeout(addCustomControls, 100);
+  video.volume=0.8;
 
-      ['.dplayer-zoom', '.dplayer-quality'].forEach(sel => {
-        const el = controls.querySelector(sel);
-        if (el) el.remove();
-      });
+  let hasUserInteracted=false;
+  ['click','touchstart','keydown'].forEach(e=>document.addEventListener(e,()=>{
+    if(!hasUserInteracted && video.muted){ video.muted=false; hasUserInteracted=true; }
+  },{once:true}));
 
-      const zoomBtn = document.createElement('div');
-      zoomBtn.className = 'dplayer-zoom';
-      zoomBtn.title = 'Zoom';
-      zoomBtn.innerHTML = zoomSVG;
-      zoomBtn.onclick = () => {
-        zoomed = !zoomed;
-        dp.video.classList.toggle('dplayer-video-zoomed', zoomed);
-        dp.video.classList.toggle('dplayer-video-normal', !zoomed);      };
+  player.addEventListener('error',e=>console.error('Shaka Player Error:',e.detail));
+  document.addEventListener('visibilitychange',()=>{ if(!document.hidden && video.paused) video.play(); });
+});
+</script>
 
-      if (Object.keys(sources).length > 1) {
-        const qualityBtn = document.createElement('div');
-        qualityBtn.className = 'dplayer-quality';
-        qualityBtn.title = 'Quality';
-        qualityBtn.innerHTML = `${qualitySVG}<div class="dplayer-quality-menu"></div>`;
-
-        const menu = qualityBtn.querySelector('.dplayer-quality-menu');
-
-        Object.keys(sources).sort((a, b) => {
-          if (a === 'Auto') return 1;
-          if (b === 'Auto') return -1;
-          return parseInt(a) - parseInt(b);
-        }).forEach(q => {
-          const item = document.createElement('div');
-          item.className = `dplayer-quality-menu-item${q === currentQuality ? ' active' : ''}`;
-          item.textContent = q;
-          item.onclick = () => {
-            if (q !== currentQuality) {
-              const time = dp.video.currentTime;
-              currentQuality = q;
-              initPlayer(sources[q]);
-              dp.on('loadeddata', () => dp.seek(time));
-            }
-            menu.classList.remove('show');
-          };
-          menu.appendChild(item);
-        });
-
-        qualityBtn.onclick = (e) => {
-          e.stopPropagation();
-          menu.classList.toggle('show');
-          setTimeout(() => {
-            const close = (e) => {
-              if (!qualityBtn.contains(e.target)) {
-                menu.classList.remove('show');
-                document.removeEventListener('click', close);
-              }
-            };
-            document.addEventListener('click', close);
-          }, 0);
-        };
-
-        const settingsBtn = controls.querySelector('.dplayer-setting');
-        if (settingsBtn) {
-          controls.insertBefore(qualityBtn, settingsBtn);
-          controls.insertBefore(zoomBtn, settingsBtn);
-        } else {
-          controls.prepend(qualityBtn);
-          controls.prepend(zoomBtn);
-        }
-      } else {
-        const settingsBtn = controls.querySelector('.dplayer-setting');
-        if (settingsBtn) {
-          controls.insertBefore(zoomBtn, settingsBtn);
-        } else {
-          controls.prepend(zoomBtn);
-        }
-      }
-    }
-
-    const streamUrl = new URLSearchParams(window.location.search).get('url');
-    if (streamUrl) {
-      loadMasterPlaylist(streamUrl);
-    } else {
-      alert("No stream URL provided. Use ?url=...");
-    }
-  </script>
 </body>
 </html>
-
-[Program finished]
