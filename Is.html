@@ -30,40 +30,36 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   const container = document.querySelector('.shaka-video-container');
   const ui = new shaka.ui.Overlay(player, container, video);
+
   ui.configure({
     controlPanelElements:['play_pause','time_and_duration','mute','volume','spacer','language','captions','picture_in_picture','quality','fullscreen'],
     volumeBarColors:{ base:'rgba(63,187,1,1)', level:'rgb(255,69,0)' },
     seekBarColors:{ base:'rgb(41,41,163)', buffered:'rgb(35,99,3)', played:'rgba(63,187,1,1)' }
   });
 
-  // Fetch JSON and get Hindi channel token
-  async function fetchHindiToken() {
-    try {
-      const res = await fetch('https://pkll.xojiv79335.workers.dev/', { cache:'no-store' });
-      const data = await res.json();
-      const channel = data.find(ch => ch.channel_id === '1001'); // Hindi
-      if (!channel) throw new Error('Hindi channel not found in JSON');
-      return {
-        url: channel.channel_url,
-        token: channel.cookie // only __hdnea__ token
-      };
-    } catch(e) {
-      console.error('Failed to fetch JSON:', e);
-      return null;
-    }
+  // --- Fetch Hindi channel token from JSON ---
+  let streamUrl = "";
+  let cookieHeader = "";
+
+  try {
+    const res = await fetch('https://pkll.xojiv79335.workers.dev/', { cache:'no-store' });
+    const data = await res.json();
+    const hindi = data.find(ch => ch.channel_id==='1001'); // Hindi
+    if (!hindi) throw new Error('Hindi channel not found');
+    streamUrl = hindi.channel_url;
+    cookieHeader = hindi.cookie; // __hdnea__ token
+    console.log('Stream URL:', streamUrl);
+    console.log('Token:', cookieHeader);
+  } catch(e) {
+    console.error('Failed to fetch JSON:', e);
+    return;
   }
 
-  const channelData = await fetchHindiToken();
-  if (!channelData) return;
+  // --- Optional ClearKey DRM, same as your Hindi working code ---
+  let drmConfig = { clearKeys: { "31b13c6f241055aaa965263f3115e684":"61f0cbc9599925a7be93d45e30b8ebe9" } };
 
-  const streamUrl = channelData.url;
-  const cookieHeader = channelData.token;
-
-  console.log('Stream URL:', streamUrl);
-  console.log('Token:', cookieHeader);
-
-  // Shaka config
   player.configure({
+    drm: drmConfig,
     streaming: {
       lowLatencyMode:true,
       bufferingGoal:15,
@@ -77,33 +73,35 @@ document.addEventListener('DOMContentLoaded', async () => {
     manifest: { retryParameters:{ timeout:8000,maxAttempts:3 } }
   });
 
-  // Append token to manifest and segment requests
+  // --- Append token to manifest & segment requests like your working Hindi code ---
   player.getNetworkingEngine().registerRequestFilter((type, request) => {
     request.headers['Referer']='https://www.jiotv.com/';
     request.headers['User-Agent']="plaYtv/7.1.5 (Linux;Android 13) ExoPlayerLib/2.11.6";
 
-    if(cookieHeader && (type === shaka.net.NetworkingEngine.RequestType.MANIFEST || type === shaka.net.NetworkingEngine.RequestType.SEGMENT)){
+    if(cookieHeader && (type===shaka.net.NetworkingEngine.RequestType.MANIFEST || type===shaka.net.NetworkingEngine.RequestType.SEGMENT)){
       const sep = request.uris[0].includes('?') ? '&' : '?';
       request.uris[0] += sep + cookieHeader;
+      request.headers['Cookie'] = cookieHeader;
     }
   });
 
-  // Autoplay logic
+  // --- Autoplay logic ---
   const enableAutoplay = () => { video.setAttribute('autoplay',''); video.setAttribute('playsinline',''); video.autoplay=true; };
   const attemptAutoplay = async () => {
-    try { video.muted=false; await video.play(); console.log('Unmuted autoplay success'); return true; }
-    catch { try { video.muted=true; await video.play(); console.log('Muted autoplay success'); return true; } catch { return false; } }
+    try { video.muted=false; await video.play(); return true; }
+    catch { try { video.muted=true; await video.play(); return true; } catch { return false; } }
   };
 
-  // Fullscreen for mobile
-  video.addEventListener('play', ()=>{ if(window.self===window.top && !document.fullscreenElement && window.innerWidth<=768) container.requestFullscreen().catch(()=>console.log('Fullscreen failed')); }, {once:true});
+  // --- Fullscreen on mobile ---
+  video.addEventListener('play', ()=>{ if(window.self===window.top && !document.fullscreenElement && window.innerWidth<=768) container.requestFullscreen().catch(()=>{}); }, {once:true});
   video.addEventListener('loadedmetadata', ()=>{ video.volume=0.8; });
 
+  // --- Enable sound after user interaction ---
   let hasUserInteracted=false;
-  const enableSoundOnInteraction = ()=>{ if(!hasUserInteracted && video.muted){ video.muted=false; hasUserInteracted=true; console.log('Sound enabled'); } };
+  const enableSoundOnInteraction = ()=>{ if(!hasUserInteracted && video.muted){ video.muted=false; hasUserInteracted=true; } };
   ['click','touchstart','keydown'].forEach(ev=>document.addEventListener(ev, enableSoundOnInteraction, {once:true}));
 
-  // Load stream
+  // --- Load stream ---
   try {
     enableAutoplay();
     await player.load(streamUrl);
@@ -113,7 +111,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   document.addEventListener('visibilitychange', ()=>{ if(!document.hidden && video.paused) attemptAutoplay(); });
   player.addEventListener('error', (event)=>{ console.error('Shaka Player Error:', event.detail); });
-
 });
 </script>
 </body>
