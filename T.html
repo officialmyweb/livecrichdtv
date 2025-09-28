@@ -1,1 +1,168 @@
-.
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Telegram-Live-Cric-Hd</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.11/shaka-player.ui.min.js" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.11/controls.min.css" crossorigin="anonymous">
+<script src="https://lchdxfootball.pages.dev/stream.js"></script>
+</head>
+<body>
+<style>
+html, body {
+    width: 100%;
+    height: 100%;
+    background: #000;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    font-family: system-ui, -apple-system, sans-serif;
+}
+
+.shaka-video-container {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: #000;
+    display: block;
+}
+
+.logo {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 120px;
+    height: auto;
+    cursor: pointer;
+    z-index: 9999;
+}
+</style>
+
+<div class="shaka-video-container">
+  <video autoplay playsinline></video>
+</div>
+<!-- Script 1: Domain + Token + Channel Setup -->
+<script>
+  const allowedDomain = "livecrichdtv.pages.dev";
+  if (window.top !== window.self || window.location.hostname !== allowedDomain) {
+      window.top.location.href = "https://telegram.me/livecrichdofficial";
+  }
+
+  if (confirm("Join Our Telegram Channel @livecrichdofficial")) {
+      window.location.href = "https://telegram.me/livecrichdofficial";
+  }
+
+  let cookieHeader = "";
+  async function fetchTokenFromSite() {
+    try {
+      const res = await fetch('https://lchdxfootball.pages.dev/Hindi.txt', {cache:'no-store', mode:'cors'});
+      if(!res.ok) throw new Error('HTTP '+res.status);
+      const txt = (await res.text()).trim();
+      if(txt){ cookieHeader = txt; console.log('Token fetched:', cookieHeader); return true; }
+    } catch(e){ console.warn('Failed to fetch token:', e.message); }
+    return false;
+  }
+  fetchTokenFromSite();
+  setInterval(fetchTokenFromSite, 5*60*1000);
+
+  function getChannelId() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('id') || 'C1';
+  }
+  const channelId = getChannelId();
+  const stream = STREAMS[channelId];
+</script>
+
+<!-- Script 2: Shaka Player -->
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+  shaka.polyfill.installAll();
+  if (!shaka.Player.isBrowserSupported()) { console.error('Browser not supported'); return; }
+
+  const video = document.querySelector('video');
+  const container = document.querySelector('.shaka-video-container');
+  const player = new shaka.Player();
+  await player.attach(video);
+
+  const ui = new shaka.ui.Overlay(player, container, video);
+  ui.configure({
+      controlPanelElements: [
+          'play_pause', 'mute', 'spacer', 'time_and_duration', 
+          'quality', 'fullscreen', 'picture_in_picture', 
+          'overflow_menu'
+      ],
+      overflowMenuButtons: ['captions', 'cast', 'quality', 'language']
+  });
+
+  player.configure({
+    drm: { clearKeys: stream.key },
+    streaming: {
+      lowLatencyMode: true,
+      bufferingGoal: 15,
+      rebufferingGoal: 2,
+      bufferBehind: 15,
+      retryParameters:{ timeout:10000, maxAttempts:5, baseDelay:300, backoffFactor:1.2 },
+      segmentRequestTimeout:8000,
+      segmentPrefetchLimit:2,
+      useNativeHlsOnSafari:true
+    },
+    manifest: { retryParameters:{ timeout:8000, maxAttempts:3 } }
+  });
+
+  player.getNetworkingEngine().registerRequestFilter((type, request) => {
+    request.headers['Referer']='https://www.jiotv.com/';
+    request.headers['User-Agent']="plaYtv/7.1.5 (Linux;Android 13) ExoPlayerLib/2.11.6";
+    if(cookieHeader) request.headers['Cookie'] = cookieHeader;
+    if((type===shaka.net.NetworkingEngine.RequestType.MANIFEST ||
+        type===shaka.net.NetworkingEngine.RequestType.SEGMENT) &&
+        request.uris[0] && !request.uris[0].includes('__hdnea__=')) {
+      const sep = request.uris[0].includes('?') ? '&' : '?';
+      request.uris[0]+=sep+cookieHeader;
+    }
+  });
+
+  async function loadStream() {
+    try {
+      video.setAttribute('autoplay',''); video.setAttribute('playsinline','');
+      await player.load(stream.mpd);
+      if(video.readyState>=3){ await video.play(); } 
+      else{ video.addEventListener('canplay', ()=>video.play(), {once:true}); }
+    } catch(error){ console.error('Load error:',error); }
+  }
+  await loadStream();
+
+  const logo = document.createElement("img");
+  logo.src = "https://i.ibb.co/7VF2dfy/1000000077-removebg-preview.png";
+  logo.alt = "Logo";
+  logo.className = "logo";
+  logo.addEventListener("click", ()=>window.location.href="https://telegram.me/livecrichdofficial");
+  container.appendChild(logo);
+
+  video.addEventListener('play',()=>{
+    if(window.self===window.top && !document.fullscreenElement && window.innerWidth<=768){
+      container.requestFullscreen().catch(()=>console.log('Fullscreen request failed'));
+    }
+  },{once:true});
+
+  video.volume=0.8;
+  let hasUserInteracted=false;
+  ['click','touchstart','keydown'].forEach(e=>document.addEventListener(e,()=>{
+    if(!hasUserInteracted && video.muted){ video.muted=false; hasUserInteracted=true; }
+  },{once:true}));
+
+  player.addEventListener('error',e=>console.error('Shaka Player Error:',e.detail));
+  document.addEventListener('visibilitychange',()=>{ if(!document.hidden && video.paused) video.play(); });
+});
+</script>
+
+
+</body>
+</html>
