@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Shaka Player JSON Stream</title>
+<title>Shaka Player Hindi JSON</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.11/shaka-player.ui.min.js" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.11/controls.min.css" crossorigin="anonymous">
 <style>
@@ -36,34 +36,34 @@ document.addEventListener('DOMContentLoaded', async () => {
     seekBarColors:{ base:'rgb(41,41,163)', buffered:'rgb(35,99,3)', played:'rgba(63,187,1,1)' }
   });
 
-  // Get channel ID from URL, default to 1001
-  const urlParams = new URLSearchParams(window.location.search);
-  const channelId = urlParams.get('id') || '1001';
-
-  // Fetch channel info from JSON
-  async function fetchChannel() {
+  // Fetch JSON and get Hindi channel token
+  async function fetchHindiToken() {
     try {
       const res = await fetch('https://pkll.xojiv79335.workers.dev/', { cache:'no-store' });
       const data = await res.json();
-      return data.find(ch => ch.channel_id === channelId);
+      const channel = data.find(ch => ch.channel_id === '1001'); // Hindi
+      if (!channel) throw new Error('Hindi channel not found in JSON');
+      return {
+        url: channel.channel_url,
+        token: channel.cookie // only __hdnea__ token
+      };
     } catch(e) {
       console.error('Failed to fetch JSON:', e);
       return null;
     }
   }
 
-  const channel = await fetchChannel();
-  if(!channel) { console.error('Channel not found'); return; }
+  const channelData = await fetchHindiToken();
+  if (!channelData) return;
 
-  console.log('Loaded channel:', channel.channel_name);
+  const streamUrl = channelData.url;
+  const cookieHeader = channelData.token;
 
-  const drmConfig = { clearKeys: { [channel.keyId]: channel.key } };
-  const streamUrl = channel.channel_url;      // MPD URL from JSON
-  const cookieHeader = channel.cookie;        // token from JSON
+  console.log('Stream URL:', streamUrl);
+  console.log('Token:', cookieHeader);
 
-  // Shaka configuration
+  // Shaka config
   player.configure({
-    drm: drmConfig,
     streaming: {
       lowLatencyMode:true,
       bufferingGoal:15,
@@ -77,15 +77,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     manifest: { retryParameters:{ timeout:8000,maxAttempts:3 } }
   });
 
-  // Append token to manifest/segment requests
+  // Append token to manifest and segment requests
   player.getNetworkingEngine().registerRequestFilter((type, request) => {
     request.headers['Referer']='https://www.jiotv.com/';
     request.headers['User-Agent']="plaYtv/7.1.5 (Linux;Android 13) ExoPlayerLib/2.11.6";
-    if(cookieHeader) {
-      if(type===shaka.net.NetworkingEngine.RequestType.MANIFEST || type===shaka.net.NetworkingEngine.RequestType.SEGMENT){
-        const sep = request.uris[0].includes('?') ? '&' : '?';
-        request.uris[0] += sep + cookieHeader;
-      }
+
+    if(cookieHeader && (type === shaka.net.NetworkingEngine.RequestType.MANIFEST || type === shaka.net.NetworkingEngine.RequestType.SEGMENT)){
+      const sep = request.uris[0].includes('?') ? '&' : '?';
+      request.uris[0] += sep + cookieHeader;
     }
   });
 
