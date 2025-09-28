@@ -49,40 +49,15 @@ video {
 <div class="shaka-video-container">
   <video autoplay playsinline></video>
 </div>
-<!-- Script 1: Domain + Token + Channel Setup -->
+
 <script>
   const allowedDomain = "livecrichdtv.pages.dev";
-  if (window.top !== window.self || window.location.hostname !== allowedDomain) {
-      window.top.location.href = "https://telegram.me/livecrichdofficial";
-  }
+    if (window.top !== window.self || window.location.hostname !== allowedDomain) {
+        window.top.location.href = "https://telegram.me/livecrichdofficial";
+    }
 
-  if (confirm("Join Our Telegram Channel @livecrichdofficial")) {
-      window.location.href = "https://telegram.me/livecrichdofficial";
-  }
-
-  let cookieHeader = "";
-  async function fetchTokenFromSite() {
-    try {
-      const res = await fetch('https://lchdxfootball.pages.dev/Hindi.txt', {cache:'no-store', mode:'cors'});
-      if(!res.ok) throw new Error('HTTP '+res.status);
-      const txt = (await res.text()).trim();
-      if(txt){ cookieHeader = txt; console.log('Token fetched:', cookieHeader); return true; }
-    } catch(e){ console.warn('Failed to fetch token:', e.message); }
-    return false;
-  }
-  fetchTokenFromSite();
-  setInterval(fetchTokenFromSite, 5*60*1000);
-
-  function getChannelId() {
-    const params = new URLSearchParams(window.location.search);
-    return params.get('id') || 'C1';
-  }
-  const channelId = getChannelId();
-  const stream = STREAMS[channelId];
-</script>
-
-<!-- Script 2: Shaka Player -->
-<script>
+    if (confirm("Join Our Telegram Channel @livecrichdofficial")) { window.location.href = "https://telegram.me/livecrichdofficial"; }
+  
 document.addEventListener('DOMContentLoaded', async () => {
   shaka.polyfill.installAll();
   if (!shaka.Player.isBrowserSupported()) { console.error('Browser not supported'); return; }
@@ -92,6 +67,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const player = new shaka.Player();
   await player.attach(video);
 
+  // UI
   const ui = new shaka.ui.Overlay(player, container, video);
   ui.configure({
       controlPanelElements: [
@@ -102,6 +78,30 @@ document.addEventListener('DOMContentLoaded', async () => {
       overflowMenuButtons: ['captions', 'cast', 'quality', 'language']
   });
 
+  // --- Fetch token from external file ---
+  let cookieHeader = "";
+  async function fetchTokenFromSite() {
+    try {
+      const res = await fetch('https://lchdxfootball.pages.dev/Hindi.txt', {cache:'no-store', mode:'cors'});
+      if(!res.ok) throw new Error('HTTP '+res.status);
+      const txt = (await res.text()).trim();
+      if(txt){ cookieHeader = txt; console.log('Token fetched:', cookieHeader); return true; }
+    } catch(e){ console.warn('Failed to fetch token:', e.message); }
+    return false;
+  }
+  await fetchTokenFromSite();
+  setInterval(fetchTokenFromSite, 5*60*1000);
+
+  // --- Read channel from URL parameter ---
+  function getChannelId() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('id') || 'C1';
+  }
+  const channelId = getChannelId();
+  const stream = STREAMS[channelId];
+  if(!stream) { console.error('Channel not found:', channelId); return; }
+
+  // --- Configure DRM & streaming ---
   player.configure({
     drm: { clearKeys: stream.key },
     streaming: {
@@ -117,6 +117,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     manifest: { retryParameters:{ timeout:8000, maxAttempts:3 } }
   });
 
+  // --- Add cookies & headers to requests ---
   player.getNetworkingEngine().registerRequestFilter((type, request) => {
     request.headers['Referer']='https://www.jiotv.com/';
     request.headers['User-Agent']="plaYtv/7.1.5 (Linux;Android 13) ExoPlayerLib/2.11.6";
@@ -129,6 +130,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
+  // --- Load the stream ---
   async function loadStream() {
     try {
       video.setAttribute('autoplay',''); video.setAttribute('playsinline','');
@@ -139,6 +141,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
   await loadStream();
 
+  // --- Add logo ---
   const logo = document.createElement("img");
   logo.src = "https://i.ibb.co/7VF2dfy/1000000077-removebg-preview.png";
   logo.alt = "Logo";
@@ -146,6 +149,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   logo.addEventListener("click", ()=>window.location.href="https://telegram.me/livecrichdofficial");
   container.appendChild(logo);
 
+  // --- Autoplay fix & fullscreen for mobiles ---
   video.addEventListener('play',()=>{
     if(window.self===window.top && !document.fullscreenElement && window.innerWidth<=768){
       container.requestFullscreen().catch(()=>console.log('Fullscreen request failed'));
@@ -153,6 +157,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   },{once:true});
 
   video.volume=0.8;
+
   let hasUserInteracted=false;
   ['click','touchstart','keydown'].forEach(e=>document.addEventListener(e,()=>{
     if(!hasUserInteracted && video.muted){ video.muted=false; hasUserInteracted=true; }
@@ -163,6 +168,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 </script>
 
-
 </body>
 </html>
+
+Can you break script tag code into two script tag 
