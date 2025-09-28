@@ -28,15 +28,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   await player.attach(video);
 
   const ui = new shaka.ui.Overlay(player, container, video);
-  ui.configure({
-    controlPanelElements: [
-      'play_pause','time_and_duration','mute','volume',
-      'spacer','language','captions','picture_in_picture',
-      'quality','fullscreen'
-    ],
-    volumeBarColors: { base: 'rgba(63,187,1,1)', level: 'rgb(255,69,0)' },
-    seekBarColors: { base:'rgb(41,41,163)', buffered:'rgb(35,99,3)', played:'rgba(63,187,1,1)' }
-  });
+ui.configure({
+  controlPanelElements: [
+    'play_pause','time_and_duration','mute','volume',
+    'spacer','language','captions','picture_in_picture',
+    'quality','fullscreen'
+  ],
+  volumeBarColors: { base: '#fff', level: '#fff' }, // white sliders
+  seekBarColors: { base:'#fff', buffered:'#fff', played:'#fff' } // white seek bar
+});
+
 
   // ClearKey DRM
   let drmConfig = {
