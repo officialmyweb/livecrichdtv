@@ -61,9 +61,14 @@ ui.configure({
     'spacer','language','captions','picture_in_picture',
     'quality','fullscreen'
   ],
-  volumeBarColors: { base: '#fff', level: '#fff' }, // white sliders
-  seekBarColors: { base:'#fff', buffered:'#fff', played:'#fff' } // white seek bar
+  volumeBarColors: { base: '#fff', level: '#fff' }, // white volume sliders
+  seekBarColors: { 
+    base: '#fff',       // the full bar background
+    buffered: 'brown',  // the loaded portion color
+    played: '#fff'      // the portion already played
+  }
 });
+
 
 
   // ClearKey DRM
