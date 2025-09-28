@@ -3,17 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Shaka Player Dynamic JSON</title>
+<title>Shaka Player JSON Stream</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.11/shaka-player.ui.min.js" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.11/controls.min.css" crossorigin="anonymous">
 <style>
-  * { margin:0; padding:0; box-sizing:border-box; }
-  html, body { height:100%; width:100%; background:#000; overflow:hidden; font-family:system-ui; }
-  .shaka-video-container { position:absolute; inset:0; width:100%; height:100%; }
-  video { width:100%; height:100%; background:#000; object-fit:contain; }
-  .shaka-spinner-container,
-  .shaka-spinner,
-  .shaka-spinner-svg { display:none !important; visibility:hidden !important; opacity:0 !important; }
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { background:#000; height:100vh; width:100vw; overflow:hidden; font-family:system-ui, -apple-system, sans-serif; }
+.shaka-video-container { position:absolute; inset:0; width:100%; height:100%; }
+video { width:100%; height:100%; background:#000; object-fit:contain; }
+.shaka-spinner-container, .shaka-spinner, .shaka-spinner-svg { display:none !important; visibility:hidden !important; opacity:0 !important; }
 </style>
 </head>
 <body>
@@ -24,10 +22,7 @@
 <script>
 document.addEventListener('DOMContentLoaded', async () => {
   shaka.polyfill.installAll();
-  if (!shaka.Player.isBrowserSupported()) {
-    console.error('Browser not supported');
-    return;
-  }
+  if (!shaka.Player.isBrowserSupported()) { console.error('Browser not supported'); return; }
 
   const video = document.querySelector('video');
   const player = new shaka.Player();
@@ -36,38 +31,37 @@ document.addEventListener('DOMContentLoaded', async () => {
   const container = document.querySelector('.shaka-video-container');
   const ui = new shaka.ui.Overlay(player, container, video);
   ui.configure({
-    controlPanelElements: ['play_pause','time_and_duration','mute','volume','spacer','language','captions','picture_in_picture','quality','fullscreen'],
-    volumeBarColors: { base:'rgba(63,187,1,1)', level:'rgb(255,69,0)' },
-    seekBarColors: { base:'rgb(41,41,163)', buffered:'rgb(35,99,3)', played:'rgba(63,187,1,1)' }
+    controlPanelElements:['play_pause','time_and_duration','mute','volume','spacer','language','captions','picture_in_picture','quality','fullscreen'],
+    volumeBarColors:{ base:'rgba(63,187,1,1)', level:'rgb(255,69,0)' },
+    seekBarColors:{ base:'rgb(41,41,163)', buffered:'rgb(35,99,3)', played:'rgba(63,187,1,1)' }
   });
 
-  // Get channel ID from URL
+  // Get channel ID from URL, default to 1001
   const urlParams = new URLSearchParams(window.location.search);
   const channelId = urlParams.get('id') || '1001';
 
-  // Fetch JSON channel list from worker
-  async function getChannel(id) {
+  // Fetch channel info from JSON
+  async function fetchChannel() {
     try {
-      const res = await fetch('https://pkll.xojiv79335.workers.dev/', {cache:'no-store'});
+      const res = await fetch('https://pkll.xojiv79335.workers.dev/', { cache:'no-store' });
       const data = await res.json();
-      return data.find(ch => ch.channel_id === id);
-    } catch (e) {
+      return data.find(ch => ch.channel_id === channelId);
+    } catch(e) {
       console.error('Failed to fetch JSON:', e);
       return null;
     }
   }
 
-  const channel = await getChannel(channelId);
-  if(!channel) {
-    console.error('Channel not found:', channelId);
-    return;
-  }
+  const channel = await fetchChannel();
+  if(!channel) { console.error('Channel not found'); return; }
 
   console.log('Loaded channel:', channel.channel_name);
 
   const drmConfig = { clearKeys: { [channel.keyId]: channel.key } };
-  let cookieHeader = channel.cookie; // token from JSON
+  const streamUrl = channel.channel_url;      // MPD URL from JSON
+  const cookieHeader = channel.cookie;        // token from JSON
 
+  // Shaka configuration
   player.configure({
     drm: drmConfig,
     streaming: {
@@ -75,43 +69,45 @@ document.addEventListener('DOMContentLoaded', async () => {
       bufferingGoal:15,
       rebufferingGoal:2,
       bufferBehind:15,
-      retryParameters:{timeout:10000,maxAttempts:5,baseDelay:300,backoffFactor:1.2},
+      retryParameters:{ timeout:10000,maxAttempts:5,baseDelay:300,backoffFactor:1.2 },
       segmentRequestTimeout:8000,
       segmentPrefetchLimit:2,
       useNativeHlsOnSafari:true
     },
-    manifest: { retryParameters:{timeout:8000,maxAttempts:3} }
+    manifest: { retryParameters:{ timeout:8000,maxAttempts:3 } }
   });
 
-  // Attach headers and token
+  // Append token to manifest/segment requests
   player.getNetworkingEngine().registerRequestFilter((type, request) => {
-    request.headers['Referer'] = 'https://www.jiotv.com/';
-    request.headers['User-Agent'] = "plaYtv/7.1.5 (Linux;Android 13) ExoPlayerLib/2.11.6";
-    if (cookieHeader) {
+    request.headers['Referer']='https://www.jiotv.com/';
+    request.headers['User-Agent']="plaYtv/7.1.5 (Linux;Android 13) ExoPlayerLib/2.11.6";
+    if(cookieHeader) {
       if(type===shaka.net.NetworkingEngine.RequestType.MANIFEST || type===shaka.net.NetworkingEngine.RequestType.SEGMENT){
-        const separator = request.uris[0].includes('?')?'&':'?';
-        request.uris[0] += separator + cookieHeader;
+        const sep = request.uris[0].includes('?') ? '&' : '?';
+        request.uris[0] += sep + cookieHeader;
       }
     }
   });
 
-  // Autoplay handling
+  // Autoplay logic
   const enableAutoplay = () => { video.setAttribute('autoplay',''); video.setAttribute('playsinline',''); video.autoplay=true; };
   const attemptAutoplay = async () => {
     try { video.muted=false; await video.play(); console.log('Unmuted autoplay success'); return true; }
     catch { try { video.muted=true; await video.play(); console.log('Muted autoplay success'); return true; } catch { return false; } }
   };
 
+  // Fullscreen for mobile
   video.addEventListener('play', ()=>{ if(window.self===window.top && !document.fullscreenElement && window.innerWidth<=768) container.requestFullscreen().catch(()=>console.log('Fullscreen failed')); }, {once:true});
   video.addEventListener('loadedmetadata', ()=>{ video.volume=0.8; });
 
   let hasUserInteracted=false;
-  const enableSoundOnInteraction=()=>{ if(!hasUserInteracted && video.muted){ video.muted=false; hasUserInteracted=true; console.log('Sound enabled'); } };
+  const enableSoundOnInteraction = ()=>{ if(!hasUserInteracted && video.muted){ video.muted=false; hasUserInteracted=true; console.log('Sound enabled'); } };
   ['click','touchstart','keydown'].forEach(ev=>document.addEventListener(ev, enableSoundOnInteraction, {once:true}));
 
+  // Load stream
   try {
     enableAutoplay();
-    await player.load(channel.channel_url);
+    await player.load(streamUrl);
     if(video.readyState>=3){ await attemptAutoplay(); }
     else { video.addEventListener('canplay', attemptAutoplay, {once:true}); setTimeout(async()=>{ if(video.paused) await attemptAutoplay(); },2000); }
   } catch(e){ console.error('Load error:', e); }
