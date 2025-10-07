@@ -9,8 +9,14 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
   <style>
     body { background-color: #0f0f0f; color: #fff; }
-    .match-card { transition: all 0.3s ease-in-out; background: linear-gradient(145deg, #1a1a1a, #1f1f1f); }
-    .match-card:hover { transform: translateY(-6px); box-shadow: 0 25px 35px rgba(0, 0, 0, 0.45); }
+    .match-card {
+      transition: all 0.3s ease-in-out;
+      background: linear-gradient(145deg, #1a1a1a, #1f1f1f);
+    }
+    .match-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 25px 35px rgba(0, 0, 0, 0.45);
+    }
     .live-badge { animation: pulse 1.5s infinite; }
     @keyframes pulse {
       0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
@@ -19,13 +25,12 @@
     .match-img { transition: transform 0.3s ease; }
     .match-card:hover .match-img { transform: scale(1.03); }
   </style>
-  <style type="text/css">
-    * {user-select: auto !important; -webkit-user-select: auto !important;}
+  <style>
+    * { user-select: auto !important; -webkit-user-select: auto !important; }
   </style>
 </head>
 
 <body class="bg-gray-950 min-h-screen">
-
   <div class="max-w-7xl mx-auto px-4 py-8 sm:py-10">
     <h1 class="text-3xl sm:text-4xl font-bold text-center text-white mb-8 tracking-wide">
       ⚡ Fancode Live Matches
@@ -35,20 +40,9 @@
 
   <script>
     const container = document.getElementById('matches-container');
-
     const DATA_URL = 'https://raw.githubusercontent.com/Jitendra-unatti/fancode/refs/heads/main/data/fancode.json';
     const PLAY_BASE = 'https://fancodeee.netlify.app/play.html';
 
-    // Utility: build a button
-    function makeBtn(label, href, extraClasses = '') {
-      const a = document.createElement('a');
-      a.href = href;
-      a.className = `w-full sm:w-auto px-4 py-2 rounded-lg text-sm flex items-center justify-center shadow-md transition-all ${extraClasses}`;
-      a.innerHTML = `<i class="fas fa-play mr-2"></i> ${label}`;
-      return a;
-    }
-
-    // Map stream key -> button styling + label
     const STREAM_META = {
       adfree_stream:   { label: 'Ad-Free', classes: 'bg-green-600 hover:bg-green-700 text-white' },
       dai_stream:      { label: 'DAI',     classes: 'bg-blue-600 hover:bg-blue-700 text-white' },
@@ -59,10 +53,25 @@
       sony_cdn:        { label: 'Sony CDN',    classes: 'bg-red-600 hover:bg-red-700 text-white' }
     };
 
+    function makeBtn(label, href, extraClasses = '') {
+      const a = document.createElement('a');
+      a.href = href;
+      a.className = `w-full sm:w-auto px-4 py-2 rounded-lg text-sm flex items-center justify-center shadow-md transition-all ${extraClasses}`;
+      a.innerHTML = `<i class="fas fa-play mr-2"></i> ${label}`;
+      return a;
+    }
+
     fetch(DATA_URL)
       .then(r => r.json())
       .then(data => {
-        const matches = Array.isArray(data.matches) ? data.matches : [];
+        let matches = Array.isArray(data.matches) ? data.matches : [];
+
+        // Sort so LIVE matches come first
+        matches.sort((a, b) => {
+          const aLive = (a.status || '').toUpperCase() === 'LIVE';
+          const bLive = (b.status || '').toUpperCase() === 'LIVE';
+          return (bLive ? 1 : 0) - (aLive ? 1 : 0);
+        });
 
         matches.forEach(match => {
           const isLive = (match.status || '').toUpperCase() === 'LIVE';
@@ -147,14 +156,6 @@
         console.error('Error fetching JSON:', error);
         container.innerHTML = `<p class="text-center text-red-500">Failed to load matches.</p>`;
       });
-
-    // Anti-iframe protection
-    if (window.top !== window.self) {
-      document.addEventListener('DOMContentLoaded', function () {
-        document.body.innerHTML = '<div id="message">Ab to copy mat kar chutiye</div>';
-      });
-    }
   </script>
-
 </body>
 </html>
