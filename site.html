@@ -11,7 +11,7 @@
   <script src="https://cdn.jsdelivr.net/npm/hls.js@1.1.4/dist/hls.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/plyr@3.6.12/dist/plyr.min.js"></script>
 
-    <style>
+  <style>
     body {
       background-color: #000;
       margin: 0;
@@ -41,11 +41,15 @@
         const res = await fetch("https://raw.githubusercontent.com/Jitendra-unatti/fancode/refs/heads/main/data/fancode.json");
         const data = await res.json();
 
-        const matches = data.matches.filter(m => m.match_id == id);
-        if (!matches.length) throw new Error("Stream not found for ID " + id);
+        const match = data.matches.find(m => m.match_id == id);
+        if (!match) throw new Error("Stream not found for ID " + id);
 
-        let match = matches.find(m => m.language.toLowerCase() === lang.toLowerCase()) || matches[0];
+        // Prefer language if available
+        if (match.language && match.language.toLowerCase() !== lang.toLowerCase()) {
+          console.warn(`Language '${lang}' not found, using default '${match.language}'`);
+        }
 
+        // Possible stream sources
         const sourceMap = {
           adfree_stream: match.adfree_stream,
           dai_stream: match.dai_stream,
@@ -56,10 +60,12 @@
           sony_cdn: match.STREAMING_CDN?.sony_cdn
         };
 
+        // Pick preferred key if valid
         if (preferredKey && sourceMap[preferredKey] && sourceMap[preferredKey] !== "Unavailable") {
           return sourceMap[preferredKey];
         }
 
+        // Otherwise pick first valid available URL
         const sources = Object.values(sourceMap).filter(url => url && url !== "Unavailable");
         return sources.length > 0 ? sources[0] : null;
       } catch (err) {
@@ -75,31 +81,33 @@
       const lang = urlParams.get("lang") || 'english';
       let preferredKey = null;
 
+      // detect ?adfree_stream or ?dai_stream etc.
       for (const key of ["adfree_stream", "dai_stream", "Primary_Playback_URL", "fancode_cdn", "dai_google_cdn", "cloudfront_cdn", "sony_cdn"]) {
         if (urlParams.has(key)) preferredKey = key;
       }
 
       if (!id) {
-        document.body.innerHTML = `<div style="color:white;text-align:center;">No ID provided (?id=)</div>`;
+        document.body.innerHTML = `<div style="color:white;text-align:center;padding-top:20%;">No ID provided (?id=)</div>`;
         return;
       }
 
       const source = await getStreamUrl(id, preferredKey, lang);
       if (!source) {
-        document.body.innerHTML = `<div style="color:white;text-align:center;">No playable stream found for ID ${id}</div>`;
+        document.body.innerHTML = `<div style="color:white;text-align:center;padding-top:20%;">No playable stream found for ID ${id}</div>`;
         return;
       }
 
       if (Hls.isSupported()) {
         const hls = new Hls({ maxMaxBufferLength: 100 });
-        hls.loadSource(streamData.url);
+        hls.loadSource(source);
         hls.attachMedia(video);
         hls.on(Hls.Events.MANIFEST_PARSED, () => {
-          const availableQualities = hls.levels.map(level => level.height);
+          const availableQualities = hls.levels.map(l => l.height).sort((a, b) => b - a);
           const defaultQuality = availableQualities[0];
 
-          new Plyr(video, {
+          const player = new Plyr(video, {
             controls: ['play-large', 'play', 'mute', 'volume', 'settings', 'fullscreen'],
+            settings: ['quality'],
             quality: {
               default: defaultQuality,
               options: availableQualities,
@@ -113,11 +121,12 @@
           });
         });
       } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-        video.src = streamData.url;
+        video.src = source;
         new Plyr(video);
       }
     });
 
+    // Auto-rotate to landscape on fullscreen
     document.addEventListener('fullscreenchange', () => {
       if (document.fullscreenElement && screen.orientation?.lock) {
         screen.orientation.lock('landscape').catch(console.warn);
