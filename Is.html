@@ -51,7 +51,19 @@ h1 {
   color: #ff6600;
 }
 .match-item p {
-  margin: 5px 0;
+  margin: 4px 0;
+}
+.status-live {
+  color: red;
+  font-weight: bold;
+  animation: glow 1s infinite alternate;
+}
+@keyframes glow {
+  from { text-shadow: 0 0 5px red; }
+  to { text-shadow: 0 0 15px red; }
+}
+.status-upcoming {
+  color: #999;
 }
 .button-container {
   margin-top: 10px;
@@ -64,13 +76,13 @@ h1 {
   color: white;
   margin: 5px;
   font-family: 'Montserrat', sans-serif;
+  transition: 0.3s;
 }
-.watch-button {
-  background-color: #007bff;
-}
-.copy-button {
-  background-color: #28a745;
-}
+.watch-button { background-color: #007bff; }
+.copy-button { background-color: #28a745; }
+.stream-button:hover { opacity: 0.9; }
+
+/* Modal Styles */
 .modal {
   display: none;
   position: fixed;
@@ -135,12 +147,10 @@ h1 {
 .copy-btn:hover {
   background-color: #e62e00;
 }
-@media (max-width:768px){
-  .match-item{width:calc(50% - 20px);}
-}
-@media (max-width:480px){
-  .match-item{width:calc(100% - 20px);}
-}
+
+/* Responsive */
+@media (max-width:768px){.match-item{width:calc(50% - 20px);}}
+@media (max-width:480px){.match-item{width:calc(100% - 20px);}}
 </style>
 </head>
 <body>
@@ -165,6 +175,15 @@ h1 {
   </div>
 </div>
 
+<!-- Not Started Modal -->
+<div id="notStartedModal" class="modal">
+  <div class="modal-content">
+    <span class="close" id="notStartedClose">&times;</span>
+    <h2>Match Not Started</h2>
+    <p>The match has not started yet. Please check back later!</p>
+  </div>
+</div>
+
 <script>
 const apiURL = "https://raw.githubusercontent.com/Jitendra-unatti/fancode/refs/heads/main/data/fancode.json";
 const playerURL = "player?id=";
@@ -177,11 +196,22 @@ fetch(apiURL)
     data.matches.forEach(match => {
       const item = document.createElement("div");
       item.className = "match-item";
+
+      const status = match.status.toUpperCase();
+      const isPlayable = status === "LIVE" || match.streamingStatus === "STARTED";
+
+      // language check
+      let language = match.language;
+      if (!language && match.STREAMING_CDN.language) {
+        language = match.STREAMING_CDN.language;
+      }
+
       item.innerHTML = `
         <img src="${match.image}" alt="${match.title}">
         <h3>${match.title}</h3>
         <p>${match.category}</p>
-        <p class="${match.status.toLowerCase() === 'live' ? 'status-live' : 'status-upcoming'}">${match.status}</p>
+        <p>Language: ${language || "N/A"}</p>
+        <p class="${isPlayable ? "status-live" : "status-upcoming"}">${status}</p>
         <div class="button-container">
           <button class="stream-button watch-button">Watch Now</button>
           <button class="stream-button copy-button">Copy M3U8</button>
@@ -189,8 +219,17 @@ fetch(apiURL)
       `;
 
       const cdns = match.STREAMING_CDN;
-      item.querySelector(".watch-button").addEventListener("click", () => openCDNModal(cdns, "watch"));
-      item.querySelector(".copy-button").addEventListener("click", () => openCDNModal(cdns, "copy"));
+      const watchBtn = item.querySelector(".watch-button");
+      const copyBtn = item.querySelector(".copy-button");
+
+      if (isPlayable) {
+        watchBtn.addEventListener("click", () => openCDNModal(cdns, "watch"));
+        copyBtn.addEventListener("click", () => openCDNModal(cdns, "copy"));
+      } else {
+        watchBtn.addEventListener("click", showNotStarted);
+        copyBtn.addEventListener("click", showNotStarted);
+      }
+
       container.appendChild(item);
     });
   });
@@ -203,19 +242,29 @@ const copyModal = document.getElementById("copyModal");
 const copyClose = document.getElementById("copyClose");
 const m3u8Display = document.getElementById("m3u8Display");
 
+const notStartedModal = document.getElementById("notStartedModal");
+const notStartedClose = document.getElementById("notStartedClose");
+
 cdnClose.onclick = () => cdnModal.style.display = "none";
 copyClose.onclick = () => copyModal.style.display = "none";
+notStartedClose.onclick = () => notStartedModal.style.display = "none";
+
 window.onclick = (e) => {
   if (e.target === cdnModal) cdnModal.style.display = "none";
   if (e.target === copyModal) copyModal.style.display = "none";
+  if (e.target === notStartedModal) notStartedModal.style.display = "none";
 };
+
+function showNotStarted() {
+  notStartedModal.style.display = "flex";
+}
 
 function openCDNModal(cdns, mode) {
   cdnOptions.innerHTML = "";
-  currentCDNs = cdns;
   cdnModal.style.display = "flex";
 
   for (const [name, url] of Object.entries(cdns)) {
+    if (name.toLowerCase() === "language") continue; // skip language key
     if (url && url !== "Unavailable") {
       const btn = document.createElement("button");
       btn.className = "cdn-option";
@@ -242,9 +291,7 @@ function openCopyModal(url) {
 }
 
 function copyToClipboard(text) {
-  navigator.clipboard.writeText(text).then(() => {
-    alert("M3U8 link copied!");
-  });
+  navigator.clipboard.writeText(text).then(() => alert("M3U8 link copied!"));
 }
 </script>
 </body>
