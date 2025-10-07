@@ -2,117 +2,71 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Telegram-Live-Cric-Hd</title>
+  <title>Live Stream Player</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="referrer" content="no-referrer">
-
-  <!-- Plyr CSS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plyr@3.6.12/dist/plyr.css">
-
-  <!-- HLS.js -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plyr@3.6.12/dist/plyr.css" />
   <script src="https://cdn.jsdelivr.net/npm/hls.js@1.1.4/dist/hls.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/plyr@3.6.12/dist/plyr.min.js"></script>
-
   <style>
-    body, html {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      background: #000;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    video {
-      width: 100%;
-      height: 100%;
-      max-height: 100vh;
-      background: black;
-    }
-    .message {
-      color: white;
-      text-align: center;
-      font-family: sans-serif;
-      padding: 20px;
-    }
+    html, body { margin:0; padding:0; height:100%; background:#000; }
+    body { display:flex; justify-content:center; align-items:center; }
+    #player { width:100%; height:100%; max-width:100%; max-height:100%; }
   </style>
 </head>
 <body>
   <video id="player" autoplay playsinline controls></video>
 
   <script>
-    async function getStreamUrl(id, preferredKey) {
-      try {
-        const apiURL = "https://raw.githubusercontent.com/Jitendra-unatti/fancode/refs/heads/main/data/fancode.json"; // Replace if needed
-        const res = await fetch(apiURL);
-        const data = await res.json();
-        const match = data.matches.find(m => m.match_id == id);
-        if (!match) return null;
+    const urlParams = new URLSearchParams(window.location.search);
+    const m3u8 = urlParams.get('id'); // Pass M3U8 link here
 
-        const sources = {
-          adfree_stream: match.adfree_stream,
-          dai_stream: match.dai_stream,
-          Primary_Playback_URL: match.STREAMING_CDN?.Primary_Playback_URL,
-          fancode_cdn: match.STREAMING_CDN?.fancode_cdn,
-          dai_google_cdn: match.STREAMING_CDN?.dai_google_cdn,
-          cloudfront_cdn: match.STREAMING_CDN?.cloudfront_cdn,
-          sony_cdn: match.STREAMING_CDN?.sony_cdn
-        };
+    const video = document.getElementById('player');
 
-        if (preferredKey && sources[preferredKey] && sources[preferredKey] !== "Unavailable") {
-          return sources[preferredKey];
-        }
+    if (!m3u8) {
+      document.body.innerHTML = '<div style="color:white;text-align:center;padding:2em;">No M3U8 URL provided</div>';
+    } else if (Hls.isSupported()) {
+      const hls = new Hls({
+        maxMaxBufferLength: 60,
+        autoStartLoad: true
+      });
 
-        const available = Object.values(sources).filter(url => url && url !== "Unavailable");
-        return available.length ? available[0] : null;
-      } catch (err) {
-        console.error(err);
-        return null;
-      }
-    }
+      hls.loadSource(m3u8);
+      hls.attachMedia(video);
 
-    document.addEventListener('DOMContentLoaded', async () => {
-      const video = document.getElementById('player');
-      const urlParams = new URLSearchParams(window.location.search);
-      const id = urlParams.get("id");
-      let preferredKey = null;
+      hls.on(Hls.Events.MANIFEST_PARSED, () => {
+        const qualities = hls.levels.map(l => l.height).filter(Boolean).sort((a,b)=>b-a);
+        const defaultQuality = qualities.includes(1080) ? 1080 : (qualities[0] || 360);
 
-      for (const key of ["adfree_stream","dai_stream","Primary_Playback_URL","fancode_cdn","dai_google_cdn","cloudfront_cdn","sony_cdn"]) {
-        if (urlParams.has(key)) {
-          preferredKey = key;
-          break;
-        }
-      }
-
-      if (!id) {
-        video.outerHTML = '<div class="message">No ID provided in URL (?id=)</div>';
-        return;
-      }
-
-      const source = await getStreamUrl(id, preferredKey);
-      if (!source) {
-        video.outerHTML = `<div class="message">No playable stream found for ID ${id}.</div>`;
-        return;
-      }
-
-      if (Hls.isSupported()) {
-        const hls = new Hls({ maxMaxBufferLength: 100 });
-        hls.loadSource(source);
-        hls.attachMedia(video);
-        hls.on(Hls.Events.MANIFEST_PARSED, () => {
-          const qualities = hls.levels.map(l => l.height).filter(Boolean).sort((a,b)=>b-a);
-          new Plyr(video, {
-            controls: ['play-large','play','mute','volume','settings','fullscreen'],
-            quality: { default: qualities[0], options: qualities, forced: true }
-          });
+        const player = new Plyr(video, {
+          controls: ['play-large','play','mute','volume','settings','fullscreen'],
+          quality: {
+            default: defaultQuality,
+            options: qualities,
+            forced: true,
+            onChange: q => {
+              hls.levels.forEach((l,i)=>{ if(l.height===q) hls.currentLevel=i; });
+            }
+          }
         });
-      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-        video.src = source;
-        new Plyr(video);
-      } else {
-        video.outerHTML = '<div class="message">HLS not supported in your browser.</div>';
-      }
-    });
+
+        // Landscape lock on fullscreen (mobile)
+        document.addEventListener('fullscreenchange', () => {
+          if(document.fullscreenElement && screen.orientation?.lock) {
+            screen.orientation.lock('landscape').catch(()=>{});
+          }
+        });
+      });
+
+      hls.on(Hls.Events.ERROR, (event, data) => {
+        console.error("HLS error:", data);
+      });
+
+    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      video.src = m3u8;
+      new Plyr(video);
+    } else {
+      document.body.innerHTML = '<div style="color:white;text-align:center;padding:2em;">Your browser does not support HLS.</div>';
+    }
   </script>
 </body>
 </html>
