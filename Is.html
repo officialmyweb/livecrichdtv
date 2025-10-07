@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 <link rel="shortcut icon" href="https://drmlive.in/sports/fancode.png" />
 <title>Fancode Live Matches</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@600;900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@400;700&display=swap">
 <style>
 body {
   font-family: 'Roboto', sans-serif;
@@ -17,9 +17,9 @@ body {
 h1 {
   text-align: center;
   color: #ff3700;
+  margin-bottom: 20px;
   font-family: 'Montserrat', sans-serif;
-  font-weight: 900;
-  margin-bottom: 25px;
+  font-weight: 700;
 }
 .file-container {
   display: flex;
@@ -29,7 +29,7 @@ h1 {
 }
 .match-item {
   background: #1a1a1a;
-  border-radius: 12px;
+  border-radius: 10px;
   overflow: hidden;
   width: calc(25% - 20px);
   transition: transform 0.3s, box-shadow 0.3s;
@@ -39,7 +39,7 @@ h1 {
 }
 .match-item:hover {
   transform: scale(1.05);
-  box-shadow: 0 0 12px rgba(255, 72, 0, 0.7);
+  box-shadow: 0 0 10px rgba(255, 72, 0, 0.7);
 }
 .match-item img {
   width: 100%;
@@ -49,16 +49,15 @@ h1 {
 .match-item h3 {
   margin: 5px 0;
   font-size: 16px;
-  color: #ff3700;
+  color: #ff6600;
   font-family: 'Montserrat', sans-serif;
   font-weight: 700;
 }
 .match-item p {
   margin: 4px 0;
-  color: #fff;
   font-family: 'Montserrat', sans-serif;
   font-weight: 600;
-  font-size: 13px;
+  color: #fff;
 }
 .status-live {
   color: red;
@@ -70,7 +69,7 @@ h1 {
   to { text-shadow: 0 0 15px red; }
 }
 .status-upcoming {
-  color: #777;
+  color: #888;
 }
 .button-container {
   margin-top: 10px;
@@ -88,8 +87,6 @@ h1 {
 }
 .watch-button { background-color: #007bff; }
 .copy-button { background-color: #28a745; }
-.addfree-button { background-color: #ff6600; }
-.dai-button { background-color: #ff0099; }
 .stream-button:hover { opacity: 0.9; }
 
 /* Modal Styles */
@@ -168,21 +165,12 @@ h1 {
 <h1>FANCODE LIVE</h1>
 <div class="file-container" id="matches"></div>
 
-<!-- CDN Selection Modal -->
+<!-- CDN Modal -->
 <div id="cdnModal" class="modal">
-  <div class="modal-content" id="cdnModalContent">
+  <div class="modal-content">
     <span class="close" id="cdnClose">&times;</span>
-    <h2>Select a CDN</h2>
+    <h2>Select Stream</h2>
     <div id="cdnOptions"></div>
-  </div>
-</div>
-
-<!-- M3U8 Copy Modal -->
-<div id="copyModal" class="modal">
-  <div class="modal-content" id="copyModalContent">
-    <span class="close" id="copyClose">&times;</span>
-    <h2>Copy M3U8 URL</h2>
-    <div id="m3u8Display"></div>
   </div>
 </div>
 
@@ -203,17 +191,18 @@ fetch(apiURL)
   .then(res => res.json())
   .then(data => {
     const container = document.getElementById("matches");
+
     data.matches.forEach(match => {
       const item = document.createElement("div");
       item.className = "match-item";
 
       const status = match.status?.toUpperCase() || "UPCOMING";
       const isPlayable = status === "LIVE" || match.streamingStatus === "STARTED";
-      const cdns = match.STREAMING_CDN || {};
 
+      // get language (only show if match started)
       let language = match.language;
-      if (!language && cdns.language) {
-        language = cdns.language;
+      if (!language && match.STREAMING_CDN?.language) {
+        language = match.STREAMING_CDN.language;
       }
 
       item.innerHTML = `
@@ -225,25 +214,18 @@ fetch(apiURL)
         <div class="button-container">
           <button class="stream-button watch-button">Watch Now</button>
           <button class="stream-button copy-button">Copy M3U8</button>
-          ${isPlayable ? `
-            <button class="stream-button addfree-button">Addfree Stream</button>
-            <button class="stream-button dai-button">DAI Stream</button>
-          ` : ""}
         </div>
       `;
 
       const watchBtn = item.querySelector(".watch-button");
       const copyBtn = item.querySelector(".copy-button");
-      const addfreeBtn = item.querySelector(".addfree-button");
-      const daiBtn = item.querySelector(".dai-button");
 
       if (isPlayable) {
-        watchBtn.addEventListener("click", () => openCDNModal(cdns, "watch"));
-        copyBtn.addEventListener("click", () => openCDNModal(cdns, "copy"));
-        if (addfreeBtn) addfreeBtn.addEventListener("click", () => openStream(cdns, "addfree"));
-        if (daiBtn) daiBtn.addEventListener("click", () => openStream(cdns, "dai"));
+        watchBtn.addEventListener("click", () => openCDNModal(match, "watch"));
+        copyBtn.addEventListener("click", () => openCDNModal(match, "copy"));
       } else {
-        [watchBtn, copyBtn].forEach(btn => btn.addEventListener("click", showNotStarted));
+        watchBtn.addEventListener("click", showNotStarted);
+        copyBtn.addEventListener("click", showNotStarted);
       }
 
       container.appendChild(item);
@@ -253,18 +235,13 @@ fetch(apiURL)
 const cdnModal = document.getElementById("cdnModal");
 const cdnOptions = document.getElementById("cdnOptions");
 const cdnClose = document.getElementById("cdnClose");
-const copyModal = document.getElementById("copyModal");
-const copyClose = document.getElementById("copyClose");
-const m3u8Display = document.getElementById("m3u8Display");
 const notStartedModal = document.getElementById("notStartedModal");
 const notStartedClose = document.getElementById("notStartedClose");
 
 cdnClose.onclick = () => cdnModal.style.display = "none";
-copyClose.onclick = () => copyModal.style.display = "none";
 notStartedClose.onclick = () => notStartedModal.style.display = "none";
 window.onclick = (e) => {
   if (e.target === cdnModal) cdnModal.style.display = "none";
-  if (e.target === copyModal) copyModal.style.display = "none";
   if (e.target === notStartedModal) notStartedModal.style.display = "none";
 };
 
@@ -272,50 +249,55 @@ function showNotStarted() {
   notStartedModal.style.display = "flex";
 }
 
-function openStream(cdns, type) {
-  let url = null;
-  for (const [name, val] of Object.entries(cdns)) {
-    if (name.toLowerCase().includes(type) && val.endsWith(".m3u8")) {
-      url = val;
-      break;
-    }
-  }
-  if (url) window.location.href = `${playerURL}${encodeURIComponent(url)}`;
-  else alert(`${type.toUpperCase()} Stream not available!`);
-}
-
-function openCDNModal(cdns, mode) {
+function openCDNModal(match, mode) {
   cdnOptions.innerHTML = "";
   cdnModal.style.display = "flex";
-  for (const [name, url] of Object.entries(cdns)) {
-    if (name.toLowerCase() === "language") continue;
-    if (url && url.endsWith(".m3u8")) {
-      const btn = document.createElement("button");
-      btn.className = "cdn-option";
-      btn.textContent = name.replace(/_/g, " ");
-      btn.onclick = () => {
-        cdnModal.style.display = "none";
-        if (mode === "watch") {
-          window.location.href = `${playerURL}${encodeURIComponent(url)}`;
-        } else {
-          openCopyModal(url);
-        }
-      };
-      cdnOptions.appendChild(btn);
+
+  const cdns = [];
+
+  // Add adfree & dai streams
+  if (match.adfree_stream && match.adfree_stream.endsWith(".m3u8"))
+    cdns.push({ name: "Adfree Stream", url: match.adfree_stream });
+  if (match.dai_stream && match.dai_stream.endsWith(".m3u8"))
+    cdns.push({ name: "DAI Stream", url: match.dai_stream });
+
+  // Add all available from STREAMING_CDN
+  if (match.STREAMING_CDN) {
+    for (const [key, url] of Object.entries(match.STREAMING_CDN)) {
+      if (key.toLowerCase() === "language" || !url || url === "Unavailable") continue;
+      if (url.endsWith(".m3u8")) cdns.push({ name: key.replace(/_/g, " "), url });
     }
   }
+
+  if (cdns.length === 0) {
+    cdnOptions.innerHTML = "<p>No playable streams available.</p>";
+    return;
+  }
+
+  cdns.forEach(cdn => {
+    const btn = document.createElement("button");
+    btn.className = "cdn-option";
+    btn.textContent = cdn.name;
+    btn.onclick = () => {
+      cdnModal.style.display = "none";
+      if (mode === "watch") {
+        window.location.href = `${playerURL}${encodeURIComponent(cdn.url)}`;
+      } else {
+        openCopyPopup(cdn.url);
+      }
+    };
+    cdnOptions.appendChild(btn);
+  });
 }
 
-function openCopyModal(url) {
-  copyModal.style.display = "flex";
-  m3u8Display.innerHTML = `
-    <div class="copy-field">${url}</div>
-    <button class="copy-btn" onclick="copyToClipboard('${url}')">Copy M3U8</button>
-  `;
-}
-
-function copyToClipboard(text) {
-  navigator.clipboard.writeText(text).then(() => alert("M3U8 link copied!"));
+function openCopyPopup(url) {
+  const temp = document.createElement("textarea");
+  temp.value = url;
+  document.body.appendChild(temp);
+  temp.select();
+  document.execCommand("copy");
+  document.body.removeChild(temp);
+  alert("M3U8 link copied!");
 }
 </script>
 </body>
