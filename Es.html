@@ -230,7 +230,7 @@ fetch(apiURL)
       item.className = "match-item";
 
       let status = match.status?.toUpperCase() || "UPCOMING";
-      if(status === "NOT_STARTED") status = "UPCOMING";
+      if (status === "NOT_STARTED") status = "UPCOMING";
 
       const isLive = status === "LIVE" || match.streamingStatus === "STARTED";
 
@@ -239,7 +239,7 @@ fetch(apiURL)
         language = match.STREAMING_CDN.language;
       }
 
-      // If live, show buttons; if not live, show startTime
+      // Action content: buttons for live, startTime for upcoming
       let actionContent = "";
       if (isLive) {
         actionContent = `
@@ -249,15 +249,21 @@ fetch(apiURL)
           </div>
         `;
       } else if (match.startTime) {
-        actionContent = `<p style="color: rgba(255,255,255,0.3); font-weight: 400;">Start Time: ${match.startTime}</p>`;
+        actionContent = `<p style="color: rgba(255,255,255,0.3); font-size:12px; font-weight:400; margin:5px 0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Start Time: ${match.startTime}</p>`;
       }
+
+      // Status class for live/upcoming
+      const statusClass = isLive ? "status-live" : "status-upcoming";
+
+      // If upcoming, make status text 50% white
+      const statusStyle = isLive ? "" : "style='color: rgba(255,255,255,0.5);'";
 
       item.innerHTML = `
         <img src="${match.image}" alt="${match.title}">
         <h3>${match.title}</h3>
         <p>${match.category}</p>
         ${isLive && language ? `<p>Language: ${language}</p>` : ""}
-        <p class="${isLive ? "status-live" : "status-upcoming"}">${status}</p>
+        <p class="${statusClass}" ${statusStyle}>${status}</p>
         ${actionContent}
       `;
 
@@ -273,7 +279,7 @@ fetch(apiURL)
     });
   });
 
-// Rest of your modal functions remain unchanged
+// Modal and copy functions remain unchanged
 const cdnModal = document.getElementById("cdnModal");
 const cdnOptions = document.getElementById("cdnOptions");
 const cdnClose = document.getElementById("cdnClose");
