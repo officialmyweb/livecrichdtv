@@ -92,24 +92,35 @@
 
       if (Hls.isSupported()) {
         const hls = new Hls({ maxMaxBufferLength: 100 });
-        hls.loadSource(source);
+        hls.loadSource(streamData.url);
         hls.attachMedia(video);
         hls.on(Hls.Events.MANIFEST_PARSED, () => {
-          const player = new Plyr(video, {
-            controls: ['play-large', 'play', 'mute', 'volume', 'settings', 'fullscreen']
-          });
+          const availableQualities = hls.levels.map(level => level.height);
+          const defaultQuality = availableQualities[0];
 
-          document.addEventListener('fullscreenchange', () => {
-            if (document.fullscreenElement && screen.orientation?.lock) {
-              screen.orientation.lock('landscape').catch(() => {});
+          new Plyr(video, {
+            controls: ['play-large', 'play', 'mute', 'volume', 'settings', 'fullscreen'],
+            quality: {
+              default: defaultQuality,
+              options: availableQualities,
+              forced: true,
+              onChange: quality => {
+                hls.levels.forEach((level, index) => {
+                  if (level.height === quality) hls.currentLevel = index;
+                });
+              }
             }
           });
         });
       } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-        video.src = source;
+        video.src = streamData.url;
         new Plyr(video);
-      } else {
-        document.body.innerHTML = `<div style="color:white;text-align:center;">Your browser does not support HLS playback.</div>`;
+      }
+    });
+
+    document.addEventListener('fullscreenchange', () => {
+      if (document.fullscreenElement && screen.orientation?.lock) {
+        screen.orientation.lock('landscape').catch(console.warn);
       }
     });
   </script>
