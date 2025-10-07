@@ -72,17 +72,17 @@ h1 {
 
 /* STATUS */
 .status-live {
-  color: red;
-  font-weight: 400;           /* normal */
+  color: #ff3700;       /* same as title container */
+  font-weight: 400;     /* normal */
   animation: glow 1s infinite alternate;
 }
 @keyframes glow {
-  from { text-shadow: 0 0 5px red; }
-  to { text-shadow: 0 0 15px red; }
+  from { text-shadow: 0 0 5px #ff3700; }
+  to { text-shadow: 0 0 15px #ff3700; }
 }
 .status-upcoming {
-  color: #888;
-  font-weight: 400;           /* normal */
+  color: #6b5e4a;       /* dull brown, visible but subtle */
+  font-weight: 400;     /* normal */
 }
 
 /* BUTTONS */
@@ -221,7 +221,10 @@ fetch(apiURL)
       const item = document.createElement("div");
       item.className = "match-item";
 
-      const status = match.status?.toUpperCase() || "UPCOMING";
+      // Normalize status: NOT_STARTED → UPCOMING
+      let status = match.status?.toUpperCase() || "UPCOMING";
+      if(status === "NOT_STARTED") status = "UPCOMING";
+
       const isPlayable = status === "LIVE" || match.streamingStatus === "STARTED";
 
       let language = match.language;
