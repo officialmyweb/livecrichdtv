@@ -209,7 +209,7 @@ h1 {
 
 <script>
 const apiURL = "https://raw.githubusercontent.com/Jitendra-unatti/fancode/refs/heads/main/data/fancode.json";
-const playerURL = "player?id=";
+const playerPage = "player.html?id=";  // Your player URL
 
 fetch(apiURL)
   .then(res => res.json())
@@ -254,8 +254,6 @@ fetch(apiURL)
 
       // Status class for live/upcoming
       const statusClass = isLive ? "status-live" : "status-upcoming";
-
-      // If upcoming, make status text 50% white
       const statusStyle = isLive ? "" : "style='color: rgba(255,255,255,0.5);'";
 
       item.innerHTML = `
@@ -271,80 +269,38 @@ fetch(apiURL)
         const watchBtn = item.querySelector(".watch-button");
         const copyBtn = item.querySelector(".copy-button");
 
-        watchBtn.addEventListener("click", () => openCDNModal(match, "watch"));
-        copyBtn.addEventListener("click", () => openCDNModal(match, "copy"));
+        watchBtn.addEventListener("click", () => {
+          // Open your player page with match ID
+          window.location.href = `${playerPage}${match.match_id}`;
+        });
+
+        copyBtn.addEventListener("click", () => {
+          // Copy first available .m3u8
+          const urls = [];
+          if (match.adfree_stream && match.adfree_stream.endsWith(".m3u8")) urls.push(match.adfree_stream);
+          if (match.dai_stream && match.dai_stream.endsWith(".m3u8")) urls.push(match.dai_stream);
+          if (match.STREAMING_CDN) {
+            for (const [k, url] of Object.entries(match.STREAMING_CDN)) {
+              if (url && url !== "Unavailable" && url.endsWith(".m3u8")) urls.push(url);
+            }
+          }
+          if (urls.length) {
+            const temp = document.createElement("textarea");
+            temp.value = urls[0];
+            document.body.appendChild(temp);
+            temp.select();
+            document.execCommand("copy");
+            document.body.removeChild(temp);
+            alert("M3U8 LINK COPIED!");
+          } else {
+            alert("No M3U8 link available.");
+          }
+        });
       }
 
       container.appendChild(item);
     });
   });
-
-// Modal and copy functions remain unchanged
-const cdnModal = document.getElementById("cdnModal");
-const cdnOptions = document.getElementById("cdnOptions");
-const cdnClose = document.getElementById("cdnClose");
-const notStartedModal = document.getElementById("notStartedModal");
-const notStartedClose = document.getElementById("notStartedClose");
-
-cdnClose.onclick = () => cdnModal.style.display = "none";
-notStartedClose.onclick = () => notStartedModal.style.display = "none";
-window.onclick = (e) => {
-  if (e.target === cdnModal) cdnModal.style.display = "none";
-  if (e.target === notStartedModal) notStartedModal.style.display = "none";
-};
-
-function showNotStarted() {
-  notStartedModal.style.display = "flex";
-}
-
-function openCDNModal(match, mode) {
-  cdnOptions.innerHTML = "";
-  cdnModal.style.display = "flex";
-
-  const cdns = [];
-
-  if (match.adfree_stream && match.adfree_stream.endsWith(".m3u8"))
-    cdns.push({ name: "Adfree Stream", url: match.adfree_stream });
-  if (match.dai_stream && match.dai_stream.endsWith(".m3u8"))
-    cdns.push({ name: "DAI Stream", url: match.dai_stream });
-
-  if (match.STREAMING_CDN) {
-    for (const [key, url] of Object.entries(match.STREAMING_CDN)) {
-      if (key.toLowerCase() === "language" || !url || url === "Unavailable") continue;
-      if (url.endsWith(".m3u8")) cdns.push({ name: key.replace(/_/g, " "), url });
-    }
-  }
-
-  if (cdns.length === 0) {
-    cdnOptions.innerHTML = "<p>No playable streams available.</p>";
-    return;
-  }
-
-  cdns.forEach(cdn => {
-    const btn = document.createElement("button");
-    btn.className = "cdn-option";
-    btn.textContent = cdn.name;
-    btn.onclick = () => {
-      cdnModal.style.display = "none";
-      if (mode === "watch") {
-        window.location.href = `${playerURL}${encodeURIComponent(cdn.url)}`;
-      } else {
-        openCopyPopup(cdn.url);
-      }
-    };
-    cdnOptions.appendChild(btn);
-  });
-}
-
-function openCopyPopup(url) {
-  const temp = document.createElement("textarea");
-  temp.value = url;
-  document.body.appendChild(temp);
-  temp.select();
-  document.execCommand("copy");
-  document.body.removeChild(temp);
-  alert("M3U8 LINK COPIED!");
-}
 </script>
 
 </body>
