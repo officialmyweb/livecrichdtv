@@ -39,80 +39,79 @@
   </div>
 
   <script>
-    const container = document.getElementById('matches-container');
-    const DATA_URL = 'https://raw.githubusercontent.com/Jitendra-unatti/fancode/refs/heads/main/data/fancode.json';
-    const PLAY_BASE = 'https://livecrichdtv.pages.dev/site';
+  const container = document.getElementById('matches-container');
+  const DATA_URL = 'https://raw.githubusercontent.com/Jitendra-unatti/fancode/refs/heads/main/data/fancode.json';
+  const PLAY_BASE = 'https://livecrichdtv.pages.dev/site';
 
-    const STREAM_META = {
-      adfree_stream:   { label: 'Ad-Free', classes: 'bg-green-600 hover:bg-green-700 text-white' },
-      dai_stream:      { label: 'DAI',     classes: 'bg-blue-600 hover:bg-blue-700 text-white' },
-      Primary_Playback_URL: { label: 'Primary', classes: 'bg-purple-600 hover:bg-purple-700 text-white' },
-      fancode_cdn:     { label: 'FanCode CDN', classes: 'bg-indigo-600 hover:bg-indigo-700 text-white' },
-      dai_google_cdn:  { label: 'DAI Google',  classes: 'bg-yellow-600 hover:bg-yellow-700 text-black' },
-      cloudfront_cdn:  { label: 'CloudFront',  classes: 'bg-pink-600 hover:bg-pink-700 text-white' },
-      sony_cdn:        { label: 'Sony CDN',    classes: 'bg-red-600 hover:bg-red-700 text-white' }
-    };
+  const STREAM_META = {
+    adfree_stream:   { label: 'Ad-Free', classes: 'bg-green-600 hover:bg-green-700 text-white' },
+    dai_stream:      { label: 'DAI',     classes: 'bg-blue-600 hover:bg-blue-700 text-white' },
+    Primary_Playback_URL: { label: 'Primary', classes: 'bg-purple-600 hover:bg-purple-700 text-white' },
+    fancode_cdn:     { label: 'FanCode CDN', classes: 'bg-indigo-600 hover:bg-indigo-700 text-white' },
+    dai_google_cdn:  { label: 'DAI Google',  classes: 'bg-yellow-600 hover:bg-yellow-700 text-black' },
+    cloudfront_cdn:  { label: 'CloudFront',  classes: 'bg-pink-600 hover:bg-pink-700 text-white' },
+    sony_cdn:        { label: 'Sony CDN',    classes: 'bg-red-600 hover:bg-red-700 text-white' }
+  };
 
-    function makeBtn(label, href, extraClasses = '') {
-      const a = document.createElement('a');
-      a.href = href;
-      a.target = '_blank';
-      a.rel = 'noopener noreferrer';
-      a.className = `px-4 py-2 rounded-lg text-sm flex items-center justify-center shadow-md transition-all ${extraClasses}`;
-      a.innerHTML = `<i class="fas fa-play mr-2"></i>${label}`;
-      return a;
-    }
+  function makeBtn(label, href, extraClasses = '') {
+    const a = document.createElement('a');
+    a.href = href;
+    a.target = '_blank';
+    a.className = `px-4 py-2 rounded-lg text-sm flex items-center justify-center shadow-md transition-all ${extraClasses}`;
+    a.innerHTML = `<i class="fas fa-play mr-2"></i>${label}`;
+    return a;
+  }
 
-    fetch(DATA_URL)
-      .then(r => r.json())
-      .then(data => {
-        let matches = Array.isArray(data.matches) ? data.matches : [];
+  fetch(DATA_URL)
+    .then(r => r.json())
+    .then(data => {
+      let matches = Array.isArray(data.matches) ? data.matches : [];
 
-        // Sort so LIVE matches come first
-        matches.sort((a, b) => {
-          const aLive = (a.status || '').toUpperCase() === 'LIVE';
-          const bLive = (b.status || '').toUpperCase() === 'LIVE';
-          return (bLive ? 1 : 0) - (aLive ? 1 : 0);
-        });
+      // Sort so LIVE matches come first
+      matches.sort((a, b) => {
+        const aLive = (a.status || '').toUpperCase() === 'LIVE';
+        const bLive = (b.status || '').toUpperCase() === 'LIVE';
+        return (bLive ? 1 : 0) - (aLive ? 1 : 0);
+      });
 
-        matches.forEach(match => {
-          const isLive = (match.status || '').toUpperCase() === 'LIVE';
-          const imgSrc =
-            match.image ||
-            (match.image_cdn && (match.image_cdn.APP || match.image_cdn.TATAPLAY || match.image_cdn.PLAYBACK || match.image_cdn.BG_IMAGE)) ||
-            'https://www.fancode.com/skillup-uploads/cms-media/Cricket_Fallback_Old_match-card.jpg';
+      matches.forEach(match => {
+        const isLive = (match.status || '').toUpperCase() === 'LIVE';
+        const imgSrc =
+          match.image ||
+          (match.image_cdn && (match.image_cdn.APP || match.image_cdn.TATAPLAY || match.image_cdn.PLAYBACK || match.image_cdn.BG_IMAGE)) ||
+          'https://www.fancode.com/skillup-uploads/cms-media/Cricket_Fallback_Old_match-card.jpg';
 
-          const card = document.createElement('div');
-          card.className = `rounded-2xl overflow-hidden shadow-xl match-card border border-gray-800 ${isLive ? 'ring-2 ring-red-600' : ''}`;
+        const card = document.createElement('div');
+        card.className = `rounded-2xl overflow-hidden shadow-xl match-card border border-gray-800 ${isLive ? 'ring-2 ring-red-600' : ''}`;
 
-          const headerHTML = `
-            <div class="relative">
-              <img src="${imgSrc}" alt="${(match.title || 'Match')}" class="w-full h-48 sm:h-60 md:h-64 lg:h-72 object-cover object-top match-img">
-              ${isLive ? `<span class="absolute top-3 left-3 bg-red-600 text-white text-xs font-semibold px-3 py-1 rounded-full shadow-md live-badge">LIVE</span>` : ''}
-            </div>
-          `;
+        const headerHTML = `
+          <div class="relative">
+            <img src="${imgSrc}" alt="${(match.title || 'Match')}" class="w-full h-48 sm:h-60 md:h-64 lg:h-72 object-cover object-top match-img">
+            ${isLive ? `<span class="absolute top-3 left-3 bg-red-600 text-white text-xs font-semibold px-3 py-1 rounded-full shadow-md live-badge">LIVE</span>` : ''}
+          </div>
+        `;
 
-          const title = match.title || 'Match';
-          const tournament = match.tournament || '';
-          const startTime = match.startTime || '';
+        const title = match.title || 'Match';
+        const tournament = match.tournament || '';
+        const startTime = match.startTime || '';
 
-          let matchLang = '';
-          if (match.language) {
-            matchLang = String(match.language).toLowerCase();
-          } else if (match.STREAMING_CDN && match.STREAMING_CDN.language) {
-            matchLang = String(match.STREAMING_CDN.language).toLowerCase();
-          }
-          const language = matchLang ? ` • ${matchLang}` : '';
-          const sub1 = tournament ? `${tournament}${language}` : (language ? language.slice(3) : '');
-          const sub2 = startTime ? `Start: ${startTime}` : '';
+        let matchLang = '';
+        if (match.language) {
+          matchLang = String(match.language).toLowerCase();
+        } else if (match.STREAMING_CDN && match.STREAMING_CDN.language) {
+          matchLang = String(match.STREAMING_CDN.language).toLowerCase();
+        }
+        const language = matchLang ? ` • ${matchLang}` : '';
+        const sub1 = tournament ? `${tournament}${language}` : (language ? language.slice(3) : '');
+        const sub2 = startTime ? `Start: ${startTime}` : '';
 
-          // Prepare stream buttons container (hidden by default)
-          const btnWrap = document.createElement('div');
-          btnWrap.className = 'controls-row hidden mt-4';
+        const btnWrap = document.createElement('div');
+        btnWrap.className = 'flex flex-col sm:flex-row sm:flex-wrap gap-3 hidden mt-4';
 
-          const id = encodeURIComponent(String(match.match_id ?? ''));
+        const id = encodeURIComponent(String(match.match_id ?? ''));
 
-          // Populate streams (same logic as before)
+        // Generate stream buttons only if LIVE
+        if (isLive) {
           ['adfree_stream', 'dai_stream'].forEach(key => {
             const url = match[key];
             if (url && url !== 'Unavailable') {
@@ -134,55 +133,49 @@
               btnWrap.appendChild(makeBtn(meta.label, href, meta.classes));
             });
           }
+        }
 
-          // If there are no stream buttons, show a simple message in btnWrap (but we'll only display for live matches per your request)
-          if (!btnWrap.children.length) {
-            const span = document.createElement('span');
-            span.className = 'text-gray-400 italic';
-            span.textContent = 'No streams available yet';
-            btnWrap.appendChild(span);
-          }
+        const body = document.createElement('div');
+        body.className = 'p-5 sm:p-6';
+        body.innerHTML = `
+          <h2 class="text-xl sm:text-2xl font-semibold text-white mb-1">${title}</h2>
+          <p class="text-gray-400 text-sm mb-1">${sub1}</p>
+          <p class="text-sm text-gray-500 mb-2">${sub2}</p>
+        `;
 
-          // Create Watch Now button only for LIVE matches **and** when there are stream options
-          let toggleBtn = null;
-          const hasAnyStreams = btnWrap.children.length > 0;
-          if (isLive && hasAnyStreams) {
-            toggleBtn = document.createElement('button');
-            // Bright, visible background for dark theme
-            toggleBtn.className = 'w-full bg-yellow-400 hover:bg-yellow-300 text-black font-semibold py-2 px-4 rounded-lg mt-3 transition-shadow shadow-lg ring-1 ring-yellow-200 flex items-center justify-center';
-            toggleBtn.innerHTML = `<i class="fas fa-tv mr-2"></i>Watch Now`;
+        if (isLive) {
+          // Watch Now Button (visible and with clear background)
+          const toggleBtn = document.createElement('button');
+          toggleBtn.className = 'w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white font-semibold py-2 px-4 rounded-lg mt-3 transition shadow-lg backdrop-blur-sm';
+          toggleBtn.innerHTML = `<i class="fas fa-tv mr-2"></i>Watch Now`;
 
-            toggleBtn.addEventListener('click', () => {
-              btnWrap.classList.toggle('hidden');
-              const opened = !btnWrap.classList.contains('hidden');
-              toggleBtn.innerHTML = opened
-                ? `<i class="fas fa-chevron-up mr-2"></i>Hide Options`
-                : `<i class="fas fa-tv mr-2"></i>Watch Now`;
-            });
-          }
+          toggleBtn.addEventListener('click', () => {
+            btnWrap.classList.toggle('hidden');
+            toggleBtn.innerHTML = btnWrap.classList.contains('hidden')
+              ? `<i class="fas fa-tv mr-2"></i>Watch Now`
+              : `<i class="fas fa-chevron-up mr-2"></i>Hide Options`;
+          });
 
-          const body = document.createElement('div');
-          body.className = 'p-5 sm:p-6';
-          body.innerHTML = `
-            <h2 class="text-xl sm:text-2xl font-semibold text-white mb-1">${title}</h2>
-            <p class="text-gray-400 text-sm mb-1">${sub1}</p>
-            <p class="text-sm text-gray-500 mb-2">${sub2}</p>
-          `;
+          body.appendChild(toggleBtn);
+          body.appendChild(btnWrap);
+        } else {
+          // For upcoming or not started matches
+          const noStream = document.createElement('div');
+          noStream.className = 'w-full bg-gray-800 text-gray-400 py-2 px-4 rounded-lg mt-3 text-center';
+          noStream.innerHTML = `<i class="fas fa-clock mr-2"></i>No stream available yet`;
+          body.appendChild(noStream);
+        }
 
-          // Append button + options only when (a) live and (b) options exist
-          if (toggleBtn) body.appendChild(toggleBtn);
-          if (isLive) body.appendChild(btnWrap); // Append btnWrap for live matches only (it may contain the 'No streams available yet' message)
-
-          // For non-live matches, you keep the info but no watch button (per request).
-          card.innerHTML = headerHTML;
-          card.appendChild(body);
-          container.appendChild(card);
-        });
-      })
-      .catch(error => {
-        console.error('Error fetching JSON:', error);
-        container.innerHTML = `<p class="text-center text-red-500">Failed to load matches.</p>`;
+        card.innerHTML = headerHTML;
+        card.appendChild(body);
+        container.appendChild(card);
       });
-  </script>
+    })
+    .catch(error => {
+      console.error('Error fetching JSON:', error);
+      container.innerHTML = `<p class="text-center text-red-500">Failed to load matches.</p>`;
+    });
+</script>
+
 </body>
 </html>
