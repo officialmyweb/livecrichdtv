@@ -2,71 +2,159 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Live Stream Player</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plyr@3.6.12/dist/plyr.css" />
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@1.1.4/dist/hls.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/plyr@3.6.12/dist/plyr.min.js"></script>
+  <title>Fancode Live Matches</title>
+  <link rel="shortcut icon" href="https://fancode.cricsters.io/fancode.webp">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
   <style>
-    html, body { margin:0; padding:0; height:100%; background:#000; }
-    body { display:flex; justify-content:center; align-items:center; }
-    #player { width:100%; height:100%; max-width:100%; max-height:100%; }
+    body { background-color: #0f0f0f; color: #fff; }
+    .match-card { transition: all 0.3s ease-in-out; background: linear-gradient(145deg, #1a1a1a, #1f1f1f); }
+    .match-card:hover { transform: translateY(-6px); box-shadow: 0 25px 35px rgba(0, 0, 0, 0.45); }
+    .live-badge { animation: pulse 1.5s infinite; }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+      50% { box-shadow: 0 0 15px 10px rgba(239, 68, 68, 0); }
+    }
+    .match-img { transition: transform 0.3s ease; }
+    .match-card:hover .match-img { transform: scale(1.03); }
+  </style>
+  <style type="text/css">
+    * {user-select: auto !important; -webkit-user-select: auto !important;}
   </style>
 </head>
-<body>
-  <video id="player" autoplay playsinline controls></video>
+
+<body class="bg-gray-950 min-h-screen">
+
+  <div class="max-w-7xl mx-auto px-4 py-8 sm:py-10">
+    <h1 class="text-3xl sm:text-4xl font-bold text-center text-white mb-8 tracking-wide">
+      ⚡ Fancode Live Matches
+    </h1>
+    <div id="matches-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+  </div>
 
   <script>
-    const urlParams = new URLSearchParams(window.location.search);
-    const m3u8 = urlParams.get('id'); // Pass M3U8 link here
+    const container = document.getElementById('matches-container');
 
-    const video = document.getElementById('player');
+    const DATA_URL = 'https://raw.githubusercontent.com/Jitendra-unatti/fancode/refs/heads/main/data/fancode.json';
+    const PLAY_BASE = 'https://fancodeee.netlify.app/play.html';
 
-    if (!m3u8) {
-      document.body.innerHTML = '<div style="color:white;text-align:center;padding:2em;">No M3U8 URL provided</div>';
-    } else if (Hls.isSupported()) {
-      const hls = new Hls({
-        maxMaxBufferLength: 60,
-        autoStartLoad: true
-      });
+    // Utility: build a button
+    function makeBtn(label, href, extraClasses = '') {
+      const a = document.createElement('a');
+      a.href = href;
+      a.className = `w-full sm:w-auto px-4 py-2 rounded-lg text-sm flex items-center justify-center shadow-md transition-all ${extraClasses}`;
+      a.innerHTML = `<i class="fas fa-play mr-2"></i> ${label}`;
+      return a;
+    }
 
-      hls.loadSource(m3u8);
-      hls.attachMedia(video);
+    // Map stream key -> button styling + label
+    const STREAM_META = {
+      adfree_stream:   { label: 'Ad-Free', classes: 'bg-green-600 hover:bg-green-700 text-white' },
+      dai_stream:      { label: 'DAI',     classes: 'bg-blue-600 hover:bg-blue-700 text-white' },
+      Primary_Playback_URL: { label: 'Primary', classes: 'bg-purple-600 hover:bg-purple-700 text-white' },
+      fancode_cdn:     { label: 'FanCode CDN', classes: 'bg-indigo-600 hover:bg-indigo-700 text-white' },
+      dai_google_cdn:  { label: 'DAI Google',  classes: 'bg-yellow-600 hover:bg-yellow-700 text-black' },
+      cloudfront_cdn:  { label: 'CloudFront',  classes: 'bg-pink-600 hover:bg-pink-700 text-white' },
+      sony_cdn:        { label: 'Sony CDN',    classes: 'bg-red-600 hover:bg-red-700 text-white' }
+    };
 
-      hls.on(Hls.Events.MANIFEST_PARSED, () => {
-        const qualities = hls.levels.map(l => l.height).filter(Boolean).sort((a,b)=>b-a);
-        const defaultQuality = qualities.includes(1080) ? 1080 : (qualities[0] || 360);
+    fetch(DATA_URL)
+      .then(r => r.json())
+      .then(data => {
+        const matches = Array.isArray(data.matches) ? data.matches : [];
 
-        const player = new Plyr(video, {
-          controls: ['play-large','play','mute','volume','settings','fullscreen'],
-          quality: {
-            default: defaultQuality,
-            options: qualities,
-            forced: true,
-            onChange: q => {
-              hls.levels.forEach((l,i)=>{ if(l.height===q) hls.currentLevel=i; });
+        matches.forEach(match => {
+          const isLive = (match.status || '').toUpperCase() === 'LIVE';
+          const imgSrc =
+            match.image ||
+            (match.image_cdn && (match.image_cdn.APP || match.image_cdn.TATAPLAY || match.image_cdn.PLAYBACK || match.image_cdn.BG_IMAGE)) ||
+            'https://www.fancode.com/skillup-uploads/cms-media/Cricket_Fallback_Old_match-card.jpg';
+
+          const card = document.createElement('div');
+          card.className = `rounded-2xl overflow-hidden shadow-xl match-card border border-gray-800 ${isLive ? 'ring-2 ring-red-600' : ''}`;
+
+          const headerHTML = `
+            <div class="relative">
+              <img src="${imgSrc}" alt="${(match.title || 'Match')}" class="w-full h-48 sm:h-60 md:h-64 lg:h-72 object-cover object-top match-img">
+              ${isLive ? `<span class="absolute top-3 left-3 bg-red-600 text-white text-xs font-semibold px-3 py-1 rounded-full shadow-md live-badge">LIVE</span>` : ''}
+            </div>
+          `;
+
+          const title = match.title || 'Match';
+          const tournament = match.tournament || '';
+          const startTime = match.startTime || '';
+
+          let matchLang = '';
+          if (match.language) {
+            matchLang = String(match.language).toLowerCase();
+          } else if (match.STREAMING_CDN && match.STREAMING_CDN.language) {
+            matchLang = String(match.STREAMING_CDN.language).toLowerCase();
+          }
+          const language = matchLang ? ` • ${matchLang}` : '';
+          const sub1 = tournament ? `${tournament}${language}` : (language ? language.slice(3) : '');
+          const sub2 = startTime ? `Start: ${startTime}` : '';
+
+          const btnWrap = document.createElement('div');
+          btnWrap.className = 'flex flex-col sm:flex-row sm:flex-wrap gap-3';
+
+          const id = encodeURIComponent(String(match.match_id ?? ''));
+
+          ['adfree_stream', 'dai_stream'].forEach(key => {
+            const url = match[key];
+            if (url && url !== 'Unavailable') {
+              const meta = STREAM_META[key];
+              let href = `${PLAY_BASE}?id=${id}&cdn=${encodeURIComponent(key)}`;
+              if (matchLang === 'hindi') href += '&lang=hindi';
+              btnWrap.appendChild(makeBtn(meta.label, href, meta.classes));
             }
-          }
-        });
+          });
 
-        // Landscape lock on fullscreen (mobile)
-        document.addEventListener('fullscreenchange', () => {
-          if(document.fullscreenElement && screen.orientation?.lock) {
-            screen.orientation.lock('landscape').catch(()=>{});
+          if (match.STREAMING_CDN && typeof match.STREAMING_CDN === 'object') {
+            Object.entries(match.STREAMING_CDN).forEach(([key, value]) => {
+              if (!value || String(value).toLowerCase() === 'unavailable') return;
+              if (key.toLowerCase() === 'language') return;
+
+              const meta = STREAM_META[key] || { label: key.replace(/_/g, ' '), classes: 'bg-gray-700 hover:bg-gray-600 text-white' };
+              let href = `${PLAY_BASE}?id=${id}&cdn=${encodeURIComponent(key)}`;
+              if (matchLang === 'hindi') href += '&lang=Hindi';
+              btnWrap.appendChild(makeBtn(meta.label, href, meta.classes));
+            });
           }
+
+          if (!btnWrap.children.length) {
+            const span = document.createElement('span');
+            span.className = 'text-gray-500 italic';
+            span.textContent = 'No streams available yet';
+            btnWrap.appendChild(span);
+          }
+
+          const body = document.createElement('div');
+          body.className = 'p-5 sm:p-6';
+          body.innerHTML = `
+            <h2 class="text-xl sm:text-2xl font-semibold text-white mb-1">${title}</h2>
+            <p class="text-gray-400 text-sm mb-1">${sub1}</p>
+            <p class="text-sm text-gray-500 mb-4">${sub2}</p>
+          `;
+          body.appendChild(btnWrap);
+
+          card.innerHTML = headerHTML;
+          card.appendChild(body);
+          container.appendChild(card);
         });
+      })
+      .catch(error => {
+        console.error('Error fetching JSON:', error);
+        container.innerHTML = `<p class="text-center text-red-500">Failed to load matches.</p>`;
       });
 
-      hls.on(Hls.Events.ERROR, (event, data) => {
-        console.error("HLS error:", data);
+    // Anti-iframe protection
+    if (window.top !== window.self) {
+      document.addEventListener('DOMContentLoaded', function () {
+        document.body.innerHTML = '<div id="message">Ab to copy mat kar chutiye</div>';
       });
-
-    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-      video.src = m3u8;
-      new Plyr(video);
-    } else {
-      document.body.innerHTML = '<div style="color:white;text-align:center;padding:2em;">Your browser does not support HLS.</div>';
     }
   </script>
+
 </body>
 </html>
