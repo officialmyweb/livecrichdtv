@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
   <title>Fancode Live Matches</title>
-  <link rel="shortcut icon" href="#">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="shortcut icon" href="#" />
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
   <style>
@@ -24,6 +24,9 @@
     }
     .match-img { transition: transform 0.3s ease; }
     .match-card:hover .match-img { transform: scale(1.03); }
+
+    /* small helper to separate controls area */
+    .controls-row { gap: 0.6rem; display: flex; flex-wrap: wrap; }
   </style>
 </head>
 
@@ -54,6 +57,7 @@
       const a = document.createElement('a');
       a.href = href;
       a.target = '_blank';
+      a.rel = 'noopener noreferrer';
       a.className = `px-4 py-2 rounded-lg text-sm flex items-center justify-center shadow-md transition-all ${extraClasses}`;
       a.innerHTML = `<i class="fas fa-play mr-2"></i>${label}`;
       return a;
@@ -102,12 +106,13 @@
           const sub1 = tournament ? `${tournament}${language}` : (language ? language.slice(3) : '');
           const sub2 = startTime ? `Start: ${startTime}` : '';
 
+          // Prepare stream buttons container (hidden by default)
           const btnWrap = document.createElement('div');
-          btnWrap.className = 'flex flex-col sm:flex-row sm:flex-wrap gap-3 hidden mt-4';
+          btnWrap.className = 'controls-row hidden mt-4';
 
           const id = encodeURIComponent(String(match.match_id ?? ''));
 
-          // Generate stream buttons
+          // Populate streams (same logic as before)
           ['adfree_stream', 'dai_stream'].forEach(key => {
             const url = match[key];
             if (url && url !== 'Unavailable') {
@@ -130,17 +135,31 @@
             });
           }
 
-          // Watch Now button
-          const toggleBtn = document.createElement('button');
-          toggleBtn.className = 'w-full bg-orange-600 hover:bg-orange-700 text-white py-2 px-4 rounded-lg mt-3 transition';
-          toggleBtn.innerHTML = `<i class="fas fa-tv mr-2"></i>Watch Now`;
+          // If there are no stream buttons, show a simple message in btnWrap (but we'll only display for live matches per your request)
+          if (!btnWrap.children.length) {
+            const span = document.createElement('span');
+            span.className = 'text-gray-400 italic';
+            span.textContent = 'No streams available yet';
+            btnWrap.appendChild(span);
+          }
 
-          toggleBtn.addEventListener('click', () => {
-            btnWrap.classList.toggle('hidden');
-            toggleBtn.innerHTML = btnWrap.classList.contains('hidden')
-              ? `<i class="fas fa-tv mr-2"></i>Watch Now`
-              : `<i class="fas fa-chevron-up mr-2"></i>Hide Options`;
-          });
+          // Create Watch Now button only for LIVE matches **and** when there are stream options
+          let toggleBtn = null;
+          const hasAnyStreams = btnWrap.children.length > 0;
+          if (isLive && hasAnyStreams) {
+            toggleBtn = document.createElement('button');
+            // Bright, visible background for dark theme
+            toggleBtn.className = 'w-full bg-yellow-400 hover:bg-yellow-300 text-black font-semibold py-2 px-4 rounded-lg mt-3 transition-shadow shadow-lg ring-1 ring-yellow-200 flex items-center justify-center';
+            toggleBtn.innerHTML = `<i class="fas fa-tv mr-2"></i>Watch Now`;
+
+            toggleBtn.addEventListener('click', () => {
+              btnWrap.classList.toggle('hidden');
+              const opened = !btnWrap.classList.contains('hidden');
+              toggleBtn.innerHTML = opened
+                ? `<i class="fas fa-chevron-up mr-2"></i>Hide Options`
+                : `<i class="fas fa-tv mr-2"></i>Watch Now`;
+            });
+          }
 
           const body = document.createElement('div');
           body.className = 'p-5 sm:p-6';
@@ -149,9 +168,12 @@
             <p class="text-gray-400 text-sm mb-1">${sub1}</p>
             <p class="text-sm text-gray-500 mb-2">${sub2}</p>
           `;
-          body.appendChild(toggleBtn);
-          body.appendChild(btnWrap);
 
+          // Append button + options only when (a) live and (b) options exist
+          if (toggleBtn) body.appendChild(toggleBtn);
+          if (isLive) body.appendChild(btnWrap); // Append btnWrap for live matches only (it may contain the 'No streams available yet' message)
+
+          // For non-live matches, you keep the info but no watch button (per request).
           card.innerHTML = headerHTML;
           card.appendChild(body);
           container.appendChild(card);
