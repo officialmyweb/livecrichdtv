@@ -233,14 +233,13 @@ fetch(apiURL)
       if(status === "NOT_STARTED") status = "UPCOMING";
 
       const isLive = status === "LIVE" || match.streamingStatus === "STARTED";
-      const isUpcoming = status === "UPCOMING";
 
       let language = match.language;
       if (!language && match.STREAMING_CDN?.language) {
         language = match.STREAMING_CDN.language;
       }
 
-      // If upcoming, show start time; otherwise show buttons
+      // If live, show buttons; if not live, show startTime
       let actionContent = "";
       if (isLive) {
         actionContent = `
@@ -249,10 +248,8 @@ fetch(apiURL)
             <button class="stream-button copy-button">Copy M3U8</button>
           </div>
         `;
-      } else if (match.start_time) {
-        actionContent = `<p style="color: rgba(255,255,255,0.3); font-weight: 400;">Start Time: ${match.start_time}</p>`;
-      } else {
-        actionContent = `<p style="color: rgba(255,255,255,0.3); font-weight: 400;">Match Upcoming</p>`;
+      } else if (match.startTime) {
+        actionContent = `<p style="color: rgba(255,255,255,0.3); font-weight: 400;">Start Time: ${match.startTime}</p>`;
       }
 
       item.innerHTML = `
