@@ -11,21 +11,23 @@
   <script src="https://cdn.jsdelivr.net/npm/hls.js@1.1.4/dist/hls.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/plyr@3.6.12/dist/plyr.min.js"></script>
 
-  <style>
+    <style>
     body {
+      background-color: #000;
       margin: 0;
-      background: #000;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+      padding: 0;
+      overflow: hidden;
+    }
+    html, body {
+      height: 100%;
     }
     video {
       width: 100%;
-      max-width: 100%;
       height: 100%;
-      display: block;
-      background: #000;
+      max-width: 100%;
+    }
+    .plyr {
+      height: 100%;
     }
   </style>
 </head>
