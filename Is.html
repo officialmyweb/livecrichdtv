@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Universal HLS Player</title>
+  <title>Telegram-eXtra-Sports</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   
   <!-- Plyr CSS -->
@@ -55,10 +55,9 @@
   <!-- JS Dependencies -->
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <script src="https://cdn.jsdelivr.net/npm/plyr@3.7.8/dist/plyr.polyfilled.js"></script>
-  <script src="https://lchdxfootball.pages.dev/premium.js"></script>
+  <script src="https://lchdxfootball.pages.dev/extrasportsp.js"></script>
 
   <script>
-    // Function to get URL ?id=
     function getUrlParameter(name) {
       name = name.replace(/[\[\]]/g, "\\$&");
       const regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)");
@@ -77,17 +76,27 @@
         return;
       }
 
+      if (stream.popupMessage) {
+        const goToChannel = confirm(stream.popupMessage);
+        if (goToChannel && stream.telegramHandle) {
+          window.open(`https://t.me/${stream.telegramHandle.replace('@', '')}`, '_blank');
+        }
+      }
+
       const video = document.getElementById('player');
       const source = stream.url;
 
-      // ✅ iPhone / Safari
       if (video.canPlayType('application/vnd.apple.mpegurl')) {
         video.src = source;
         video.addEventListener('loadedmetadata', () => video.play().catch(() => {}));
       } 
-      // ✅ Android / Other browsers
       else if (Hls.isSupported()) {
-        const hls = new Hls({ maxBufferLength: 60 });
+        const hls = new Hls({
+          maxBufferLength: 60,
+          xhrSetup: function(xhr) {
+            xhr.withCredentials = false;
+          }
+        });
         hls.loadSource(source);
         hls.attachMedia(video);
       } 
@@ -95,7 +104,6 @@
         alert("Your browser does not support HLS playback.");
       }
 
-      // ✅ Initialize Plyr
       const player = new Plyr(video, {
         autoplay: true,
         clickToPlay: true,
@@ -105,6 +113,10 @@
         ],
         fullscreen: { enabled: true, fallback: true, iosNative: true },
       });
+
+      if (stream.poster) {
+        video.poster = stream.poster;
+      }
     });
   </script>
 
