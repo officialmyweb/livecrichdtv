@@ -1,304 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-<link rel="shortcut icon" href="https://drmlive.in/sports/fancode.png" />
-<title>Fancode Live Matches</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@400;700&display=swap">
-<style>
-body {
-  font-family: 'Roboto', sans-serif;
-  margin: 0;
-  padding: 20px;
-  background-color: #000;
-  color: #fff;
-}
-h1 {
-  text-align: center;
-  color: #ff3700;
-  margin-bottom: 20px;
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 700;
-}
-.file-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center;
-}
-.match-item {
-  background: #1a1a1a;
-  border-radius: 10px;
-  overflow: hidden;
-  width: calc(25% - 20px);
-  transition: transform 0.3s, box-shadow 0.3s;
-  cursor: pointer;
-  text-align: center;
-  padding: 15px;
-}
-.match-item:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 10px rgba(255, 72, 0, 0.7);
-}
-.match-item img {
-  width: 100%;
-  border-radius: 10px;
-  margin-bottom: 10px;
-}
-.match-item h3 {
-  margin: 5px 0;
-  font-size: 16px;
-  color: #ff6600;
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 700;
-}
-.match-item p {
-  margin: 4px 0;
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 600;
-  color: #fff;
-}
-.status-live {
-  color: red;
-  font-weight: bold;
-  animation: glow 1s infinite alternate;
-}
-@keyframes glow {
-  from { text-shadow: 0 0 5px red; }
-  to { text-shadow: 0 0 15px red; }
-}
-.status-upcoming {
-  color: #888;
-}
-.button-container {
-  margin-top: 10px;
-}
-.stream-button {
-  padding: 8px 14px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  color: white;
-  margin: 5px;
-  font-family: 'Montserrat', sans-serif;
-  transition: 0.3s;
-  font-weight: 600;
-}
-.watch-button { background-color: #007bff; }
-.copy-button { background-color: #28a745; }
-.stream-button:hover { opacity: 0.9; }
-
-/* Modal Styles */
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 1001;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0,0,0,0.7);
-  justify-content: center;
-  align-items: center;
-}
-.modal-content {
-  background-color: #222;
-  color: #fff;
-  padding: 20px;
-  border-radius: 10px;
-  width: 90%;
-  max-width: 500px;
-  text-align: center;
-  box-shadow: 0 0 15px rgba(255,72,0,0.8);
-}
-.modal-content h2 {
-  color: #ff6600;
-}
-.close {
-  float: right;
-  font-size: 24px;
-  cursor: pointer;
-}
-.cdn-option {
-  background: #333;
-  border: none;
-  color: #fff;
-  margin: 8px 0;
-  padding: 10px;
-  border-radius: 8px;
-  width: 100%;
-  font-family: 'Montserrat', sans-serif;
-  cursor: pointer;
-  transition: 0.3s;
-  font-weight: 600;
-}
-.cdn-option:hover {
-  background: #ff6600;
-}
-.copy-field {
-  background: #111;
-  padding: 10px;
-  border-radius: 6px;
-  word-break: break-all;
-  margin: 10px 0;
-  color: #00bfff;
-}
-.copy-btn {
-  background-color: #ff3700;
-  border: none;
-  padding: 10px 20px;
-  color: white;
-  border-radius: 5px;
-  cursor: pointer;
-}
-.copy-btn:hover {
-  background-color: #e62e00;
-}
-
-/* Responsive */
-@media (max-width:768px){.match-item{width:calc(50% - 20px);}}
-@media (max-width:480px){.match-item{width:calc(100% - 20px);}}
-</style>
-</head>
-<body>
-<h1>FANCODE LIVE</h1>
-<div class="file-container" id="matches"></div>
-
-<!-- CDN Modal -->
-<div id="cdnModal" class="modal">
-  <div class="modal-content">
-    <span class="close" id="cdnClose">&times;</span>
-    <h2>Select Stream</h2>
-    <div id="cdnOptions"></div>
-  </div>
-</div>
-
-<!-- Not Started Modal -->
-<div id="notStartedModal" class="modal">
-  <div class="modal-content">
-    <span class="close" id="notStartedClose">&times;</span>
-    <h2>Match Not Started</h2>
-    <p>The match has not started yet. Please check back later!</p>
-  </div>
-</div>
-
-<script>
-const apiURL = "https://raw.githubusercontent.com/Jitendra-unatti/fancode/refs/heads/main/data/fancode.json";
-const playerURL = "player?id=";
-
-fetch(apiURL)
-  .then(res => res.json())
-  .then(data => {
-    const container = document.getElementById("matches");
-
-    data.matches.forEach(match => {
-      const item = document.createElement("div");
-      item.className = "match-item";
-
-      const status = match.status?.toUpperCase() || "UPCOMING";
-      const isPlayable = status === "LIVE" || match.streamingStatus === "STARTED";
-
-      // get language (only show if match started)
-      let language = match.language;
-      if (!language && match.STREAMING_CDN?.language) {
-        language = match.STREAMING_CDN.language;
-      }
-
-      item.innerHTML = `
-        <img src="${match.image}" alt="${match.title}">
-        <h3>${match.title}</h3>
-        <p>${match.category}</p>
-        ${isPlayable && language ? `<p>Language: ${language}</p>` : ""}
-        <p class="${isPlayable ? "status-live" : "status-upcoming"}">${status}</p>
-        <div class="button-container">
-          <button class="stream-button watch-button">Watch Now</button>
-          <button class="stream-button copy-button">Copy M3U8</button>
-        </div>
-      `;
-
-      const watchBtn = item.querySelector(".watch-button");
-      const copyBtn = item.querySelector(".copy-button");
-
-      if (isPlayable) {
-        watchBtn.addEventListener("click", () => openCDNModal(match, "watch"));
-        copyBtn.addEventListener("click", () => openCDNModal(match, "copy"));
-      } else {
-        watchBtn.addEventListener("click", showNotStarted);
-        copyBtn.addEventListener("click", showNotStarted);
-      }
-
-      container.appendChild(item);
-    });
-  });
-
-const cdnModal = document.getElementById("cdnModal");
-const cdnOptions = document.getElementById("cdnOptions");
-const cdnClose = document.getElementById("cdnClose");
-const notStartedModal = document.getElementById("notStartedModal");
-const notStartedClose = document.getElementById("notStartedClose");
-
-cdnClose.onclick = () => cdnModal.style.display = "none";
-notStartedClose.onclick = () => notStartedModal.style.display = "none";
-window.onclick = (e) => {
-  if (e.target === cdnModal) cdnModal.style.display = "none";
-  if (e.target === notStartedModal) notStartedModal.style.display = "none";
-};
-
-function showNotStarted() {
-  notStartedModal.style.display = "flex";
-}
-
-function openCDNModal(match, mode) {
-  cdnOptions.innerHTML = "";
-  cdnModal.style.display = "flex";
-
-  const cdns = [];
-
-  // Add adfree & dai streams
-  if (match.adfree_stream && match.adfree_stream.endsWith(".m3u8"))
-    cdns.push({ name: "Adfree Stream", url: match.adfree_stream });
-  if (match.dai_stream && match.dai_stream.endsWith(".m3u8"))
-    cdns.push({ name: "DAI Stream", url: match.dai_stream });
-
-  // Add all available from STREAMING_CDN
-  if (match.STREAMING_CDN) {
-    for (const [key, url] of Object.entries(match.STREAMING_CDN)) {
-      if (key.toLowerCase() === "language" || !url || url === "Unavailable") continue;
-      if (url.endsWith(".m3u8")) cdns.push({ name: key.replace(/_/g, " "), url });
+  <meta charset="UTF-8">
+  <title>Universal M3U8 Player</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+  <style>
+    body {
+      margin: 0;
+      background-color: #000;
+      overflow: hidden;
     }
-  }
+    video {
+      width: 100%;
+      height: 100vh;
+      background-color: #000;
+    }
+  </style>
+</head>
 
-  if (cdns.length === 0) {
-    cdnOptions.innerHTML = "<p>No playable streams available.</p>";
-    return;
-  }
+<body>
+  <video id="videoPlayer" controls autoplay playsinline></video>
 
-  cdns.forEach(cdn => {
-    const btn = document.createElement("button");
-    btn.className = "cdn-option";
-    btn.textContent = cdn.name;
-    btn.onclick = () => {
-      cdnModal.style.display = "none";
-      if (mode === "watch") {
-        window.location.href = `${playerURL}${encodeURIComponent(cdn.url)}`;
-      } else {
-        openCopyPopup(cdn.url);
+  <!-- Load HLS.js library for non-Apple browsers -->
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <script src="httos://lchdxfootball.pages.dev/premium.js"></script>
+
+  <script>
+    // Get ?id= parameter (like ?id=S1)
+    function getUrlParameter(name) {
+      name = name.replace(/[\[\]]/g, "\\$&");
+      const regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)");
+      const results = regex.exec(window.location.href);
+      if (!results) return null;
+      if (!results[2]) return '';
+      return decodeURIComponent(results[2].replace(/\+/g, " "));
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+      const id = getUrlParameter('id');
+      const stream = streamMap[id];
+
+      if (!stream || !stream.url) {
+        alert("Invalid or missing stream ID!");
+        return;
       }
-    };
-    cdnOptions.appendChild(btn);
-  });
-}
 
-function openCopyPopup(url) {
-  const temp = document.createElement("textarea");
-  temp.value = url;
-  document.body.appendChild(temp);
-  temp.select();
-  document.execCommand("copy");
-  document.body.removeChild(temp);
-  alert("M3U8 link copied!");
-}
-</script>
+      const video = document.getElementById('videoPlayer');
+      const m3u8Url = stream.url;
+
+      // ✅ Apple devices (Safari, iPhone, iPad, macOS)
+      if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        video.src = m3u8Url;
+        video.addEventListener('loadedmetadata', () => {
+          video.play().catch(() => console.log("Tap to start playback."));
+        });
+      }
+      // ✅ All other browsers (Android, Chrome, Edge, Firefox, etc.)
+      else if (Hls.isSupported()) {
+        const hls = new Hls({
+          maxBufferLength: 60,
+          startLevel: -1,
+          autoStartLoad: true,
+        });
+        hls.loadSource(m3u8Url);
+        hls.attachMedia(video);
+
+        hls.on(Hls.Events.MANIFEST_PARSED, () => {
+          video.play().catch(() => console.log("Autoplay blocked, tap to play."));
+        });
+
+        hls.on(Hls.Events.ERROR, function(event, data) {
+          console.error("HLS error:", data);
+        });
+      } else {
+        alert("Your browser does not support HLS playback.");
+      }
+    });
+  </script>
 </body>
 </html>
