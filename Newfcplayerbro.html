@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Live Stream Player</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+  <meta name="referrer" content="no-referrer">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plyr@3.6.12/dist/plyr.css">
+  <style>
+    body {
+      background-color: #000;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+    html, body {
+      height: 100%;
+    }
+    video {
+      width: 100%;
+      height: 100%;
+      max-width: 100%;
+    }
+    .plyr {
+      height: 100%;
+    }
+  </style>
+
+  <!-- External JS file containing streamMap -->
+  <script src="https://lchdxfootball.pages.dev/extrasportsp.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@1.1.4/dist/hls.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/plyr@3.6.12/dist/plyr.min.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Get ?id= from URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const streamId = urlParams.get('id');
+
+      // Check if streamMap and id exist
+      if (!streamId || !streamMap[streamId]) {
+        document.body.innerHTML = '<p style="color:white;text-align:center;margin-top:50%;">Invalid or missing stream ID.</p>';
+        return;
+      }
+
+      // Fetch data from external JS
+      const streamData = streamMap[streamId];
+      const video = document.getElementById('player');
+      const source = streamData.url;
+      const poster = streamData.poster;
+      const popupMessage = streamData.popupMessage || "Join our Telegram Channel!";
+      const telegramHandle = streamData.telegramHandle || "#";
+
+      // Set video poster
+      if (poster) video.setAttribute("poster", poster);
+
+      // Initialize HLS and Plyr
+      if (Hls.isSupported()) {
+        const hls = new Hls({ maxMaxBufferLength: 100 });
+        hls.loadSource(source);
+        hls.attachMedia(video);
+        hls.on(Hls.Events.MANIFEST_PARSED, () => {
+          const availableQualities = hls.levels.map(level => level.height);
+          const defaultQuality = availableQualities[0];
+
+          const player = new Plyr(video, {
+            controls: ['play-large', 'play', 'mute', 'volume', 'settings', 'fullscreen'],
+            quality: {
+              default: defaultQuality,
+              options: availableQualities,
+              forced: true,
+              onChange: (quality) => {
+                hls.levels.forEach((level, levelIndex) => {
+                  if (level.height === quality) {
+                    hls.currentLevel = levelIndex;
+                  }
+                });
+              }
+            }
+          });
+
+          // Handle screen rotation on fullscreen
+          document.addEventListener('fullscreenchange', () => {
+            if (document.fullscreenElement) {
+              if (screen.orientation && screen.orientation.lock) {
+                screen.orientation.lock('landscape').catch(() => {});
+              }
+            } else {
+              if (screen.orientation && screen.orientation.unlock) {
+                screen.orientation.unlock().catch(() => {});
+              }
+            }
+          });
+        });
+      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        video.src = source;
+        new Plyr(video);
+      } else {
+        document.body.innerHTML = '<p>Your browser does not support HLS playback.</p>';
+      }
+
+      // Telegram popup prompt
+      window.addEventListener("load", function () {
+        if (window.confirm(popupMessage)) {
+          window.location.href = "https://t.me/" + telegramHandle.replace('@', '');
+        }
+      });
+    });
+  </script>
+</head>
+<body>
+  <video id="player" controls playsinline></video>
+</body>
+</html>
