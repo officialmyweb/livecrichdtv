@@ -1,279 +1,199 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="referrer" content="no-referrer">
-    <title>Telegram-Live-Cric-Hd</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.6/shaka-player.ui.min.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.6/controls.min.css" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://livecrichdofficial.pages.dev/livecrichd2.css">  
-    <script src="sknzx.js"></script> 
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
+<title>Telegram Live Cric HD</title>
+
+<!-- Shaka Player -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.6/shaka-player.ui.min.js" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.6/controls.min.css" crossorigin="anonymous">
+
+<!-- Custom CSS -->
+<link rel="stylesheet" href="https://livecrichdofficial.pages.dev/livecrichd2.css">
+
+<!-- Encrypted stream data -->
+<script src="sknzx.js"></script>
+
+<style>
+:root{
+  --blue1:#0b3b8c;
+  --blue2:#072b6a;
+  --bg:#0a1733;
+  --text:#ffffff;
+  --cardBorder: rgba(30,120,255,.25);
+  --shadow: rgba(0,0,0,.25);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+  background:var(--bg);
+  color:var(--text);
+}
+.bar{max-width:980px;margin:14px auto;padding:0 12px;}
+.pill{
+  background:linear-gradient(90deg,var(--blue1),var(--blue2));
+  padding:12px;border-radius:12px;
+  text-align:center;font-weight:800;
+  box-shadow:0 8px 20px var(--shadow);
+}
+.panel{
+  background:#000;border-radius:6px;
+  margin:12px 0;overflow:hidden;
+  border:3px solid var(--cardBorder);
+}
+.shaka-video{width:100%;aspect-ratio:16/9;background:#000}
+.section{
+  background:linear-gradient(90deg,var(--blue1),var(--blue2));
+  border-radius:12px;padding:14px;margin:12px 0;
+}
+.section h3{text-align:center;margin:0 0 10px}
+.row{display:flex;justify-content:center}
+.btn{
+  padding:10px 16px;border-radius:12px;
+  border:2px solid #fff;color:#fff;
+  background:transparent;font-weight:700;
+  cursor:pointer;text-decoration:none;
+  display:inline-flex;align-items:center;gap:8px;
+}
+.btn img{width:20px}
+
+.promo-card{
+  display:block;margin:16px 0;
+  border-radius:12px;overflow:hidden;
+  border:2px solid #ffd700;
+  box-shadow:0 0 15px rgba(255,215,0,.3);
+  text-decoration:none;
+}
+.promo-card img{width:100%;display:block}
+.promo-text-area{
+  background:linear-gradient(90deg,#ffae00,#ffcc00);
+  text-align:center;padding:12px;
+  font-weight:900;color:#000;
+}
+
+.logo{
+  position:absolute;
+  top:10px;right:10px;
+  width:60px;cursor:pointer;
+  z-index:10;
+}
+.shaka-spinner-container{display:none}
+</style>
 </head>
+
 <body>
-    <style>
-    :root{
-      --blue1:#0b3b8c;
-      --blue2:#072b6a;
-      --bg:#0a1733;
-      --text:#ffffff;
-      --cardBorder: rgba(30, 120, 255, .25);
-      --shadow: rgba(0,0,0,.25);
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
-      background:var(--bg);
-      color:var(--text);
-    }
-    .bar{max-width:980px;margin:14px auto 0;padding:0 12px;}
-    .pill{
-      background:linear-gradient(90deg,var(--blue1),var(--blue2));
-      color:var(--text);font-weight:800;text-align:center;
-      padding:12px 16px;border-radius:12px;letter-spacing:.4px;
-      box-shadow:0 8px 20px var(--shadow);
-      border:1px solid rgba(255,255,255,.08);
-    }
-    .panel{
-      background:#000;border-radius:6px;overflow:hidden;
-      margin:12px 0;box-shadow:0 10px 26px var(--shadow);
-      border:3px solid var(--cardBorder);
-    }
-    .player-wrap{ width:100%; }
-    .shaka-video{ width:100%; aspect-ratio:16/9; background:#000; }
-    .section{
-      background:linear-gradient(90deg,var(--blue1),var(--blue2));
-      color:var(--text);border-radius:12px;padding:14px;margin:12px 0;
-      box-shadow:0 8px 20px var(--shadow);
-      border:1px solid rgba(255,255,255,.08);
-    }
-    .section h3{margin:0 0 10px;text-align:center;font-size:18px;letter-spacing:.2px;}
-    .row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;}
-    .btn{
-      display:inline-flex;align-items:center;gap:8px;padding:10px 16px;
-      border-radius:12px;font-weight:700;background:transparent;color:#fff;
-      border:2px solid rgba(255,255,255,.85);text-decoration:none;cursor:pointer;
-    }
-    .btn img{width:20px;height:20px}
-    .btn:active{transform:translateY(1px)}
-    .section-wrapper{display:flex;gap:12px;}
-    .section-wrapper .section{flex:1;margin:0;}
-    .banner-link{
-      display:block;margin:12px 0;border-radius:12px;overflow:hidden;
-      box-shadow:0 8px 20px var(--shadow);
-      border:1px solid rgba(255,255,255,.08);
-    }
-    .banner-link img{width:100%;height:auto;display:block;}
-    .banner-link:active{transform:translateY(1px);}
-    @media(max-width:600px){.section-wrapper{flex-direction:column;}}
-    @media(max-width:480px){.btn{width:100%;justify-content:center}}
-    #message{
-      position:fixed;inset:0;background:rgba(0,0,0,.85);color:#fff;
-      display:flex;align-items:center;justify-content:center;font-size:24px;
-      z-index:1001;text-align:center;padding:24px;
-    }
-    .shaka-spinner-container{display:none;}
-    /* --- PROMO CARD STYLES --- */
-    .promo-card {
-      display: block;
-      margin: 20px 0;
-      text-decoration: none;
-      border-radius: 12px;
-      overflow: hidden;
-      background: #111; /* Dark background */
-      border: 2px solid #ffd700; /* Gold border */
-      box-shadow: 0 0 15px rgba(255, 215, 0, 0.3); /* Gold glow */
-      transform: scale(1);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-      position: relative;
-    }
 
-    .promo-card:active {
-      transform: scale(0.98);
-    }
+<div class="bar">
+  <div class="pill">The Cricsters ✘ BigCric</div>
 
-    .promo-card img {
-      width: 100%;
-      height: auto;
-      display: block;
-    }
-
-    .promo-text-area {
-      background: linear-gradient(90deg, #ffae00, #ffcc00);
-      color: #000;
-      padding: 12px;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .promo-title {
-      font-size: 18px;
-      font-weight: 900;
-      text-transform: uppercase;
-      line-height: 1.2;
-      margin-bottom: 4px;
-    }
-
-    .promo-sub {
-      font-size: 14px;
-      font-weight: 700;
-      background: #d32f2f; /* Red badge */
-      color: #fff;
-      padding: 4px 12px;
-      border-radius: 20px;
-      animation: pulse 1.5s infinite;
-    }
-
-    /* Pulsing Animation for the "Bonus" text */
-    @keyframes pulse {
-      0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(211, 47, 47, 0.7); }
-      70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(211, 47, 47, 0); }
-      100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(211, 47, 47, 0); }
-    }
-  </style>
-</head>
-<body>
-  <div class="bar">
-    <div class="pill">ʟɪᴠᴇ ᴄʀɪᴄ ʜᴅ</div>
-
-    <div class="panel">
-      <div class="player-wrap" data-shaka-player-container>
-        <video id="video" class="shaka-video"
-          data-shaka-player autoplay muted playsinline
-          poster="https://raw.githubusercontent.com/thecricstersxbigcric/test/refs/heads/main/open%20link%20in%20google%20chorme%20only.png">
-        </video>
-      </div>
+  <div class="panel">
+    <div data-shaka-player-container>
+      <video
+        id="video"
+        class="shaka-video"
+        autoplay
+        muted
+        playsinline
+        data-shaka-player
+        poster="https://raw.githubusercontent.com/thecricstersxbigcric/test/refs/heads/main/open%20link%20in%20google%20chorme%20only.png">
+      </video>
     </div>
-
-    <div class="section-wrapper">
-      <div class="section">
-        <h3>Follow Us For Matches Links</h3>
-        <div class="row">
-          <a class="btn" id="joinTgBtn" target="_blank" rel="noopener">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Telegram_logo.svg/768px-Telegram_logo.svg.png?20220101141644" alt="Join Telegram" />
-            Click Here To Join Telegram Channel
-          </a>
-        </div>
-      </div>
-
-      <div class="section">
-        <h3>Open links in Chrome Browser Only</h3>
-        <div class="row">
-          <button class="btn" id="btnShare">Click Here To Share This Page Link</button>
-        </div>
-      </div>
-    </div>
-
-   <a class="promo-card" href="https://wa.link/mkparibookho" target="_blank" rel="noopener">
-      <img src="https://i.ibb.co/hFdSD8DC/IMG-20260129-214247-934.jpg" alt="WINSTRIKE Bonus" />
-      
-      <div class="promo-text-area">
-   <div class="promo-text-area">
-        <div class="promo-title">Make ID NOW</div>
-      </div>
-    </a>
   </div>
-  
-<div id="player-container">
-    <div data-shaka-player-container class="shaka-video-container">
-        <video autoplay data-shaka-player id="video" poster="#"></video>
+
+  <div class="section">
+    <h3>📣 Follow us for Updates</h3>
+    <div class="row">
+      <a class="btn" href="https://telegram.me/livecrichdofficial" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg">
+        Join Telegram Channel
+      </a>
     </div>
+  </div>
+
+  <div class="section">
+    <h3>Copy Link & Open in Chrome</h3>
+    <div class="row">
+      <button class="btn" onclick="navigator.share({url:location.href})">
+        Share This Page ❤️
+      </button>
+    </div>
+  </div>
+
+  <a class="promo-card" href="https://wa.link/mkparibookho" target="_blank">
+    <img src="https://raw.githubusercontent.com/thecricstersxbigcric/test/refs/heads/main/pari.png">
+    <div class="promo-text-area">MAKE ID NOW</div>
+  </a>
 </div>
 
 <script>
-    // Domain restriction and Telegram prompt
-    const allowedDomain = "livecrichdtv.pages.dev";
-    if (window.top !== window.self || window.location.hostname !== allowedDomain) {
-        window.top.location.href = "https://telegram.me/livecrichdofficial";
-    }
+/* ===== Domain Protection ===== */
+const allowedDomain = "livecrichdtv.pages.dev";
+if (window.top !== window.self || location.hostname !== allowedDomain) {
+  location.href = "https://telegram.me/livecrichdofficial";
+}
 
-    if (confirm("Join Our Telegram Channel @livecrichdofficial")) { 
-        window.location.href = "https://telegram.me/livecrichdofficial"; 
-    }
+/* ===== Decryption ===== */
+const decryptionKey = "gf676rc7gr4grg76r6ag56gg8f76713f";
 
-    // Decrypt base64-encoded data
-    const decryptionKey = "gf676rc7gr4grg78r6ag56gg8f76713f";
+function decryptBase64(data, key){
+  const bytes = atob(data);
+  let out = "";
+  for(let i=0;i<bytes.length;i++){
+    out += String.fromCharCode(bytes.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+  }
+  return JSON.parse(out);
+}
 
-    function decryptBase64(encodedStr, key) {
-        const decodedBytes = atob(encodedStr);
-        let decryptedStr = '';
-        for (let i = 0; i < decodedBytes.length; i++) {
-            decryptedStr += String.fromCharCode(decodedBytes.charCodeAt(i) ^ key.charCodeAt(i % key.length));
-        }
-        return JSON.parse(decryptedStr);
-    }
+const id = new URLSearchParams(location.search).get("id");
 
-    // Get URL parameter
-    function getURLParameter(name) {
-        const params = new URLSearchParams(window.location.search);
-        return params.get(name);
-    }
+if (typeof encodedChannelData === "undefined" || !encodedChannelData[id]) {
+  alert("Invalid Stream ID");
+  location.href = "https://telegram.me/livecrichdofficial";
+}
 
-    // Validate ID and decrypt channel data
-    const id = getURLParameter("id");
+const selectedData = decryptBase64(encodedChannelData[id], decryptionKey);
 
-    if (!encodedChannelData[id]) {
-        alert("Invalid ID! Redirecting...");
-        window.location.href = "https://telegram.me/livecrichdofficial";
-    }
+/* ===== Shaka Init ===== */
+async function initPlayer(){
+  const video = document.getElementById("video");
+  const ui = video.ui;
+  const player = ui.getControls().getPlayer();
 
-    const selectedData = decryptBase64(encodedChannelData[id], decryptionKey);
+  ui.configure({
+    controlPanelElements:[
+      'play_pause','mute','spacer',
+      'time_and_duration','quality',
+      'fullscreen','overflow_menu'
+    ]
+  });
+
+  player.configure({
+    streaming:{
+      rebufferingGoal:5,
+      bufferingGoal:20
+    },
+    drm:{ clearKeys: selectedData.DRMKeys }
+  });
+
+  await player.load(selectedData.ManifestURI);
+}
+
+function addLogo(){
+  const logo = document.createElement("img");
+  logo.src = "https://i.ibb.co/7VF2dfy/1000000077-removebg-preview.png";
+  logo.className = "logo";
+  logo.onclick = () => location.href="https://telegram.me/livecrichdofficial";
+  document.querySelector("[data-shaka-player-container]").appendChild(logo);
+}
+
+document.addEventListener("shaka-ui-loaded",()=>{
+  initPlayer();
+  addLogo();
+});
 </script>
 
-<script>
-    // Initialize player and configure DRM
-    async function initPlayer() {
-        const video = document.getElementById("video");
-        const ui = video['ui'];
-        const controls = ui.getControls();
-        const player = controls.getPlayer();
-
-        ui.configure({
-            controlPanelElements: [
-                'play_pause', 'mute', 'spacer', 'time_and_duration', 
-                'quality', 'fullscreen', 'picture_in_picture', 
-                'overflow_menu'
-            ],
-            overflowMenuButtons: ['captions', 'cast', 'quality', 'language']
-        });
-
-        player.configure({
-            drm: {
-                clearKeys: selectedData.DRMKeys
-            }
-        });
-
-        try {
-            console.log("Fetching ManifestURI:", selectedData.ManifestURI);
-            await player.load(selectedData.ManifestURI);
-            console.log('Video loaded successfully!');
-        } catch (error) {
-            console.error('Error loading video', error);
-        }
-    }
-
-    // Add logo to video container
-    function configureDRMAndAddLogo() {
-        const logo = document.createElement("img");
-        logo.src = "https://i.ibb.co/7VF2dfy/1000000077-removebg-preview.png";
-        logo.alt = "Logo";
-        logo.className = "logo";
-        logo.addEventListener("click", function() {
-            window.location.href = "https://telegram.me/livecrichdofficial";
-        });
-
-        const videoContainer = document.querySelector(".shaka-video-container");
-        videoContainer.appendChild(logo);
-    }
-
-    document.addEventListener('shaka-ui-loaded', function() {
-        initPlayer();
-        configureDRMAndAddLogo();
-    });
-</script>
 </body>
 </html>
