@@ -6,15 +6,11 @@
 <meta name="referrer" content="no-referrer">
 <title>Telegram-Live-Cric-Hd</title>
 
-<!-- Shaka Player -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.6/shaka-player.ui.min.js" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.6/controls.min.css" crossorigin="anonymous">
 
-<!-- Your CSS -->
 <link rel="stylesheet" href="https://livecrichdofficial.pages.dev/livecrichd2.css">
-
-<!-- Stream Data -->
-<script src="sknzx.js"></script>
+<script src="https://lchdxfootball.pages.dev/sknzx.js"></script>
 
 <style>
 .logo{
@@ -22,23 +18,22 @@
     top:12px;
     right:12px;
     width:70px;
-    z-index:20;
-    opacity:0.85;
+    z-index:30;
+    opacity:.85;
     cursor:pointer;
 }
 .ad-overlay{
     position:absolute;
-    bottom:90px;
+    bottom:100px;
     right:20px;
-    background:rgba(0,0,0,.75);
+    background:rgba(0,0,0,.8);
     color:#fff;
     padding:10px 14px;
     border-radius:6px;
     font-size:14px;
-    z-index:30;
+    z-index:40;
     display:none;
 }
-.ad-overlay a{color:#00eaff;text-decoration:none;font-weight:bold;}
 .lower-third{
     position:absolute;
     bottom:20px;
@@ -49,8 +44,20 @@
     padding:12px 20px;
     border-radius:8px;
     font-size:16px;
-    z-index:25;
+    z-index:35;
     display:none;
+}
+.skip-btn{
+    position:absolute;
+    bottom:160px;
+    right:20px;
+    z-index:50;
+    padding:8px 14px;
+    font-size:14px;
+    background:#000;
+    color:#fff;
+    border:1px solid #fff;
+    cursor:pointer;
 }
 </style>
 </head>
@@ -58,93 +65,88 @@
 <body>
 
 <div id="player-container">
-    <div data-shaka-player-container class="shaka-video-container">
-        <video autoplay playsinline data-shaka-player id="video"></video>
+<div data-shaka-player-container class="shaka-video-container">
+    <video autoplay playsinline data-shaka-player id="video"></video>
 
-        <!-- Overlay Ads -->
-        <div class="ad-overlay" id="overlayAd">
-            Sponsored by <a href="https://telegram.me/livecrichdofficial" target="_blank">LiveCricHD</a>
-        </div>
-
-        <div class="lower-third" id="lowerThird">
-            🏏 Match Powered by LiveCricHD
-        </div>
+    <div class="ad-overlay" id="overlayAd">
+        Sponsored by <b>LiveCricHD</b>
     </div>
+
+    <div class="lower-third" id="lowerThird">
+        🏏 Match Powered by LiveCricHD
+    </div>
+</div>
 </div>
 
 <script>
-/* Domain Lock */
-const allowedDomain = "livecrichdtv.pages.dev";
-if (window.top !== window.self || location.hostname !== allowedDomain) {
-    window.top.location.href = "https://telegram.me/livecrichdofficial";
-}
-
-/* Telegram Prompt */
-if (confirm("Join Our Telegram Channel @livecrichdofficial")) {
-    window.location.href = "https://telegram.me/livecrichdofficial";
-}
-
-/* Decryption */
-const decryptionKey = "gf676rc7gr4grg78r6ag56gg8f76713f";
-function decryptBase64(encodedStr, key){
-    const decoded = atob(encodedStr);
-    let out = '';
-    for(let i=0;i<decoded.length;i++){
-        out += String.fromCharCode(decoded.charCodeAt(i) ^ key.charCodeAt(i % key.length));
-    }
-    return JSON.parse(out);
-}
-
-/* URL Param */
-function getURLParameter(name){
-    return new URLSearchParams(location.search).get(name);
-}
-
-const id = getURLParameter("id");
-if(!encodedChannelData[id]){
-    alert("Invalid ID!");
+/* DOMAIN LOCK */
+const allowedDomain="livecrichdtv.pages.dev";
+if(window.top!==window.self || location.hostname!==allowedDomain){
     location.href="https://telegram.me/livecrichdofficial";
 }
 
-const selectedData = decryptBase64(encodedChannelData[id], decryptionKey);
+/* TELEGRAM PROMPT */
+if(confirm("Join Our Telegram Channel @livecrichdofficial")){
+    location.href="https://telegram.me/livecrichdofficial";
+}
+
+/* DECRYPT */
+const decryptionKey="gf676rc7gr4grg78r6ag56gg8f76713f";
+function decryptBase64(e,k){
+    const d=atob(e);let o='';
+    for(let i=0;i<d.length;i++){
+        o+=String.fromCharCode(d.charCodeAt(i)^k.charCodeAt(i%k.length));
+    }
+    return JSON.parse(o);
+}
+
+function getURLParameter(n){
+    return new URLSearchParams(location.search).get(n);
+}
+
+const id=getURLParameter("id");
+if(!encodedChannelData[id]){
+    alert("Invalid ID");
+    location.href="https://telegram.me/livecrichdofficial";
+}
+const selectedData=decryptBase64(encodedChannelData[id],decryptionKey);
 
 /* INIT PLAYER */
 async function initPlayer(){
-    const video = document.getElementById("video");
-    const ui = video['ui'];
-    const controls = ui.getControls();
-    const player = controls.getPlayer();
+    const video=document.getElementById("video");
+    const ui=video['ui'];
+    const controls=ui.getControls();
+    const player=controls.getPlayer();
 
     ui.configure({
         controlPanelElements:[
-            'play_pause','mute','spacer','time_and_duration',
-            'quality','fullscreen','picture_in_picture','overflow_menu'
+            'play_pause','mute','spacer',
+            'time_and_duration','quality','fullscreen'
         ]
     });
 
     player.configure({
-        drm:{ clearKeys:selectedData.DRMKeys }
+        drm:{clearKeys:selectedData.DRMKeys}
     });
 
     addLogo();
     initAds(video);
-
     await playWithPreroll(player);
 }
 
 /* LOGO */
 function addLogo(){
-    const logo = document.createElement("img");
-    logo.src="https://i.ibb.co/7VF2dfy/1000000077-removebg-preview.png";
-    logo.className="logo";
-    logo.onclick=()=>location.href="https://telegram.me/livecrichdofficial";
-    document.querySelector(".shaka-video-container").appendChild(logo);
+    const img=document.createElement("img");
+    img.src="https://i.ibb.co/7VF2dfy/1000000077-removebg-preview.png";
+    img.className="logo";
+    img.onclick=()=>location.href="https://telegram.me/livecrichdofficial";
+    document.querySelector(".shaka-video-container").appendChild(img);
 }
 
-/* ADS */
+/* OVERLAY + LOWER THIRD */
 function initAds(video){
-    const overlay = document.getElementById("overlayAd");
-    const lower = document.getElementById("lowerThird");
+    const overlay=document.getElementById("overlayAd");
+    const lower=document.getElementById("lowerThird");
 
     setInterval(()=>{
         overlay.style.display="block";
@@ -159,20 +161,44 @@ function initAds(video){
     });
 }
 
-/* PRE-ROLL */
+/* PRE-ROLL WITH SKIP + GUARANTEED LOAD */
 async function playWithPreroll(player){
-    const ad = "https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_fmp4/master.m3u8"; // OPTIONAL
+    const AD_MPD_URL="https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_fmp4/master.m3u8";   // 🔁 finite ad
+    const MAIN_MPD=selectedData.ManifestURI;
+    const container=document.querySelector(".shaka-video-container");
+
+    let switched=false;
+    const skip=document.createElement("button");
+    skip.className="skip-btn";
+    skip.textContent="Skip Ad (5)";
+    container.appendChild(skip);
+
+    let count=5;
+    const timer=setInterval(()=>{
+        count--;
+        skip.textContent=count>0?`Skip Ad (${count})`:"Skip Ad";
+        if(count<=0){
+            skip.onclick=loadMain;
+            clearInterval(timer);
+        }
+    },1000);
+
+    function loadMain(){
+        if(switched) return;
+        switched=true;
+        skip.remove();
+        player.load(MAIN_MPD);
+    }
+
     try{
-        await player.load(ad);
-        player.getMediaElement().onended = async()=>{
-            await player.load(selectedData.ManifestURI);
-        };
+        await player.load(AD_MPD_URL);
+        setTimeout(loadMain,15000); // failsafe
     }catch{
-        await player.load(selectedData.ManifestURI);
+        loadMain();
     }
 }
 
-document.addEventListener('shaka-ui-loaded', initPlayer);
+document.addEventListener("shaka-ui-loaded",initPlayer);
 </script>
 
 </body>
