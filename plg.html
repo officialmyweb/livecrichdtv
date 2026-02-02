@@ -6,6 +6,7 @@
 <meta name="referrer" content="no-referrer">
 <title>Telegram-Live-Cric-Hd</title>
 
+<!-- Shaka -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.6/shaka-player.ui.min.js" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.6/controls.min.css" crossorigin="anonymous">
 
@@ -22,34 +23,9 @@
     opacity:.85;
     cursor:pointer;
 }
-.ad-overlay{
-    position:absolute;
-    bottom:100px;
-    right:20px;
-    background:rgba(0,0,0,.8);
-    color:#fff;
-    padding:10px 14px;
-    border-radius:6px;
-    font-size:14px;
-    z-index:40;
-    display:none;
-}
-.lower-third{
-    position:absolute;
-    bottom:20px;
-    left:50%;
-    transform:translateX(-50%);
-    background:rgba(0,0,0,.8);
-    color:#fff;
-    padding:12px 20px;
-    border-radius:8px;
-    font-size:16px;
-    z-index:35;
-    display:none;
-}
 .skip-btn{
     position:absolute;
-    bottom:160px;
+    bottom:150px;
     right:20px;
     z-index:50;
     padding:8px 14px;
@@ -67,14 +43,6 @@
 <div id="player-container">
 <div data-shaka-player-container class="shaka-video-container">
     <video autoplay playsinline data-shaka-player id="video"></video>
-
-    <div class="ad-overlay" id="overlayAd">
-        Sponsored by <b>LiveCricHD</b>
-    </div>
-
-    <div class="lower-third" id="lowerThird">
-        🏏 Match Powered by LiveCricHD
-    </div>
 </div>
 </div>
 
@@ -99,7 +67,6 @@ function decryptBase64(e,k){
     }
     return JSON.parse(o);
 }
-
 function getURLParameter(n){
     return new URLSearchParams(location.search).get(n);
 }
@@ -110,6 +77,36 @@ if(!encodedChannelData[id]){
     location.href="https://telegram.me/livecrichdofficial";
 }
 const selectedData=decryptBase64(encodedChannelData[id],decryptionKey);
+
+/* DEMO VAST XML (REPLACE LATER WITH COMPANY TAG) */
+const DEMO_VAST_XML = `
+<VAST version="3.0">
+  <Ad>
+    <InLine>
+      <Creatives>
+        <Creative>
+          <Linear skipoffset="00:00:05">
+            <MediaFiles>
+              <MediaFile type="application/dash+xml">
+                https://storage.googleapis.com/shaka-demo-assets/angel-one/dash.mpd
+              </MediaFile>
+            </MediaFiles>
+          </Linear>
+        </Creative>
+      </Creatives>
+    </InLine>
+  </Ad>
+</VAST>
+`;
+
+/* PARSE VAST */
+function parseVast(xml){
+    const doc=new DOMParser().parseFromString(xml,"text/xml");
+    const media=doc.querySelector("MediaFile").textContent.trim();
+    const skip=doc.querySelector("Linear")?.getAttribute("skipoffset")||"00:00:05";
+    const skipSec=skip.split(":").reduce((a,v)=>a*60+Number(v),0);
+    return {adMPD:media,skipTime:skipSec};
+}
 
 /* INIT PLAYER */
 async function initPlayer(){
@@ -130,8 +127,8 @@ async function initPlayer(){
     });
 
     addLogo();
-    initAds(video);
-    await playWithPreroll(player);
+    const vast=parseVast(DEMO_VAST_XML);
+    await playVastPreroll(player,vast);
 }
 
 /* LOGO */
@@ -143,41 +140,22 @@ function addLogo(){
     document.querySelector(".shaka-video-container").appendChild(img);
 }
 
-/* OVERLAY + LOWER THIRD */
-function initAds(video){
-    const overlay=document.getElementById("overlayAd");
-    const lower=document.getElementById("lowerThird");
-
-    setInterval(()=>{
-        overlay.style.display="block";
-        setTimeout(()=>overlay.style.display="none",10000);
-    },180000);
-
-    video.addEventListener("timeupdate",()=>{
-        if(Math.floor(video.currentTime)===60){
-            lower.style.display="block";
-            setTimeout(()=>lower.style.display="none",12000);
-        }
-    });
-}
-
-/* PRE-ROLL WITH SKIP + GUARANTEED LOAD */
-async function playWithPreroll(player){
-    const AD_MPD_URL="https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_fmp4/master.m3u8";   // 🔁 finite ad
+/* VAST PRE-ROLL */
+async function playVastPreroll(player,vast){
     const MAIN_MPD=selectedData.ManifestURI;
     const container=document.querySelector(".shaka-video-container");
-
     let switched=false;
+
     const skip=document.createElement("button");
     skip.className="skip-btn";
-    skip.textContent="Skip Ad (5)";
+    skip.textContent=`Skip Ad (${vast.skipTime})`;
     container.appendChild(skip);
 
-    let count=5;
+    let counter=vast.skipTime;
     const timer=setInterval(()=>{
-        count--;
-        skip.textContent=count>0?`Skip Ad (${count})`:"Skip Ad";
-        if(count<=0){
+        counter--;
+        skip.textContent=counter>0?`Skip Ad (${counter})`:"Skip Ad";
+        if(counter<=0){
             skip.onclick=loadMain;
             clearInterval(timer);
         }
@@ -191,8 +169,8 @@ async function playWithPreroll(player){
     }
 
     try{
-        await player.load(AD_MPD_URL);
-        setTimeout(loadMain,15000); // failsafe
+        await player.load(vast.adMPD);
+        setTimeout(loadMain,15000); // safety fallback
     }catch{
         loadMain();
     }
