@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Telegram-Live-Cric-Hd</title>
+
+<style>
+  body {
+    margin: 0;
+    background: black;
+  }
+  .player-wrap {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+  }
+  iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+  .click-blocker {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    background: transparent;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="player-wrap">
+  <iframe
+    id="player"
+    sandbox="allow-scripts"
+    allowfullscreen>
+  </iframe>
+</div>
+
+<script src="https://extralive.pages.dev/stream.js"></script>
+</body>
+</html>
