@@ -5,113 +5,184 @@
 <title>For My Chudail 💖</title>
 
 <style>
+* { box-sizing: border-box; }
+
 body {
   margin: 0;
   height: 100vh;
-  background: linear-gradient(#ffd6e8, #fff0f6);
+  background: linear-gradient(180deg,#ffd6e8,#fff,#ffeef7);
   overflow: hidden;
   font-family: 'Comic Sans MS', cursive;
 }
 
-/* Floating hearts */
-.heart {
+/* Floating hearts background */
+.bg-heart {
   position: absolute;
-  color: pink;
-  font-size: 20px;
-  animation: float 6s linear infinite;
+  font-size: 18px;
+  animation: floatUp 8s linear infinite;
+  opacity: 0.6;
 }
 
-@keyframes float {
-  0% { transform: translateY(100vh); opacity: 0; }
-  50% { opacity: 1; }
-  100% { transform: translateY(-10vh); opacity: 0; }
+@keyframes floatUp {
+  from { transform: translateY(110vh); }
+  to { transform: translateY(-10vh); }
 }
 
-/* Center section */
+/* Center hanging emoji */
 .center {
   position: absolute;
-  top: 35%;
+  top: 30%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translateX(-50%);
   text-align: center;
 }
 
+.click-text {
+  font-size: 22px;
+  margin-bottom: 5px;
+}
+
 .rope {
-  width: 3px;
-  height: 80px;
-  background: brown;
+  width: 4px;
+  height: 90px;
+  background: #3b2b1f;
   margin: auto;
 }
 
 .demon {
   font-size: 60px;
   cursor: pointer;
-  transition: transform 1s;
+  transition: transform 1.2s ease;
 }
 
+/* Ground */
 .ground {
   position: absolute;
-  bottom: 120px;
+  bottom: 130px;
   left: 50%;
   width: 0;
-  height: 4px;
-  background: #555;
+  height: 5px;
+  background: #444;
   transform: translateX(-50%);
-  transition: 1s;
+  transition: 1.2s ease;
 }
 
 /* Tree */
 .tree {
   position: absolute;
-  bottom: 120px;
+  bottom: 130px;
   left: 45%;
   opacity: 0;
-  transition: 2s;
+  transition: 2s ease;
 }
 
 .trunk {
-  width: 12px;
+  width: 14px;
   height: 0;
-  background: brown;
+  background: #2a1a10;
   margin: auto;
-  transition: 2s;
+  border-radius: 6px;
+  transition: 2s ease;
 }
 
+/* Branches */
+.branch {
+  position: absolute;
+  width: 70px;
+  height: 6px;
+  background: #2a1a10;
+  border-radius: 6px;
+  top: 40px;
+}
+
+.left { left: -60px; transform: rotate(-25deg); }
+.right { right: -60px; transform: rotate(25deg); }
+
+/* Leaves */
 .leaves {
-  font-size: 0;
+  position: relative;
+  top: -30px;
+  width: 220px;
   text-align: center;
-  transition: 2s;
+  font-size: 0;
+  transition: 2s ease;
 }
 
-/* Text */
+.leaf {
+  display: inline-block;
+  font-size: 28px;
+  margin: 4px;
+  animation: pop 1.5s ease infinite alternate;
+}
+
+@keyframes pop {
+  from { transform: scale(0.9); }
+  to { transform: scale(1.05); }
+}
+
+/* Cute animals */
+.bird {
+  position: absolute;
+  top: -40px;
+  left: -30px;
+  font-size: 28px;
+}
+
+.butterfly {
+  position: absolute;
+  right: -40px;
+  top: -20px;
+  font-size: 26px;
+  animation: fly 3s ease-in-out infinite;
+}
+
+@keyframes fly {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-15px); }
+}
+
+/* Message */
 .message {
   position: absolute;
   right: 5%;
-  top: 30%;
-  width: 40%;
+  top: 25%;
+  width: 42%;
   font-size: 22px;
   opacity: 0;
   white-space: pre-line;
+}
+
+/* Sparkles */
+.sparkle {
+  position: absolute;
+  font-size: 16px;
+  animation: sparkle 2s infinite;
+}
+
+@keyframes sparkle {
+  0% { opacity: 0; transform: scale(0.5); }
+  50% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0.5); }
 }
 </style>
 </head>
 
 <body>
 
-<!-- floating hearts -->
 <script>
-for(let i=0;i<20;i++){
+/* Background hearts */
+for(let i=0;i<30;i++){
   let h=document.createElement("div");
-  h.className="heart";
-  h.innerHTML="💗";
+  h.className="bg-heart";
+  h.innerHTML=["💗","💖","💕","❤️"][Math.floor(Math.random()*4)];
   h.style.left=Math.random()*100+"%";
-  h.style.animationDelay=Math.random()*5+"s";
+  h.style.animationDelay=Math.random()*6+"s";
   document.body.appendChild(h);
 }
 </script>
 
-<div class="center">
-  <p>Click me to free 👹</p>
+<div class="center" id="center">
+  <div class="click-text">Click here to free me 👹</div>
   <div class="rope" id="rope"></div>
   <div class="demon" id="demon">👹</div>
 </div>
@@ -119,45 +190,61 @@ for(let i=0;i<20;i++){
 <div class="ground" id="ground"></div>
 
 <div class="tree" id="tree">
-  <div class="trunk" id="trunk"></div>
-  <div class="leaves" id="leaves">
-    💖💗❤️💖💗<br>
-    💗❤️👹❤️💗<br>
-    💖💗❤️💗💖
+  <div class="trunk" id="trunk">
+    <div class="branch left"></div>
+    <div class="branch right"></div>
   </div>
+
+  <div class="leaves" id="leaves">
+    <span class="leaf">💗</span>
+    <span class="leaf">💖</span>
+    <span class="leaf">❤️</span>
+    <span class="leaf">💕</span>
+    <span class="leaf">💜</span>
+    <span class="leaf">👹</span>
+    <span class="leaf">❤️</span>
+    <span class="leaf">💖</span>
+  </div>
+
+  <div class="bird">🐦</div>
+  <div class="butterfly">🦋</div>
 </div>
 
 <div class="message" id="msg"></div>
 
 <script>
-const demon = document.getElementById("demon");
-demon.onclick = () => {
-  document.getElementById("rope").style.display="none";
-  demon.style.transform="translateY(300px)";
-  document.getElementById("ground").style.width="300px";
+const demon=document.getElementById("demon");
+
+demon.onclick=()=>{
+  document.getElementById("center").style.opacity=0;
+
+  demon.style.transform="translateY(350px)";
+  document.getElementById("ground").style.width="350px";
 
   setTimeout(()=>{
     const tree=document.getElementById("tree");
     tree.style.opacity=1;
-    document.getElementById("trunk").style.height="120px";
-    document.getElementById("leaves").style.fontSize="30px";
-  },1000);
+    document.getElementById("trunk").style.height="140px";
+    document.getElementById("leaves").style.fontSize="28px";
+  },1200);
 
   setTimeout(()=>{
-    document.getElementById("tree").style.left="30%";
-    showText();
-  },2500);
+    document.getElementById("tree").style.left="28%";
+    typeText();
+  },3000);
+
+  sparkles();
 };
 
-function showText(){
+function typeText(){
   const text=`Happy Birthday Chudail 💖
 
-It's been remaining 17 hours for your birthday,
-so happy birthday in advance 🥰
+Only 17 hours left ⏳
+So happy birthday in advance 🥰
 
-Tu meri sabse pyaari chudail hai 👹💗
-Hamesha aise hi khush rehna,
-aur mujhe pareshan karti rehna 😌`;
+Tu meri sabse special chudail hai 👹
+Hamesha khush rehna,
+aur mujhe hamesha yaad rakhna 💕`;
 
   let i=0;
   const msg=document.getElementById("msg");
@@ -167,7 +254,19 @@ aur mujhe pareshan karti rehna 😌`;
     msg.innerHTML+=text.charAt(i);
     i++;
     if(i>=text.length) clearInterval(typing);
-  },50);
+  },45);
+}
+
+function sparkles(){
+  for(let i=0;i<20;i++){
+    let s=document.createElement("div");
+    s.className="sparkle";
+    s.innerHTML="✨";
+    s.style.left=Math.random()*100+"%";
+    s.style.top=Math.random()*100+"%";
+    document.body.appendChild(s);
+    setTimeout(()=>s.remove(),3000);
+  }
 }
 </script>
 
