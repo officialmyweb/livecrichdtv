@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>For My Chudail 💖</title>
+
+<style>
+body {
+  margin: 0;
+  height: 100vh;
+  background: linear-gradient(#ffd6e8, #fff0f6);
+  overflow: hidden;
+  font-family: 'Comic Sans MS', cursive;
+}
+
+/* Floating hearts */
+.heart {
+  position: absolute;
+  color: pink;
+  font-size: 20px;
+  animation: float 6s linear infinite;
+}
+
+@keyframes float {
+  0% { transform: translateY(100vh); opacity: 0; }
+  50% { opacity: 1; }
+  100% { transform: translateY(-10vh); opacity: 0; }
+}
+
+/* Center section */
+.center {
+  position: absolute;
+  top: 35%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.rope {
+  width: 3px;
+  height: 80px;
+  background: brown;
+  margin: auto;
+}
+
+.demon {
+  font-size: 60px;
+  cursor: pointer;
+  transition: transform 1s;
+}
+
+.ground {
+  position: absolute;
+  bottom: 120px;
+  left: 50%;
+  width: 0;
+  height: 4px;
+  background: #555;
+  transform: translateX(-50%);
+  transition: 1s;
+}
+
+/* Tree */
+.tree {
+  position: absolute;
+  bottom: 120px;
+  left: 45%;
+  opacity: 0;
+  transition: 2s;
+}
+
+.trunk {
+  width: 12px;
+  height: 0;
+  background: brown;
+  margin: auto;
+  transition: 2s;
+}
+
+.leaves {
+  font-size: 0;
+  text-align: center;
+  transition: 2s;
+}
+
+/* Text */
+.message {
+  position: absolute;
+  right: 5%;
+  top: 30%;
+  width: 40%;
+  font-size: 22px;
+  opacity: 0;
+  white-space: pre-line;
+}
+</style>
+</head>
+
+<body>
+
+<!-- floating hearts -->
+<script>
+for(let i=0;i<20;i++){
+  let h=document.createElement("div");
+  h.className="heart";
+  h.innerHTML="💗";
+  h.style.left=Math.random()*100+"%";
+  h.style.animationDelay=Math.random()*5+"s";
+  document.body.appendChild(h);
+}
+</script>
+
+<div class="center">
+  <p>Click me to free 👹</p>
+  <div class="rope" id="rope"></div>
+  <div class="demon" id="demon">👹</div>
+</div>
+
+<div class="ground" id="ground"></div>
+
+<div class="tree" id="tree">
+  <div class="trunk" id="trunk"></div>
+  <div class="leaves" id="leaves">
+    💖💗❤️💖💗<br>
+    💗❤️👹❤️💗<br>
+    💖💗❤️💗💖
+  </div>
+</div>
+
+<div class="message" id="msg"></div>
+
+<script>
+const demon = document.getElementById("demon");
+demon.onclick = () => {
+  document.getElementById("rope").style.display="none";
+  demon.style.transform="translateY(300px)";
+  document.getElementById("ground").style.width="300px";
+
+  setTimeout(()=>{
+    const tree=document.getElementById("tree");
+    tree.style.opacity=1;
+    document.getElementById("trunk").style.height="120px";
+    document.getElementById("leaves").style.fontSize="30px";
+  },1000);
+
+  setTimeout(()=>{
+    document.getElementById("tree").style.left="30%";
+    showText();
+  },2500);
+};
+
+function showText(){
+  const text=`Happy Birthday Chudail 💖
+
+It's been remaining 17 hours for your birthday,
+so happy birthday in advance 🥰
+
+Tu meri sabse pyaari chudail hai 👹💗
+Hamesha aise hi khush rehna,
+aur mujhe pareshan karti rehna 😌`;
+
+  let i=0;
+  const msg=document.getElementById("msg");
+  msg.style.opacity=1;
+
+  const typing=setInterval(()=>{
+    msg.innerHTML+=text.charAt(i);
+    i++;
+    if(i>=text.length) clearInterval(typing);
+  },50);
+}
+</script>
+
+</body>
+</html>
