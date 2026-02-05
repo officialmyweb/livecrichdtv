@@ -5,164 +5,104 @@
 <title>For My Chudail 💖</title>
 
 <style>
-* { box-sizing: border-box; }
-
-body {
-  margin: 0;
-  height: 100vh;
-  background: linear-gradient(180deg,#ffd6e8,#fff,#ffeef7);
-  overflow: hidden;
-  font-family: 'Comic Sans MS', cursive;
+body{
+  margin:0;
+  height:100vh;
+  background:linear-gradient(#ffd6e8,#fff);
+  overflow:hidden;
+  font-family:'Comic Sans MS', cursive;
 }
 
-/* Floating hearts background */
-.bg-heart {
-  position: absolute;
-  font-size: 18px;
-  animation: floatUp 8s linear infinite;
-  opacity: 0.6;
+/* floating background hearts */
+.bg-heart{
+  position:absolute;
+  font-size:16px;
+  opacity:.6;
+  animation:float 8s linear infinite;
+}
+@keyframes float{
+  from{transform:translateY(110vh);}
+  to{transform:translateY(-10vh);}
 }
 
-@keyframes floatUp {
-  from { transform: translateY(110vh); }
-  to { transform: translateY(-10vh); }
+/* center hanging emoji */
+.center{
+  position:absolute;
+  top:28%;
+  left:50%;
+  transform:translateX(-50%);
+  text-align:center;
+  transition:1s;
+}
+.rope{
+  width:4px;
+  height:90px;
+  background:#3b2b1f;
+  margin:auto;
+}
+.demon{
+  font-size:60px;
+  cursor:pointer;
+  transition:1.2s ease;
 }
 
-/* Center hanging emoji */
-.center {
-  position: absolute;
-  top: 30%;
-  left: 50%;
-  transform: translateX(-50%);
-  text-align: center;
+/* ground */
+.ground{
+  position:absolute;
+  bottom:120px;
+  left:50%;
+  transform:translateX(-50%);
+  width:0;
+  height:4px;
+  background:#333;
+  transition:1s;
 }
 
-.click-text {
-  font-size: 22px;
-  margin-bottom: 5px;
+/* TREE */
+.tree{
+  position:absolute;
+  bottom:120px;
+  left:50%;
+  transform:translateX(-50%) scale(0.2);
+  opacity:0;
+  transition:2s ease;
 }
 
-.rope {
-  width: 4px;
-  height: 90px;
-  background: #3b2b1f;
-  margin: auto;
+/* heart leaf */
+.leaf{
+  position:absolute;
+  width:16px;
+  height:16px;
+  background:pink;
+  transform:rotate(-45deg);
+  animation:pulse 2s infinite alternate;
+}
+.leaf:before,
+.leaf:after{
+  content:"";
+  position:absolute;
+  width:16px;
+  height:16px;
+  background:inherit;
+  border-radius:50%;
+}
+.leaf:before{top:-8px; left:0;}
+.leaf:after{left:8px; top:0;}
+
+@keyframes pulse{
+  from{transform:rotate(-45deg) scale(.9);}
+  to{transform:rotate(-45deg) scale(1.1);}
 }
 
-.demon {
-  font-size: 60px;
-  cursor: pointer;
-  transition: transform 1.2s ease;
-}
-
-/* Ground */
-.ground {
-  position: absolute;
-  bottom: 130px;
-  left: 50%;
-  width: 0;
-  height: 5px;
-  background: #444;
-  transform: translateX(-50%);
-  transition: 1.2s ease;
-}
-
-/* Tree */
-.tree {
-  position: absolute;
-  bottom: 130px;
-  left: 45%;
-  opacity: 0;
-  transition: 2s ease;
-}
-
-.trunk {
-  width: 14px;
-  height: 0;
-  background: #2a1a10;
-  margin: auto;
-  border-radius: 6px;
-  transition: 2s ease;
-}
-
-/* Branches */
-.branch {
-  position: absolute;
-  width: 70px;
-  height: 6px;
-  background: #2a1a10;
-  border-radius: 6px;
-  top: 40px;
-}
-
-.left { left: -60px; transform: rotate(-25deg); }
-.right { right: -60px; transform: rotate(25deg); }
-
-/* Leaves */
-.leaves {
-  position: relative;
-  top: -30px;
-  width: 220px;
-  text-align: center;
-  font-size: 0;
-  transition: 2s ease;
-}
-
-.leaf {
-  display: inline-block;
-  font-size: 28px;
-  margin: 4px;
-  animation: pop 1.5s ease infinite alternate;
-}
-
-@keyframes pop {
-  from { transform: scale(0.9); }
-  to { transform: scale(1.05); }
-}
-
-/* Cute animals */
-.bird {
-  position: absolute;
-  top: -40px;
-  left: -30px;
-  font-size: 28px;
-}
-
-.butterfly {
-  position: absolute;
-  right: -40px;
-  top: -20px;
-  font-size: 26px;
-  animation: fly 3s ease-in-out infinite;
-}
-
-@keyframes fly {
-  0% { transform: translateY(0); }
-  100% { transform: translateY(-15px); }
-}
-
-/* Message */
-.message {
-  position: absolute;
-  right: 5%;
-  top: 25%;
-  width: 42%;
-  font-size: 22px;
-  opacity: 0;
-  white-space: pre-line;
-}
-
-/* Sparkles */
-.sparkle {
-  position: absolute;
-  font-size: 16px;
-  animation: sparkle 2s infinite;
-}
-
-@keyframes sparkle {
-  0% { opacity: 0; transform: scale(0.5); }
-  50% { opacity: 1; transform: scale(1); }
-  100% { opacity: 0; transform: scale(0.5); }
+/* message */
+.message{
+  position:absolute;
+  right:5%;
+  top:25%;
+  width:45%;
+  font-size:22px;
+  opacity:0;
+  white-space:pre-line;
 }
 </style>
 </head>
@@ -170,7 +110,7 @@ body {
 <body>
 
 <script>
-/* Background hearts */
+/* background hearts */
 for(let i=0;i<30;i++){
   let h=document.createElement("div");
   h.className="bg-heart";
@@ -182,33 +122,28 @@ for(let i=0;i<30;i++){
 </script>
 
 <div class="center" id="center">
-  <div class="click-text">Click here to free me 👹</div>
-  <div class="rope" id="rope"></div>
+  <div>Click here to free me 👹</div>
+  <div class="rope"></div>
   <div class="demon" id="demon">👹</div>
 </div>
 
 <div class="ground" id="ground"></div>
 
-<div class="tree" id="tree">
-  <div class="trunk" id="trunk">
-    <div class="branch left"></div>
-    <div class="branch right"></div>
-  </div>
-
-  <div class="leaves" id="leaves">
-    <span class="leaf">💗</span>
-    <span class="leaf">💖</span>
-    <span class="leaf">❤️</span>
-    <span class="leaf">💕</span>
-    <span class="leaf">💜</span>
-    <span class="leaf">👹</span>
-    <span class="leaf">❤️</span>
-    <span class="leaf">💖</span>
-  </div>
-
-  <div class="bird">🐦</div>
-  <div class="butterfly">🦋</div>
-</div>
+<!-- SVG TREE -->
+<svg class="tree" id="tree" width="300" height="350" viewBox="0 0 300 350">
+  <!-- trunk -->
+  <path d="M150 350 C145 260,155 220,150 180"
+        stroke="#1f140a" stroke-width="14" fill="none"/>
+  <!-- branches -->
+  <path d="M150 230 C90 200,70 160,60 120"
+        stroke="#1f140a" stroke-width="8" fill="none"/>
+  <path d="M150 220 C210 190,240 150,255 120"
+        stroke="#1f140a" stroke-width="8" fill="none"/>
+  <path d="M150 190 C120 160,110 130,100 100"
+        stroke="#1f140a" stroke-width="6" fill="none"/>
+  <path d="M150 190 C180 160,190 130,205 100"
+        stroke="#1f140a" stroke-width="6" fill="none"/>
+</svg>
 
 <div class="message" id="msg"></div>
 
@@ -217,27 +152,40 @@ const demon=document.getElementById("demon");
 
 demon.onclick=()=>{
   document.getElementById("center").style.opacity=0;
-
   demon.style.transform="translateY(350px)";
-  document.getElementById("ground").style.width="350px";
+  document.getElementById("ground").style.width="320px";
 
   setTimeout(()=>{
     const tree=document.getElementById("tree");
     tree.style.opacity=1;
-    document.getElementById("trunk").style.height="140px";
-    document.getElementById("leaves").style.fontSize="28px";
+    tree.style.transform="translateX(-50%) scale(1)";
+    growLeaves();
   },1200);
 
   setTimeout(()=>{
-    document.getElementById("tree").style.left="28%";
+    document.getElementById("tree").style.left="35%";
     typeText();
   },3000);
-
-  sparkles();
 };
 
+/* add heart leaves naturally */
+function growLeaves(){
+  const tree=document.getElementById("tree");
+  const colors=["#ff5fa2","#ff7aa2","#ff4d6d","#c77dff","#ff99c8"];
+
+  for(let i=0;i<35;i++){
+    let l=document.createElement("div");
+    l.className="leaf";
+    l.style.background=colors[Math.floor(Math.random()*colors.length)];
+    l.style.left=(100+Math.random()*100)+"px";
+    l.style.top=(60+Math.random()*120)+"px";
+    tree.appendChild(l);
+  }
+}
+
+/* typing text */
 function typeText(){
-  const text=`Happy Birthday Chudail 💖
+const text=`Happy Birthday Chudail 💖
 
 Only 17 hours left ⏳
 So happy birthday in advance 🥰
@@ -246,27 +194,15 @@ Tu meri sabse special chudail hai 👹
 Hamesha khush rehna,
 aur mujhe hamesha yaad rakhna 💕`;
 
-  let i=0;
-  const msg=document.getElementById("msg");
-  msg.style.opacity=1;
+let i=0;
+const msg=document.getElementById("msg");
+msg.style.opacity=1;
 
-  const typing=setInterval(()=>{
-    msg.innerHTML+=text.charAt(i);
-    i++;
-    if(i>=text.length) clearInterval(typing);
-  },45);
-}
-
-function sparkles(){
-  for(let i=0;i<20;i++){
-    let s=document.createElement("div");
-    s.className="sparkle";
-    s.innerHTML="✨";
-    s.style.left=Math.random()*100+"%";
-    s.style.top=Math.random()*100+"%";
-    document.body.appendChild(s);
-    setTimeout(()=>s.remove(),3000);
-  }
+const t=setInterval(()=>{
+  msg.innerHTML+=text.charAt(i);
+  i++;
+  if(i>=text.length) clearInterval(t);
+},45);
 }
 </script>
 
