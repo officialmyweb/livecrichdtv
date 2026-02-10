@@ -6,11 +6,9 @@
 <meta name="referrer" content="no-referrer">
 <title>Telegram Live Cric HD</title>
 
-<!-- Shaka Player -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.6/shaka-player.ui.min.js" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.6/controls.min.css" crossorigin="anonymous">
 
-<!-- Custom CSS -->
 <link rel="stylesheet" href="https://lchdxfootball.pages.dev/livecrichd2.css">
 <script src="https://lchdxfootball.pages.dev/sknzx.js"></script>
 
@@ -73,6 +71,16 @@ body{
   font-weight:900;color:#000;
 }
 
+.shaka-settings-menu {
+  max-height: 220px !important;   
+  overflow-y: auto !important;    
+  -webkit-overflow-scrolling: touch; 
+}
+  
+.shaka-settings-menu button {
+  padding: 8px 12px;
+}
+  
   .shaka-logo{
   position:absolute;
   top:9px;
@@ -176,9 +184,6 @@ if (typeof encodedChannelData === "undefined" || !encodedChannelData[id]) {
 }
 </script>
 
-<!-- ===================================================
-     —> SHAKA PLAYER + UI + LOGO
-=================================================== -->
 <script>
 async function initPlayer() {
   const video = document.getElementById("video");
@@ -231,7 +236,6 @@ function addOverlayLogo() {
   }
 }
 
-/* ================= START ================= */
 document.addEventListener('shaka-ui-loaded', function () {
   initPlayer();
   addOverlayLogo();
