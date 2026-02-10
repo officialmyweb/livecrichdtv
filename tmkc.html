@@ -1,112 +1,170 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="referrer" content="no-referrer">
-    <title>Telegram-Live-Cric-Hd</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.6/shaka-player.ui.min.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.6/controls.min.css" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://livecrichdofficial.pages.dev/livecrichd2.css">  
-    <script src="https://lchdxfootball.pages.dev/sknzx.js"></script> 
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
+<title>Telegram-Live-Cric-Hd</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.6/shaka-player.ui.min.js" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.6/controls.min.css" crossorigin="anonymous">
+
+<style>
+body {
+  margin:0;
+  background:#000;
+}
+
+#player-container {
+  width:100%;
+  height:100vh;
+}
+
+.shaka-video-container {
+  position:relative;
+  width:100%;
+  height:100%;
+}
+
+/* Overlay Logo */
+.shaka-logo{
+  position:absolute;
+  top:20px;
+  left:30px;
+  width:75px;
+  height:auto;
+  z-index:9999;
+  pointer-events:none;
+  opacity:0.95;
+  border-radius:6px;
+  background:rgba(255,255,255,0.02);
+  padding:4px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.12);
+}
+
+@media (max-width:420px){
+  .shaka-logo{
+    width:36px;
+    top:8px;
+    left:8px;
+  }
+}
+</style>
+
+<script src="https://lchdxfootball.pages.dev/sknzx.js"></script>
 </head>
+
 <body>
+
 <div id="player-container">
-    <div data-shaka-player-container class="shaka-video-container">
-        <video autoplay data-shaka-player id="video" poster="#"></video>
-    </div>
+  <div data-shaka-player-container class="shaka-video-container">
+    <video autoplay data-shaka-player id="video" poster="#"></video>
+  </div>
 </div>
 
 <script>
-    // Domain restriction and Telegram prompt
-    const allowedDomain = "livecrichdtv.pages.dev";
-    if (window.top !== window.self || window.location.hostname !== allowedDomain) {
-        window.top.location.href = "https://telegram.me/livecrichdofficial";
+/* ================= DOMAIN LOCK ================= */
+const allowedDomain = "liveceichdtv.pages.dev";
+
+if (window.top !== window.self || window.location.hostname !== allowedDomain) {
+  window.top.location.href = "https://telegram.me/livecrichdofficial";
+}
+
+if (confirm("Join Our Telegram Channel @livecrichdofficial")) {
+  window.location.href = "https://telegram.me/livecrichdofficial";
+}
+
+/* ================= DECRYPT ================= */
+const decryptionKey = "gf676rc7gr4grg78r6ag56gg8f76713f";
+
+function decryptBase64(encodedStr, key) {
+  const decodedBytes = atob(encodedStr);
+  let decryptedStr = '';
+  for (let i = 0; i < decodedBytes.length; i++) {
+    decryptedStr += String.fromCharCode(
+      decodedBytes.charCodeAt(i) ^ key.charCodeAt(i % key.length)
+    );
+  }
+  return JSON.parse(decryptedStr);
+}
+
+function getURLParameter(name) {
+  const params = new URLSearchParams(window.location.search);
+  return params.get(name);
+}
+
+const id = getURLParameter("id");
+
+if (!encodedChannelData || !encodedChannelData[id]) {
+  alert("Invalid ID! Redirecting...");
+  window.location.href = "https://telegram.me/livecrichdofficial";
+}
+
+const selectedData = decryptBase64(encodedChannelData[id], decryptionKey);
+
+/* ================= INIT PLAYER ================= */
+async function initPlayer() {
+
+  const video = document.getElementById("video");
+  const ui = video['ui'];
+  const controls = ui.getControls();
+  const player = controls.getPlayer();
+
+  ui.configure({
+    controlPanelElements: [
+      'play_pause',
+      'mute',
+      'spacer',
+      'time_and_duration',
+      'quality',
+      'fullscreen',
+      'picture_in_picture',
+      'overflow_menu'
+    ],
+    overflowMenuButtons: ['captions', 'cast', 'quality', 'language']
+  });
+
+  player.configure({
+    drm: {
+      clearKeys: selectedData.DRMKeys
     }
+  });
 
-    if (confirm("Join Our Telegram Channel @livecrichdofficial")) { 
-        window.location.href = "https://telegram.me/livecrichdofficial"; 
-    }
+  try {
+    await player.load(selectedData.ManifestURI);
+    console.log("Video loaded successfully!");
+  } catch (error) {
+    console.error("Error loading video", error);
+  }
+}
 
-    // Decrypt base64-encoded data
-    const decryptionKey = "gf676rc7gr4grg78r6ag56gg8f76713f";
+/* ================= ADD LOGO ================= */
+function addOverlayLogo() {
 
-    function decryptBase64(encodedStr, key) {
-        const decodedBytes = atob(encodedStr);
-        let decryptedStr = '';
-        for (let i = 0; i < decodedBytes.length; i++) {
-            decryptedStr += String.fromCharCode(decodedBytes.charCodeAt(i) ^ key.charCodeAt(i % key.length));
-        }
-        return JSON.parse(decryptedStr);
-    }
+  const container = document.querySelector(".shaka-video-container");
 
-    // Get URL parameter
-    function getURLParameter(name) {
-        const params = new URLSearchParams(window.location.search);
-        return params.get(name);
-    }
+  try {
+    const existingLogo = container.querySelector('.shaka-logo');
+    if (existingLogo) existingLogo.remove();
 
-    // Validate ID and decrypt channel data
-    const id = getURLParameter("id");
+    const logo = document.createElement('img');
+    logo.className = 'shaka-logo';
+    logo.alt = 'WinStrike logo';
+    logo.src = 'https://d1gvwx1uptx1i3.cloudfront.net/khelocdn/public/assets/general_setting/winstrike/logo.png';
 
-    if (!encodedChannelData[id]) {
-        alert("Invalid ID! Redirecting...");
-        window.location.href = "https://telegram.me/livecrichdofficial";
-    }
+    container.appendChild(logo);
 
-    const selectedData = decryptBase64(encodedChannelData[id], decryptionKey);
+  } catch (e) {
+    console.warn("Could not add shaka logo", e);
+  }
+}
+
+/* ================= START ================= */
+document.addEventListener('shaka-ui-loaded', function () {
+  initPlayer();
+  addOverlayLogo();
+});
 </script>
 
-<script>
-    // Initialize player and configure DRM
-    async function initPlayer() {
-        const video = document.getElementById("video");
-        const ui = video['ui'];
-        const controls = ui.getControls();
-        const player = controls.getPlayer();
-
-        ui.configure({
-            controlPanelElements: [
-                'play_pause', 'mute', 'spacer', 'time_and_duration', 
-                'quality', 'fullscreen', 'picture_in_picture', 
-                'overflow_menu'
-            ],
-            overflowMenuButtons: ['captions', 'cast', 'quality', 'language']
-        });
-
-        player.configure({
-            drm: {
-                clearKeys: selectedData.DRMKeys
-            }
-        });
-
-        try {
-            console.log("Fetching ManifestURI:", selectedData.ManifestURI);
-            await player.load(selectedData.ManifestURI);
-            console.log('Video loaded successfully!');
-        } catch (error) {
-            console.error('Error loading video', error);
-        }
-    }
-
-    // Add logo to video container
-    function configureDRMAndAddLogo() {
-        const logo = document.createElement("img");
-        logo.src = "https://d1gvwx1uptx1i3.cloudfront.net/khelocdn/public/assets/general_setting/winstrike/logo.png";
-        logo.alt = "Logo";
-        logo.className = "logo";
-        logo.addEventListener("click", function() {
-            window.location.href = "https://telegram.me/livecrichdofficial";
-        });
-
-        const videoContainer = document.querySelector(".shaka-video-container");
-        videoContainer.appendChild(logo);
-    }
-
-    document.addEventListener('shaka-ui-loaded', function() {
-        initPlayer();
-        configureDRMAndAddLogo();
-    });
-</script>
 </body>
 </html>
