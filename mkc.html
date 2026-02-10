@@ -190,24 +190,17 @@ async function initPlayer() {
   }
 }
 
-function addLogo() {
-  const logo = document.createElement("img");
-  logo.src = "https://i.ibb.co/MkFy5sj2/IMG-20260210-224958.png";
-  logo.className = "logo";
-  logo.onclick = () => {
-    location.href = "https://telegram.me/livecrichdofficial";
-  };
+const existingLogo = container.querySelector('.shaka-logo');
+        if(existingLogo) existingLogo.remove();
 
-  document
-    .querySelector("[data-shaka-player-container]")
-    .appendChild(logo);
-}
-
-document.addEventListener("shaka-ui-loaded", () => {
-  if (!selectedData) return;
-  initPlayer();
-  addLogo();
-});
+        const logo = document.createElement('img');
+        logo.className = 'shaka-logo';
+        logo.alt = 'WinStrike logo';
+        logo.src = 'https://d1gvwx1uptx1i3.cloudfront.net/khelocdn/public/assets/general_setting/winstrike/logo.png';
+        // ensure it sits above the UI but doesn't block interactions
+        container.appendChild(logo);
+      }catch(e){ console.warn('Could not add shaka logo', e); }
+    }
 </script>
 </body>
 </html>
