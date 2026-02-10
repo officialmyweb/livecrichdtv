@@ -80,6 +80,10 @@ body{
 .shaka-settings-menu button {
   padding: 8px 12px;
 }
+
+.video-contain video { object-fit: contain !important; }
+.video-cover video { object-fit: cover !important; }
+.video-fill video { object-fit: fill !important; }
   
   .shaka-logo{
   position:absolute;
@@ -198,6 +202,47 @@ async function initPlayer() {
     ]
   });
 
+  // Create Screen Mode Menu Button
+const overflowMenu = document.querySelector('.shaka-overflow-menu');
+
+if (overflowMenu) {
+
+  const button = document.createElement('button');
+  button.className = 'shaka-overflow-menu-button';
+  button.innerHTML = `
+    <span class="material-icons-round">aspect_ratio</span>
+    <span>Screen Mode</span>
+  `;
+
+  overflowMenu.appendChild(button);
+
+  let mode = 0; // 0=contain,1=cover,2=fill
+
+  button.addEventListener('click', () => {
+
+    const container = document.querySelector(".shaka-video-container");
+
+    container.classList.remove("video-contain","video-cover","video-fill");
+
+    if (mode === 0) {
+      container.classList.add("video-cover");
+      button.querySelector("span:last-child").textContent = "Fill Screen";
+      mode = 1;
+    }
+    else if (mode === 1) {
+      container.classList.add("video-fill");
+      button.querySelector("span:last-child").textContent = "Stretch";
+      mode = 2;
+    }
+    else {
+      container.classList.add("video-contain");
+      button.querySelector("span:last-child").textContent = "Fit Screen";
+      mode = 0;
+    }
+
+  });
+}
+  
   player.configure({
     streaming: {
       rebufferingGoal: 5,
