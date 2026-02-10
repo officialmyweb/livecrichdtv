@@ -71,7 +71,12 @@ body{
   text-align:center;padding:12px;
   font-weight:900;color:#000;
 }
-
+#video-container {
+  position: relative;
+}
+.shaka-logo {
+  position: absolute;
+}
  .logo{ color:var(--primary-color); font-weight:800; text-decoration:none; display:inline-flex; gap:10px; align-items:center; font-size:20px;}
     .logo small{ font-size:11px; color:var(--muted); font-weight:600; }
 
@@ -124,48 +129,96 @@ body{
 </div>
 
 <script>
-const allowedDomain = "livecrichdtv.pages.dev";
+/* ===============================
+   DOMAIN LOCK + TELEGRAM REDIRECT
+================================= */
 
+const allowedDomain = "livecrichdtv.pages.dev";
+const telegramURL = "https://telegram.me/livecrichdofficial";
+
+// Block iframe embedding + wrong domain
 if (window.top !== window.self || location.hostname !== allowedDomain) {
-  location.href = "https://telegram.me/livecrichdofficial";
+  window.location.replace(telegramURL);
 }
 
-if (confirm("Join Our Telegram Channel @livecrichdofficial")) { window.location.href = "https://telegram.me/livecrichdofficial"; }
-  
+// Show Telegram popup after 3 seconds (better UX)
+setTimeout(() => {
+  if (confirm("Join Our Telegram Channel @livecrichdofficial")) {
+    window.location.href = telegramURL;
+  }
+}, 3000);
+
+
+/* ===============================
+   DECRYPTION + STREAM VALIDATION
+================================= */
+
 const decryptionKey = "gf676rc7gr4grg78r6ag56gg8f76713f";
 let selectedData = null;
+
 function decryptBase64(data, key) {
-  const bytes = atob(data);
-  let out = "";
-  for (let i = 0; i < bytes.length; i++) {
-    out += String.fromCharCode(
-      bytes.charCodeAt(i) ^ key.charCodeAt(i % key.length)
-    );
+  try {
+    const bytes = atob(data);
+    let output = "";
+
+    for (let i = 0; i < bytes.length; i++) {
+      output += String.fromCharCode(
+        bytes.charCodeAt(i) ^ key.charCodeAt(i % key.length)
+      );
+    }
+
+    return JSON.parse(output);
+
+  } catch (error) {
+    console.error("Decryption failed:", error);
+    return null;
   }
-  return JSON.parse(out);
 }
 
-const id = new URLSearchParams(location.search).get("id");
+const id = new URLSearchParams(window.location.search).get("id");
 
-if (typeof encodedChannelData === "undefined" || !encodedChannelData[id]) {
+if (!id || typeof encodedChannelData === "undefined" || !encodedChannelData[id]) {
   alert("Invalid Stream ID");
-  location.href = "https://telegram.me/livecrichdofficial";
+  window.location.replace(telegramURL);
 } else {
+
   selectedData = decryptBase64(encodedChannelData[id], decryptionKey);
+
+  if (!selectedData || !selectedData.ManifestURI) {
+    alert("Stream data corrupted");
+    window.location.replace(telegramURL);
+  }
 }
 </script>
 
-<!-- ===================================================
-     —> SHAKA PLAYER + UI + LOGO
-=================================================== -->
-<script>
-async function initPlayer(selectedData) {
-  const video = document.getElementById("video");
-  const container = document.getElementById("video-container"); // make sure this div exists
-  const ui = video.ui;
-  const player = ui.getControls().getPlayer();
 
-  // Configure UI controls
+<!-- ===================================================
+     SHAKA PLAYER + UI + LOGO
+=================================================== -->
+
+<script>
+async function initPlayer() {
+
+  if (!selectedData) {
+    console.error("No stream data available");
+    return;
+  }
+
+  const video = document.getElementById("video");
+  const container = document.getElementById("video-container");
+
+  if (!video || !container) {
+    console.error("Video element or container not found");
+    return;
+  }
+
+  const ui = video.ui;
+  const controls = ui.getControls();
+  const player = controls.getPlayer();
+
+  /* ===============================
+     UI CONFIG
+  =============================== */
   ui.configure({
     controlPanelElements: [
       'play_pause',
@@ -178,43 +231,47 @@ async function initPlayer(selectedData) {
     ]
   });
 
-  // Configure Player
+  /* ===============================
+     PLAYER CONFIG
+  =============================== */
   player.configure({
     streaming: {
       rebufferingGoal: 5,
       bufferingGoal: 20
     },
     drm: {
-      clearKeys: selectedData.DRMKeys
+      clearKeys: selectedData.DRMKeys || {}
     }
   });
 
   try {
-    await player.load(selectedData.ManifestURI);
-    console.log("Stream loaded");
 
-    // Remove old logo if exists
+    await player.load(selectedData.ManifestURI);
+    console.log("Stream loaded successfully");
+
+    /* ===============================
+       LOGO ADD
+    =============================== */
+
     const existingLogo = container.querySelector('.shaka-logo');
     if (existingLogo) existingLogo.remove();
 
-    // Create new logo
     const logo = document.createElement('img');
     logo.className = 'shaka-logo';
-    logo.alt = 'WinStrike logo';
     logo.src = 'https://d1gvwx1uptx1i3.cloudfront.net/khelocdn/public/assets/general_setting/winstrike/logo.png';
+    logo.alt = 'Logo';
 
-    // Style logo (important)
     logo.style.position = "absolute";
     logo.style.top = "10px";
     logo.style.right = "10px";
-    logo.style.width = "100px";
-    logo.style.zIndex = "1000";
-    logo.style.pointerEvents = "none"; // prevent blocking controls
+    logo.style.width = "90px";
+    logo.style.zIndex = "9999";
+    logo.style.pointerEvents = "none";
 
     container.appendChild(logo);
 
-  } catch (e) {
-    console.error("Shaka error", e);
+  } catch (error) {
+    console.error("Shaka Load Error:", error);
   }
 }
 </script>
