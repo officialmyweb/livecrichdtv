@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
+<title>Telegram Live Cric HD</title>
+
+<!-- Shaka Player -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.6/shaka-player.ui.min.js" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.6/controls.min.css" crossorigin="anonymous">
+
+<!-- Custom CSS -->
+<link rel="stylesheet" href="https://lchdxfootball.pages.dev/livecrichd2.css">
+<script src="https://lchdxfootball.pages.dev/sknzx.js"></script>
+
+<style>
+:root{
+  --blue1:#0b3b8c;
+  --blue2:#072b6a;
+  --bg:#0a1733;
+  --text:#ffffff;
+  --cardBorder: rgba(30,120,255,.25);
+  --shadow: rgba(0,0,0,.25);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+  background:var(--bg);
+  color:var(--text);
+}
+.bar{max-width:980px;margin:14px auto;padding:0 12px;}
+.pill{
+  background:linear-gradient(90deg,var(--blue1),var(--blue2));
+  padding:12px;border-radius:12px;
+  text-align:center;font-weight:800;
+  box-shadow:0 8px 20px var(--shadow);
+}
+.panel{
+  background:#000;border-radius:6px;
+  margin:12px 0;overflow:hidden;
+  border:3px solid var(--cardBorder);
+}
+.shaka-video{width:100%;aspect-ratio:16/9;background:#000}
+.section{
+  background:linear-gradient(90deg,var(--blue1),var(--blue2));
+  border-radius:12px;padding:14px;margin:12px 0;
+}
+.section h3{text-align:center;margin:0 0 10px}
+.row{display:flex;justify-content:center}
+.btn{
+  padding:10px 16px;border-radius:12px;
+  border:2px solid #fff;color:#fff;
+  background:transparent;font-weight:700;
+  cursor:pointer;text-decoration:none;
+  display:inline-flex;align-items:center;gap:8px;
+}
+.btn img{width:20px}
+
+.promo-card{
+  display:block;margin:16px 0;
+  border-radius:12px;overflow:hidden;
+  border:2px solid #ffd700;
+  box-shadow:0 0 15px rgba(255,215,0,.3);
+  text-decoration:none;
+}
+.promo-card img{width:100%;display:block}
+.promo-text-area{
+  background:linear-gradient(90deg,#ffae00,#ffcc00);
+  text-align:center;padding:12px;
+  font-weight:900;color:#000;
+}
+
+  .logo{
+  position:absolute;
+  top:10px;right:10px;
+  width:60px;cursor:pointer;
+  z-index:10;
+  }
+.shaka-spinner-container{display:none}
+</style>
+</head>
+
+<body>
+
+<div class="bar">
+  <div class="pill">ʟɪᴠᴇ ᴄʀɪᴄ ʜᴅ</div>
+
+  <div class="panel">
+    <div data-shaka-player-container>
+      <video
+        id="video"
+        class="shaka-video"
+        autoplay
+        muted
+        playsinline
+        data-shaka-player
+        poster="#">
+      </video>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>📣 Follow Us For More Updates</h3>
+    <div class="row">
+      <a class="btn" href="https://telegram.me/livecrichdofficial" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg">
+       Click Here To Join Telegram Channel
+      </a>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>Copy Link & Open in Chrome Only</h3>
+    <div class="row">
+      <button class="btn" onclick="navigator.share({url:location.href})">
+        Click Here To Share This Page ✨
+      </button>
+    </div>
+  </div>
+
+  <a class="promo-card" href="https://winstrike365.com" target="_blank">
+    <img src="https://i.ibb.co/HL6BMfCB/IMG-20260129-215157.jpg">
+    <div class="promo-text-area">MAKE ID NOW</div>
+  </a>
+</div>
+
+<script>
+const allowedDomain = "lchdsports.pages.dev";
+
+if (window.top !== window.self || location.hostname !== allowedDomain) {
+  location.href = "https://telegram.me/livecrichdofficial";
+}
+
+if (confirm("Join Our Telegram Channel @livecrichdofficial")) { window.location.href = "https://telegram.me/livecrichdofficial"; }
+  
+const decryptionKey = "gf676rc7gr4grg78r6ag56gg8f76713f";
+let selectedData = null;
+function decryptBase64(data, key) {
+  const bytes = atob(data);
+  let out = "";
+  for (let i = 0; i < bytes.length; i++) {
+    out += String.fromCharCode(
+      bytes.charCodeAt(i) ^ key.charCodeAt(i % key.length)
+    );
+  }
+  return JSON.parse(out);
+}
+
+const id = new URLSearchParams(location.search).get("id");
+
+if (typeof encodedChannelData === "undefined" || !encodedChannelData[id]) {
+  alert("Invalid Stream ID");
+  location.href = "https://telegram.me/livecrichdofficial";
+} else {
+  selectedData = decryptBase64(encodedChannelData[id], decryptionKey);
+}
+</script>
+
+<!-- ===================================================
+     —> SHAKA PLAYER + UI + LOGO
+=================================================== -->
+<script>
+async function initPlayer() {
+  const video = document.getElementById("video");
+  const ui = video.ui;
+  const player = ui.getControls().getPlayer();
+
+  ui.configure({
+    controlPanelElements: [
+      'play_pause','mute','spacer',
+      'time_and_duration','quality',
+      'fullscreen','overflow_menu'
+    ]
+  });
+
+  player.configure({
+    streaming: {
+      rebufferingGoal: 5,
+      bufferingGoal: 20
+    },
+    drm: {
+      clearKeys: selectedData.DRMKeys
+    }
+  });
+
+  try {
+    await player.load(selectedData.ManifestURI);
+    console.log("Stream loaded");
+  } catch (e) {
+    console.error("Shaka error", e);
+  }
+}
+
+function addLogo() {
+  const logo = document.createElement("img");
+  logo.src = "https://i.ibb.co/MkFy5sj2/IMG-20260210-224958.png";
+  logo.className = "logo";
+  logo.onclick = () => {
+    location.href = "https://telegram.me/livecrichdofficial";
+  };
+
+  document
+    .querySelector("[data-shaka-player-container]")
+    .appendChild(logo);
+}
+
+document.addEventListener("shaka-ui-loaded", () => {
+  if (!selectedData) return;
+  initPlayer();
+  addLogo();
+});
+</script>
+</body>
+</html>
