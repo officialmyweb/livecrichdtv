@@ -159,19 +159,26 @@ if (typeof encodedChannelData === "undefined" || !encodedChannelData[id]) {
      —> SHAKA PLAYER + UI + LOGO
 =================================================== -->
 <script>
-async function initPlayer() {
+async function initPlayer(selectedData) {
   const video = document.getElementById("video");
+  const container = document.getElementById("video-container"); // make sure this div exists
   const ui = video.ui;
   const player = ui.getControls().getPlayer();
 
+  // Configure UI controls
   ui.configure({
     controlPanelElements: [
-      'play_pause','mute','spacer',
-      'time_and_duration','quality',
-      'fullscreen','overflow_menu'
+      'play_pause',
+      'mute',
+      'spacer',
+      'time_and_duration',
+      'quality',
+      'fullscreen',
+      'overflow_menu'
     ]
   });
 
+  // Configure Player
   player.configure({
     streaming: {
       rebufferingGoal: 5,
@@ -185,22 +192,31 @@ async function initPlayer() {
   try {
     await player.load(selectedData.ManifestURI);
     console.log("Stream loaded");
+
+    // Remove old logo if exists
+    const existingLogo = container.querySelector('.shaka-logo');
+    if (existingLogo) existingLogo.remove();
+
+    // Create new logo
+    const logo = document.createElement('img');
+    logo.className = 'shaka-logo';
+    logo.alt = 'WinStrike logo';
+    logo.src = 'https://d1gvwx1uptx1i3.cloudfront.net/khelocdn/public/assets/general_setting/winstrike/logo.png';
+
+    // Style logo (important)
+    logo.style.position = "absolute";
+    logo.style.top = "10px";
+    logo.style.right = "10px";
+    logo.style.width = "100px";
+    logo.style.zIndex = "1000";
+    logo.style.pointerEvents = "none"; // prevent blocking controls
+
+    container.appendChild(logo);
+
   } catch (e) {
     console.error("Shaka error", e);
   }
 }
-
-const existingLogo = container.querySelector('.shaka-logo');
-        if(existingLogo) existingLogo.remove();
-
-        const logo = document.createElement('img');
-        logo.className = 'shaka-logo';
-        logo.alt = 'WinStrike logo';
-        logo.src = 'https://d1gvwx1uptx1i3.cloudfront.net/khelocdn/public/assets/general_setting/winstrike/logo.png';
-        // ensure it sits above the UI but doesn't block interactions
-        container.appendChild(logo);
-      }catch(e){ console.warn('Could not add shaka logo', e); }
-    }
 </script>
 </body>
 </html>
