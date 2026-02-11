@@ -42,27 +42,24 @@ video.fit-fill{object-fit:fill!important;}
 video.fit-none{object-fit:none!important;}
 
 .plyr__menu__container {
-  max-height: 65vh !important;
-  overflow-y: auto !important;
-  overscroll-behavior: contain;
-  -webkit-overflow-scrolling: touch;
+  max-height: 70vh !important;
+  overflow: hidden !important;
 }
 
-.plyr__menu__container .plyr__menu__container {
-  max-height: 65vh !important;
+.plyr__menu__container > div {
+  max-height: 70vh !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  overscroll-behavior: contain;
+}
+
+.plyr__menu__container [role="menu"] {
+  max-height: 70vh !important;
   overflow-y: auto !important;
 }
 
 .plyr__menu__container button {
   padding: 12px 16px;
-}
-
-.plyr__menu__container::-webkit-scrollbar {
-  width: 4px;
-}
-.plyr__menu__container::-webkit-scrollbar-thumb {
-  background: rgba(0,0,0,0.3);
-  border-radius: 10px;
 }
   
 .section{
