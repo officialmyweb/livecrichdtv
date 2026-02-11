@@ -11,60 +11,53 @@
     <script src="https://lchdxfootball.pages.dev/sknzx.js"></script> 
 </head>
     <style>
-/* ===== Neon Banner ===== */
-.top-banner-wrapper {
+/* ===== Overlay Neon Banner ===== */
+.top-banner {
     position: fixed;
-    top: 10px;
+    top: 20px;
     left: 50%;
     transform: translateX(-50%);
-    z-index: 9999;
+    z-index: 99999;
+    border-radius: 25px;
+    padding: 8px;
+    background: #000;
+    animation: neonGlow 1.5s infinite alternate;
 }
 
-.top-banner {
-    position: relative;
-    display: inline-block;
-    border-radius: 20px;
-    padding: 6px;
-    background: linear-gradient(45deg, #ffd700, #ffcc00);
-    animation: neonPulse 1.5s infinite alternate;
-}
-
-@keyframes neonPulse {
+@keyframes neonGlow {
     from {
         box-shadow: 0 0 10px #ffd700,
                     0 0 20px #ffcc00,
                     0 0 30px #ffaa00;
     }
     to {
-        box-shadow: 0 0 20px #ffff00,
-                    0 0 40px #ffcc00,
-                    0 0 60px #ffaa00;
+        box-shadow: 0 0 25px #ffff00,
+                    0 0 45px #ffcc00,
+                    0 0 70px #ffaa00;
     }
 }
 
 .top-banner img {
     display: block;
-    max-width: 95vw; /* keeps original proportion */
-    height: auto;    /* original height */
-    border-radius: 15px;
-    cursor: pointer;
+    border-radius: 20px;
+    max-width: 100%;
+    height: auto;
 }
 
 .close-banner {
     position: absolute;
-    top: -10px;
-    right: -10px;
+    top: -12px;
+    right: -12px;
     background: red;
     color: white;
-    font-size: 18px;
-    width: 28px;
-    height: 28px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
+    font-size: 20px;
     font-weight: bold;
+    text-align: center;
+    line-height: 30px;
+    cursor: pointer;
 }
         .logo {
             position: absolute;
@@ -175,17 +168,14 @@
     });
 </script>
     <script>
-// ===== Neon Banner Logic =====
-function createBanner() {
-
-    const wrapper = document.createElement("div");
-    wrapper.className = "top-banner-wrapper";
+function showBanner() {
 
     const banner = document.createElement("div");
     banner.className = "top-banner";
 
     const img = document.createElement("img");
     img.src = "https://i.ibb.co/LzKSPcY2/IMG-20260211-183227.jpg";
+
     img.onclick = function() {
         window.open("https://telegram.me/livecrichdofficial", "_blank");
     };
@@ -193,29 +183,28 @@ function createBanner() {
     const closeBtn = document.createElement("div");
     closeBtn.className = "close-banner";
     closeBtn.innerHTML = "×";
+
     closeBtn.onclick = function() {
-        wrapper.remove();
+        banner.remove();
         localStorage.setItem("bannerClosedTime", Date.now());
     };
 
     banner.appendChild(img);
     banner.appendChild(closeBtn);
-    wrapper.appendChild(banner);
-    document.body.appendChild(wrapper);
+    document.body.appendChild(banner);
 }
 
-// Show banner every 45 minutes
-function checkBanner() {
+function checkBannerTimer() {
     const lastClosed = localStorage.getItem("bannerClosedTime");
     const now = Date.now();
-    const fortyFiveMinutes = 45 * 60 * 1000;
+    const delay = 45 * 60 * 1000; // 45 minutes
 
-    if (!lastClosed || now - lastClosed > fortyFiveMinutes) {
-        createBanner();
+    if (!lastClosed || now - lastClosed > delay) {
+        showBanner();
     }
 }
 
-window.addEventListener("load", checkBanner);
+window.addEventListener("load", checkBannerTimer);
 </script>
 </body>
 </html>
