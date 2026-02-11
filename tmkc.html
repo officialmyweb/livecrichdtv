@@ -11,52 +11,40 @@
     <script src="https://lchdxfootball.pages.dev/sknzx.js"></script> 
 </head>
     <style>
-/* ===== Overlay Neon Banner ===== */
-.top-banner {
+/* ===== TOP GLOW BANNER ===== */
+.top-ad-banner {
     position: fixed;
     top: 20px;
     left: 50%;
     transform: translateX(-50%);
-    z-index: 99999;
+    z-index: 999999;
     border-radius: 25px;
-    padding: 8px;
-    background: #000;
-    animation: neonGlow 1.5s infinite alternate;
+    padding: 6px;
+    background: #111;
+    box-shadow: 0 0 40px rgba(255, 215, 0, 0.8),
+                0 0 80px rgba(255, 200, 0, 0.6);
 }
 
-@keyframes neonGlow {
-    from {
-        box-shadow: 0 0 10px #ffd700,
-                    0 0 20px #ffcc00,
-                    0 0 30px #ffaa00;
-    }
-    to {
-        box-shadow: 0 0 25px #ffff00,
-                    0 0 45px #ffcc00,
-                    0 0 70px #ffaa00;
-    }
-}
-
-.top-banner img {
+.top-ad-banner img {
     display: block;
-    border-radius: 20px;
-    max-width: 100%;
+    max-width: 95vw;
     height: auto;
+    border-radius: 20px;
 }
 
-.close-banner {
+.ad-close-btn {
     position: absolute;
-    top: -12px;
-    right: -12px;
+    top: -18px;
+    right: -18px;
+    width: 50px;
+    height: 50px;
     background: red;
     color: white;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    font-size: 20px;
+    font-size: 28px;
     font-weight: bold;
+    border-radius: 50%;
     text-align: center;
-    line-height: 30px;
+    line-height: 50px;
     cursor: pointer;
 }
         .logo {
@@ -168,10 +156,10 @@
     });
 </script>
     <script>
-function showBanner() {
+function showTopBanner() {
 
     const banner = document.createElement("div");
-    banner.className = "top-banner";
+    banner.className = "top-ad-banner";
 
     const img = document.createElement("img");
     img.src = "https://i.ibb.co/LzKSPcY2/IMG-20260211-183227.jpg";
@@ -181,12 +169,12 @@ function showBanner() {
     };
 
     const closeBtn = document.createElement("div");
-    closeBtn.className = "close-banner";
+    closeBtn.className = "ad-close-btn";
     closeBtn.innerHTML = "×";
 
     closeBtn.onclick = function() {
         banner.remove();
-        localStorage.setItem("bannerClosedTime", Date.now());
+        localStorage.setItem("adClosedTime", Date.now());
     };
 
     banner.appendChild(img);
@@ -194,17 +182,17 @@ function showBanner() {
     document.body.appendChild(banner);
 }
 
-function checkBannerTimer() {
-    const lastClosed = localStorage.getItem("bannerClosedTime");
+function checkAdTimer() {
+    const lastClosed = localStorage.getItem("adClosedTime");
     const now = Date.now();
-    const delay = 45 * 60 * 1000; // 45 minutes
+    const delay = 45 * 60 * 1000;
 
     if (!lastClosed || now - lastClosed > delay) {
-        showBanner();
+        showTopBanner();
     }
 }
 
-window.addEventListener("load", checkBannerTimer);
+window.addEventListener("load", checkAdTimer);
 </script>
 </body>
 </html>
