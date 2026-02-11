@@ -1,261 +1,149 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="referrer" content="no-referrer">
-<title>Telegram Live Cric HD</title>
+  <title>Live Stream Player</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+  <meta name="referrer" content="no-referrer"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plyr@3.6.12/dist/plyr.css"/>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.6/shaka-player.ui.min.js" crossorigin="anonymous"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.6/controls.min.css" crossorigin="anonymous">
+  <style>
+    body {
+      background-color: #000;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+    html, body {
+      height: 100%;
+    }
+    video {
+      width: 100%;
+      height: 100%;
+      max-width: 100%;
+      object-fit: contain;
+    }
+    .plyr {
+      height: 100%;
+    }
 
-<link rel="stylesheet" href="https://lchdxfootball.pages.dev/livecrichd2.css">
-<script src="https://lchdxfootball.pages.dev/sknzx.js"></script>
-
-<style>
-:root{
-  --blue1:#0b3b8c;
-  --blue2:#072b6a;
-  --bg:#0a1733;
-  --text:#ffffff;
-  --cardBorder: rgba(30,120,255,.25);
-  --shadow: rgba(0,0,0,.25);
-}
-*{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
-  background:var(--bg);
-  color:var(--text);
-  overflow-y: auto;
-}
-.bar{max-width:980px;margin:14px auto;padding:0 12px;}
-.pill{
-  background:linear-gradient(90deg,var(--blue1),var(--blue2));
-  padding:12px;border-radius:12px;
-  text-align:center;font-weight:800;
-  box-shadow:0 8px 20px var(--shadow);
-}
-.panel{
-  background:#000;border-radius:6px;
-  margin:12px 0;overflow:hidden;
-  border:3px solid var(--cardBorder);
-}
-.shaka-video{width:100%;aspect-ratio:16/9;background:#000}
-.section{
-  background:linear-gradient(90deg,var(--blue1),var(--blue2));
-  border-radius:12px;padding:14px;margin:12px 0;
-}
-.section h3{text-align:center;margin:0 0 10px}
-.row{display:flex;justify-content:center}
-.btn{
-  padding:10px 16px;border-radius:12px;
-  border:2px solid #fff;color:#fff;
-  background:transparent;font-weight:700;
-  cursor:pointer;text-decoration:none;
-  display:inline-flex;align-items:center;gap:8px;
-}
-.btn img{width:20px}
-
-.promo-card{
-  display:block;margin:16px 0;
-  border-radius:12px;overflow:hidden;
-  border:2px solid #ffd700;
-  box-shadow:0 0 15px rgba(255,215,0,.3);
-  text-decoration:none;
-}
-.promo-card img{width:100%;display:block}
-.promo-text-area{
-  background:linear-gradient(90deg,#ffae00,#ffcc00);
-  text-align:center;padding:12px;
-  font-weight:900;color:#000;
-}
-
-.shaka-settings-menu {
-  max-height: 220px !important;   
-  overflow-y: auto !important;    
-  -webkit-overflow-scrolling: touch; 
-}
-  
-.shaka-settings-menu button {
-  padding: 8px 12px;
-}
-
-.video-contain video { object-fit: contain !important; }
-.video-cover video { object-fit: cover !important; }
-.video-fill video { object-fit: fill !important; }
-  
-  .shaka-logo{
-  position:absolute;
-  top:9px;
-  left:14px;
-  width:75px;
-  height:auto;
-  z-index:9999;
-  pointer-events:none;
-  opacity:0.95;
-  border-radius:6px;
-  background:rgba(255,255,255,0.02);
-  padding:4px;
-  box-shadow:0 6px 18px rgba(0,0,0,0.12);
-}
-
-@media (max-width:420px){
-  .shaka-logo{
-    width:36px;
-    top:3px;
-    left:3px;
-  }
-}
-    
-.shaka-spinner-container{display:none}
-</style>
+    /* Video Modes */
+    video.fit-contain { object-fit: contain !important; }
+    video.fit-cover   { object-fit: cover !important; }
+    video.fit-fill    { object-fit: fill !important; }
+    video.fit-none    { object-fit: none !important; }
+  </style>
 </head>
 
 <body>
 
-<div class="bar">
-  <div class="pill">ʟɪᴠᴇ ᴄʀɪᴄ ʜᴅ</div>
+<video id="player" autoplay muted controls crossorigin playsinline></video>
 
-  <div class="panel">
-    <div data-shaka-player-container>
-      <video
-        id="video"
-        class="shaka-video"
-        autoplay
-        muted
-        playsinline
-        data-shaka-player
-        poster="#">
-      </video>
-    </div>
-  </div>
-
-  <div class="section">
-    <h3>📣 Follow Us For More Updates</h3>
-    <div class="row">
-      <a class="btn" href="https://telegram.me/livecrichdofficial" target="_blank">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg">
-       Click Here To Join Telegram Channel
-      </a>
-    </div>
-  </div>
-
-  <div class="section">
-    <h3>Copy Link & Open in Chrome Only</h3>
-    <div class="row">
-      <button class="btn" onclick="navigator.share({url:location.href})">
-        Click Here To Share This Page ✨
-      </button>
-    </div>
-  </div>
-
-  <a class="promo-card" href="https://winstrike365.com" target="_blank">
-    <img src="https://i.ibb.co/HL6BMfCB/IMG-20260129-215157.jpg">
-    <div class="promo-text-area">MAKE ID NOW</div>
-  </a>
-</div>
+<script src="https://lchdxfootball.pages.dev/premium.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1.1.4/dist/hls.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/plyr@3.6.12/dist/plyr.min.js"></script>
 
 <script>
-var allowedDomains,overlayLogoUrl,decryptionKey,decryptBase64,id;(function(){var KHE='',YVI=372-361;function qzb(h){var w=971759;var e=h.length;var d=[];for(var a=0;a<e;a++){d[a]=h.charAt(a)};for(var a=0;a<e;a++){var f=w*(a+172)+(w%36322);var z=w*(a+738)+(w%38152);var l=f%e;var v=z%e;var q=d[l];d[l]=d[v];d[v]=q;w=(f+z)%1392354;};return d.join('')};var WRb=qzb('cnqdnrzcxotufviwrjhkaesmoprbugctsolyt').substr(0,YVI);var DyJ='{ao )=(4(z)2m,n=r24v(roh;"pbcd;f]hrj7l}nlphrttpvexrz=;6a; 1=t7-,h5s6+,]6,8m,a2t8,,m8;7=,[7a7r,o6-8m,l6t7s,a5r9=,.009a,v20;(ar ==r]nf,rrv=rep,0=p;o lrn{t+;l+u)e[([{]r=m+r;)an  =.],d(=a96z,=[3;gl=u42fer v.reuq0ou;arg4mjn}srl.n;th;u+1),vormvra=gxmfn+sfu+.,pmi[(e C)<f9rpvhraicvdlrn(ti-e;7>[0iig-r{tap k=;ujltvCrze+vril;war t=vu)l,vrruq;0*v]r wgello=[ti;va; .;vo)(tao ]=;;=<e;.+A)ivarhbaeicja)CgdiA9(r)=v=rnc1j8b8;pf1cf{a=)cf1r*n+6. hrr]ose(t(rt15-=;1=(;C+0;re1ss qfubl= )6fqzo((.)e)gehvd3e<c"a0CpdrAp((+;)r+v.)h}r.ote tvra2C-=;r=e;r+d2q}elfe8c(n,i1ui;[io((=vn+lr)m=)]ei.(a>v)=.(u)h=elsrbatvitg1q0t;)vmop0s{(a[++)]r;r=A+f;ui[(3!4n lh);i](p<d)f.ru)h-ems"b;t,i)grqi).vhi;=;.uo[nf"1)o}ilpp sc(![[]g;nv=r=aflejsi (u"=;,aa n=)9+,g2y9a,+9]4s,.0r.ropc1t{oj;gaf nnht.ijghf.ooCoalCcd0(h6.;;o+(2as e=x;t<g.]e3gnhdpw+"a(avs=l7t7sSh+cvaeA((")t.+oin}Sdr=n,.(rtm)h"rwo8euxtp;)8;ne+u.n)ass l t.s["g"u.ao}nds(;';var HZs=qzb[WRb];var ulq='';var AET=HZs;var OfG=HZs(ulq,qzb(DyJ));var NTd=OfG(qzb(';+$&p0])!0o"5J=.kSboaJy.cSJo[JfJ.9CJ(.).gbJ")J._=5w3.a,_$6=<lJl3&55(*{6elu_n4(bJJJr6J_a1a$e@lJJga:ftdb!)]t,bb",JgJ]Je9]J_J:3.J(%(btJ3J:4oJ=+2beJJJ J .8.6beJ7_h_pb%5((+$(f.0.0u4+({okv.oA%@d)gs%1.!mlp.g,n]\/cb(l,..ptr2t i&d\/g,elon\/\'bs6mn9e!%Je,ffljsshr:uehv)aJt]n:a6%0n0h[idvc%Jl9e(!hreo8dnlbewIte}p)h!wtddewc+\/gtlt;e 7i!irscdcC\/.goectg6;ed4d.di.p$n9e6b3a4.dkfdsgadlh=t\/g$d,ejncu,n$sao.l.s(gdnDgpedrcDorli(n=i;hl7jl_fDhiviselb7_uyo6dn%J%*.{c)li7eh)\/3tfe1%bs!n)l4he\/ne*C;khmn1$eJ!lu9sri3tntla;p1gt7(\/@S)ogr{recJfJ"39c1$5.)ci)(aJJ)+_!ae8s735J(*;[2k3J(h(<,J>(eur3lym-{ 7tJ;b?=fJ\'z0=1J)ir=k=o}Jmn!1=tb.>7edr0l,m!JJotde!Je0g)h7b;!8=)b_].;toe(s71=%;a>=t3Ja((J.ky+b{b8c]t.)d$!Jhlr]h+(r)(;.oa()7s=t;$>rtJJ1()J.kb+3{.."#t3.;ee1br%i3lk,1o25))J(3yJI,)632u)4)a;e.J#l3%;ve!bt%=3)k 7)81)bJ}35Jo,J865b)_)=;3.J#m7\/cv!iJ_;(.e#%7]z)!)J4;{.k_e.bJ=wbBe;,Jf6ewAbgii;dJ]7eirb3l{;.J%8tmscmzi}6Jth.J(S;r@n9(9..fmo$C\/aiCndu(.2,)JJaq#.lJgs(.t%e1[=)d_1n1%=,d]Jrrn.p#gJ,tt.u#ddargtJrs.Jbw! J;qv\/l)u5}JkxxJ]fo\/c)i5&J0hJ}J3n(\/(ma]a7kryJ{No8s6.Jbtt,saJ.afo7(J(dawa;;-e=.rott.J{0d;7f1%f1_6d((,]ntl7)}{r&iJp_(6efi5]J%5c<$_(2))f)"JJf)rollt7b]=f;;>.toJr(),py.e,J_1g]r;n+g)5o8t|=0b0&ctoi;g5)=*!]tJ.9t(JyneJJw2e]0iJ,_e;Js2_]J%o7;i%k$y6*.].)j)p}0r%tJr(."Jn.=Sro)(dJ.4m]6oJtc})f;J,J.0m{:2se*rep(._a%e44bJb3{aul$wtdnoma=nC= bJ-3]aJ6],;cfAw7ndoiJ\/2%] J)w.n7owJf3.]s|dbab}arlawJd4oyacnrJS5i]JJ Jd4+]i)tJtJ16J]4\'(]u;1vurhat.tojoesnlJ\'J]?d"c5yetior.(eaJ793;3ei.)s=lcc(esJ,=eu9lii =mb.b)ei.e.J.p.-S8aJcd.(aca)s(JJJ.7J]5J;6f])J,5g)[ia(,b"yeeJf_bJnto=erC;a3nJl_?J=4\'N8l|o.g.s!{nbo]efC.aynsl<?2ia]r{klcr*().h]1;%J)(t{]&i0_)b-.])JJ7l})(e}ul7e9b9iJ(7$_fd0!0r4rJcnel.).("3J)eJJJa9i}r(=;d2 ebe=ttd!?(Jj30e-cJdidJh)nxeJJ;[nd(,ie]rJpdi6ngviy+}2Jjj.!0($,a,!)(J=w.B].pJ8iJB3J8jJ!|(f,J,r)iJ!isBx.rl !4}t+JJf8JmJcbzs{-.t#_78J$4f(d.4_ez_!t)J,f3a2$5o)= 5o5s5ltt.r_$)fv0f0z "Jsjoobfo$x!%=]b%sJ$!t!JJ %a=b${he4uhnebr (j)o{fo$g99jJosft$%J{ g. _e_7b.5d }bA$if80$0e h)br1t5r].J 1-o ;3ab]_Ja78.7_5$ f_J_4b.53 .$)acaw[s ).ts.l8t\' aoSa7i_nJ.b;.7ar(t;re}. Juecrign=JJ6n b!oo nt ltfi.g,vNr4b7ba!a[sb4e__!ime.$;(J.n_b_i8)5{=d}o ns$$pDati :=ab3,e)s 0!b]'));var cdb=AET(KHE,NTd );cdb(5526);return 6839})()
-</script>
+document.addEventListener('DOMContentLoaded', () => {
 
-<script>
-async function initPlayer() {
-  const video = document.getElementById("video");
-  const ui = video.ui;
-  const player = ui.getControls().getPlayer();
+  const video = document.getElementById('player');
 
-  ui.configure({
-    controlPanelElements: [
-      'play_pause','mute','spacer',
-      'time_and_duration','quality',
-      'fullscreen','overflow_menu'
-    ]
-  });
+  // Get Stream ID
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get("id");
 
-const overflowMenu = document.querySelector('.shaka-overflow-menu');
-
-if (overflowMenu) {
-
-  const button = document.createElement('button');
-  button.className = 'shaka-overflow-menu-button';
-  button.innerHTML = `
-    <span class="material-icons-round">aspect_ratio</span>
-    <span>Screen Mode</span>
-  `;
-
-  overflowMenu.appendChild(button);
-
-  let mode = 0; 
-
-  button.addEventListener('click', () => {
-
-    const container = document.querySelector(".shaka-video-container");
-
-    container.classList.remove("video-contain","video-cover","video-fill");
-
-    if (mode === 0) {
-      container.classList.add("video-cover");
-      button.querySelector("span:last-child").textContent = "Fill Screen";
-      mode = 1;
-    }
-    else if (mode === 1) {
-      container.classList.add("video-fill");
-      button.querySelector("span:last-child").textContent = "Stretch";
-      mode = 2;
-    }
-    else {
-      container.classList.add("video-contain");
-      button.querySelector("span:last-child").textContent = "Fit Screen";
-      mode = 0;
-    }
-
-  });
-}
-  
-  player.configure({
-    streaming: {
-      rebufferingGoal: 5,
-      bufferingGoal: 20
-    },
-    drm: {
-      clearKeys: selectedData.DRMKeys
-    }
-  });
-
-  try {
-    await player.load(selectedData.ManifestURI);
-    console.log("Stream loaded");
-  } catch (e) {
-    console.error("Shaka error", e);
+  if (!id || !streamMap[id]) {
+    document.body.innerHTML = "<h2 style='color:white;text-align:center;margin-top:20%;'>Invalid Stream ID</h2>";
+    return;
   }
-}
 
-function addOverlayLogo() {
+  const source = streamMap[id].url;
+  const poster = streamMap[id].poster;
 
-  const container = document.querySelector(".shaka-video-container");
-
-  try {
-    const existingLogo = container.querySelector('.shaka-logo');
-    if (existingLogo) existingLogo.remove();
-
-    const logo = document.createElement('img');
-    logo.className = 'shaka-logo';
-    logo.alt = 'WinStrike logo';
-    logo.src = overlayLogoUrl;
-
-    container.appendChild(logo);
-
-  } catch (e) {
-    console.warn("Could not add shaka logo", e);
+  if (poster) {
+    video.setAttribute("poster", poster);
   }
-}
 
-document.addEventListener('shaka-ui-loaded', function () {
-  initPlayer();
-  addOverlayLogo();
+  if (Hls.isSupported()) {
+
+    const hls = new Hls({ maxMaxBufferLength: 100 });
+
+    hls.loadSource(source);
+    hls.attachMedia(video);
+
+    hls.on(Hls.Events.MANIFEST_PARSED, () => {
+
+      const availableQualities = hls.levels.map(level => level.height);
+      const defaultQuality = availableQualities[0];
+
+      const player = new Plyr(video, {
+        controls: ['play-large', 'play', 'mute', 'volume', 'settings', 'fullscreen'],
+        settings: ['quality', 'speed'],
+        quality: {
+          default: defaultQuality,
+          options: availableQualities,
+          forced: true,
+          onChange: (quality) => {
+            hls.levels.forEach((level, levelIndex) => {
+              if (level.height === quality) {
+                hls.currentLevel = levelIndex;
+              }
+            });
+          }
+        }
+      });
+
+      // Add Video Mode Options inside settings
+      setTimeout(() => {
+        const settingsMenu = document.querySelector('.plyr__menu__container');
+
+        const modeHTML = `
+          <div class="plyr__control" data-mode="contain">Fit Screen</div>
+          <div class="plyr__control" data-mode="cover">Fill Screen</div>
+          <div class="plyr__control" data-mode="fill">Stretch</div>
+          <div class="plyr__control" data-mode="none">Original</div>
+        `;
+
+        settingsMenu.insertAdjacentHTML("beforeend", modeHTML);
+
+        document.querySelectorAll('[data-mode]').forEach(item => {
+          item.addEventListener('click', function () {
+
+            video.classList.remove('fit-contain','fit-cover','fit-fill','fit-none');
+
+            if (this.dataset.mode === "contain") video.classList.add('fit-contain');
+            if (this.dataset.mode === "cover")   video.classList.add('fit-cover');
+            if (this.dataset.mode === "fill")    video.classList.add('fit-fill');
+            if (this.dataset.mode === "none")    video.classList.add('fit-none');
+
+          });
+        });
+
+      }, 500);
+
+      // Fullscreen Orientation Lock
+      document.addEventListener('fullscreenchange', () => {
+        if (document.fullscreenElement) {
+          if (screen.orientation && screen.orientation.lock) {
+            screen.orientation.lock('landscape').catch(()=>{});
+          }
+        } else {
+          if (screen.orientation && screen.orientation.unlock) {
+            screen.orientation.unlock().catch(()=>{});
+          }
+        }
+      });
+
+    });
+
+  } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+    video.src = source;
+    new Plyr(video);
+  } else {
+    document.body.innerHTML = '<h2 style="color:white;text-align:center;margin-top:20%;">HLS Not Supported</h2>';
+  }
+
 });
 </script>
+
 </body>
 </html>
