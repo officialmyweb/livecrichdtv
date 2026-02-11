@@ -128,11 +128,21 @@ document.addEventListener("DOMContentLoaded", () => {
   const params = new URLSearchParams(window.location.search);
   const id = params.get("id");
 
-  if (!id || !window.streamMap || !streamMap[id]) {
-    document.body.innerHTML =
-      "<h2 style='color:white;text-align:center;margin-top:20%;'>Invalid Stream ID</h2>";
-    return;
-  }
+  if (!id) {
+  document.body.innerHTML =
+    "<h2 style='color:white;text-align:center;margin-top:20%;'>Invalid Stream ID</h2>";
+  return;
+}
+
+if (typeof streamMap === "undefined" || !streamMap[id]) {
+  setTimeout(() => {
+    if (typeof streamMap === "undefined" || !streamMap[id]) {
+      document.body.innerHTML =
+        "<h2 style='color:white;text-align:center;margin-top:20%;'>Invalid Stream ID</h2>";
+    }
+  }, 500);
+  return;
+}
 
   const source = streamMap[id].url;
   const poster = streamMap[id].poster;
