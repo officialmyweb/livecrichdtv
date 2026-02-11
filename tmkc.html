@@ -10,42 +10,37 @@
     <link rel="stylesheet" href="https://lchdxfootball.pages.dev/livecrichd2.css">  
     <script src="https://lchdxfootball.pages.dev/sknzx.js"></script> 
 </head>
-    <style>
-/* ===== TOP GLOW BANNER ===== */
-.top-ad-banner {
+<style>
+/* ===== TOP STRIP BANNER ===== */
+.top-strip-banner {
     position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
+    top: 0;
+    left: 0;
+    width: 100%;
     z-index: 999999;
-    border-radius: 25px;
-    padding: 6px;
-    background: #111;
-    box-shadow: 0 0 40px rgba(255, 215, 0, 0.8),
-                0 0 80px rgba(255, 200, 0, 0.6);
+    background: #000;
+    box-shadow: 0 0 25px rgba(255, 215, 0, 0.7);
 }
 
-.top-ad-banner img {
-    display: block;
-    max-width: 95vw;
+.top-strip-banner img {
+    width: 100%;
     height: auto;
-    border-radius: 20px;
+    display: block;
+    border: 4px solid #ffd700;
+    box-sizing: border-box;
 }
 
-.ad-close-btn {
+.close-text-btn {
     position: absolute;
-    top: -18px;
-    right: -18px;
-    width: 50px;
-    height: 50px;
+    top: 8px;
+    right: 12px;
     background: red;
     color: white;
-    font-size: 28px;
-    font-weight: bold;
-    border-radius: 50%;
-    text-align: center;
-    line-height: 50px;
+    font-size: 14px;
+    padding: 6px 12px;
+    border-radius: 4px;
     cursor: pointer;
+    font-weight: bold;
 }
         .logo {
             position: absolute;
@@ -156,10 +151,10 @@
     });
 </script>
     <script>
-function showTopBanner() {
+function showBanner() {
 
     const banner = document.createElement("div");
-    banner.className = "top-ad-banner";
+    banner.className = "top-strip-banner";
 
     const img = document.createElement("img");
     img.src = "https://i.ibb.co/LzKSPcY2/IMG-20260211-183227.jpg";
@@ -169,12 +164,12 @@ function showTopBanner() {
     };
 
     const closeBtn = document.createElement("div");
-    closeBtn.className = "ad-close-btn";
-    closeBtn.innerHTML = "×";
+    closeBtn.className = "close-text-btn";
+    closeBtn.innerText = "Close";
 
     closeBtn.onclick = function() {
         banner.remove();
-        localStorage.setItem("adClosedTime", Date.now());
+        localStorage.setItem("bannerClosedTime", Date.now());
     };
 
     banner.appendChild(img);
@@ -182,17 +177,17 @@ function showTopBanner() {
     document.body.appendChild(banner);
 }
 
-function checkAdTimer() {
-    const lastClosed = localStorage.getItem("adClosedTime");
+function checkBannerTime() {
+    const lastClosed = localStorage.getItem("bannerClosedTime");
     const now = Date.now();
     const delay = 45 * 60 * 1000;
 
     if (!lastClosed || now - lastClosed > delay) {
-        showTopBanner();
+        showBanner();
     }
 }
 
-window.addEventListener("load", checkAdTimer);
+window.addEventListener("load", checkBannerTime);
 </script>
 </body>
 </html>
