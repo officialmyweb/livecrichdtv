@@ -30,11 +30,120 @@
     video.fit-cover   { object-fit: cover !important; }
     video.fit-fill    { object-fit: fill !important; }
     video.fit-none    { object-fit: none !important; }
+
+    :root{
+  --blue1:#0b3b8c;
+  --blue2:#072b6a;
+  --bg:#0a1733;
+  --text:#ffffff;
+  --cardBorder: rgba(30,120,255,.25);
+  --shadow: rgba(0,0,0,.25);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+  background:var(--bg);
+  color:var(--text);
+  overflow-y: auto;
+}
+.bar{max-width:980px;margin:14px auto;padding:0 12px;}
+.pill{
+  background:linear-gradient(90deg,var(--blue1),var(--blue2));
+  padding:12px;border-radius:12px;
+  text-align:center;font-weight:800;
+  box-shadow:0 8px 20px var(--shadow);
+}
+.panel{
+  background:#000;border-radius:6px;
+  margin:12px 0;overflow:hidden;
+  border:3px solid var(--cardBorder);
+}
+.shaka-video{width:100%;aspect-ratio:16/9;background:#000}
+.section{
+  background:linear-gradient(90deg,var(--blue1),var(--blue2));
+  border-radius:12px;padding:14px;margin:12px 0;
+}
+.section h3{text-align:center;margin:0 0 10px}
+.row{display:flex;justify-content:center}
+.btn{
+  padding:10px 16px;border-radius:12px;
+  border:2px solid #fff;color:#fff;
+  background:transparent;font-weight:700;
+  cursor:pointer;text-decoration:none;
+  display:inline-flex;align-items:center;gap:8px;
+}
+.btn img{width:20px}
+
+.promo-card{
+  display:block;margin:16px 0;
+  border-radius:12px;overflow:hidden;
+  border:2px solid #ffd700;
+  box-shadow:0 0 15px rgba(255,215,0,.3);
+  text-decoration:none;
+}
+.promo-card img{width:100%;display:block}
+.promo-text-area{
+  background:linear-gradient(90deg,#ffae00,#ffcc00);
+  text-align:center;padding:12px;
+  font-weight:900;color:#000;
+}
+
+.shaka-settings-menu {
+  max-height: 220px !important;   
+  overflow-y: auto !important;    
+  -webkit-overflow-scrolling: touch; 
+}
+  
+.shaka-settings-menu button {
+  padding: 8px 12px;
+}
   </style>
 </head>
 
 <body>
+<div class="bar">
+  <div class="pill">ÊŸÉªá´ á´‡ á´„Ê€Éªá´„ Êœá´…</div>
 
+  <div class="panel">
+    <div data-shaka-player-container>
+      <video
+        id="video"
+        class="shaka-video"
+        autoplay
+        muted
+        playsinline
+        data-shaka-player
+        poster="#">
+      </video>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>ðŸ“£ Follow Us For More Updates</h3>
+    <div class="row">
+      <a class="btn" href="https://telegram.me/livecrichdofficial" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg">
+       Click Here To Join Telegram Channel
+      </a>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>Copy Link & Open in Chrome Only</h3>
+    <div class="row">
+      <button class="btn" onclick="navigator.share({url:location.href})">
+        Click Here To Share This Page âœ¨
+      </button>
+    </div>
+  </div>
+
+  <a class="promo-card" href="https://winstrike365.com" target="_blank">
+    <img src="https://i.ibb.co/HL6BMfCB/IMG-20260129-215157.jpg">
+    <div class="promo-text-area">MAKE ID NOW</div>
+  </a>
+</div>
+  
 <video id="player" autoplay muted controls crossorigin playsinline></video>
 
 <script src="https://lchdxfootball.pages.dev/premium.js"></script>
