@@ -132,7 +132,7 @@ body{
   </div>
 
   <div class="section">
-    <h3>📣 Follow Us For More Updates</h3>
+    <h3>📣 Follow Us For More Update!</h3>
     <div class="row">
       <a class="btn" href="https://telegram.me/livecrichdofficial" target="_blank">
         <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg">
@@ -159,9 +159,7 @@ body{
 <script>
 const allowedDomain = "livecrichdtv.pages.dev";
 
-if (window.top !== window.self || location.hostname !== allowedDomain) {
-  location.href = "https://telegram.me/livecrichdofficial";
-}
+if (window.top !== window.self || location.hostname !== allowedDomain) {location.href = "https://telegram.me/livecrichdofficial";}
 
 if (confirm("Join Our Telegram Channel @livecrichdofficial")) { window.location.href = "https://telegram.me/livecrichdofficial"; }
   
@@ -202,7 +200,6 @@ async function initPlayer() {
     ]
   });
 
-  // Create Screen Mode Menu Button
 const overflowMenu = document.querySelector('.shaka-overflow-menu');
 
 if (overflowMenu) {
@@ -216,7 +213,7 @@ if (overflowMenu) {
 
   overflowMenu.appendChild(button);
 
-  let mode = 0; // 0=contain,1=cover,2=fill
+  let mode = 0; 
 
   button.addEventListener('click', () => {
 
