@@ -11,6 +11,57 @@
     <script src="https://lchdxfootball.pages.dev/sknzx.js"></script> 
 </head>
     <style>
+        
+/* ===== Top Neon Banner ===== */
+.top-banner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 70px;
+    background: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    box-shadow: 0 0 10px #00ffff,
+                0 0 20px #00ffff,
+                0 0 30px #00ffff;
+    animation: neonGlow 1.5s infinite alternate;
+}
+
+@keyframes neonGlow {
+    from {
+        box-shadow: 0 0 5px #00ffff,
+                    0 0 10px #00ffff;
+    }
+    to {
+        box-shadow: 0 0 20px #00ffff,
+                    0 0 40px #00ffff;
+    }
+}
+
+.top-banner img {
+    height: 100%;
+    cursor: pointer;
+}
+
+.close-banner {
+    position: absolute;
+    right: 10px;
+    top: 5px;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    background: red;
+    padding: 2px 8px;
+    border-radius: 50%;
+}
+
+/* Push video down so banner doesn't cover */
+#player-container {
+    margin-top: 70px;
+}
         .logo {
             position: absolute;
             top: 8px;
@@ -118,6 +169,44 @@
         initPlayer();
         configureDRMAndAddLogo();
     });
+</script>
+    <script>
+// ===== Banner Logic =====
+function createBanner() {
+    const banner = document.createElement("div");
+    banner.className = "top-banner";
+
+    const img = document.createElement("img");
+    img.src = "https://i.ibb.co/LzKSPcY2/IMG-20260211-183227.jpg";
+    img.onclick = function() {
+        window.open("https://telegram.me/livecrichdofficial", "_blank");
+    };
+
+    const closeBtn = document.createElement("div");
+    closeBtn.className = "close-banner";
+    closeBtn.innerHTML = "×";
+    closeBtn.onclick = function() {
+        banner.remove();
+        localStorage.setItem("bannerClosedTime", Date.now());
+    };
+
+    banner.appendChild(img);
+    banner.appendChild(closeBtn);
+    document.body.appendChild(banner);
+}
+
+// Show banner if 45 minutes passed
+function checkBanner() {
+    const lastClosed = localStorage.getItem("bannerClosedTime");
+    const now = Date.now();
+    const fortyFiveMinutes = 45 * 60 * 1000;
+
+    if (!lastClosed || now - lastClosed > fortyFiveMinutes) {
+        createBanner();
+    }
+}
+
+window.addEventListener("load", checkBanner);
 </script>
 </body>
 </html>
