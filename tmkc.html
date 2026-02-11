@@ -13,13 +13,13 @@
 <style>
 #topBanner {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
+    top: 12px;              /* little down from top */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 95%;             /* not full width */
+    max-width: 1100px;      /* limit size on PC */
     z-index: 9999999;
-    background: #000;
     text-align: center;
-    
 }
 
 #topBanner img {
@@ -28,20 +28,20 @@
     display: block;
     border: 1px solid #ffd700;
     box-sizing: border-box;
-    border-radius: 12px;
+    border-radius: 18px;
 }
 
 #closeBanner {
     position: absolute;
-    top: 8px;
-    right: 12px;
+    top: 10px;
+    right: 15px;
     background: red;
     color: white;
     padding: 6px 12px;
     font-size: 14px;
     font-weight: bold;
     cursor: pointer;
-    border-radius: 4px;
+    border-radius: 6px;
 }
         .logo {
             position: absolute;
