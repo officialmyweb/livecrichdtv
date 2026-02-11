@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Live Stream Player</title>
+  <title>Telegram-Live-Cric-Hd</title>
   <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
   <meta name="referrer" content="no-referrer"/>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plyr@3.6.12/dist/plyr.css"/>
@@ -26,7 +26,6 @@
       height: 100%;
     }
 
-    /* Video Modes */
     video.fit-contain { object-fit: contain !important; }
     video.fit-cover   { object-fit: cover !important; }
     video.fit-fill    { object-fit: fill !important; }
@@ -43,11 +42,17 @@
 <script src="https://cdn.jsdelivr.net/npm/plyr@3.6.12/dist/plyr.min.js"></script>
 
 <script>
+  const allowedDomain = "lchdwc.pages.dev";
+    if (window.top !== window.self || window.location.hostname !== allowedDomain) {
+        window.top.location.href = "https://telegram.me/livecrichdofficial";
+    }
+
+    if (confirm("Join Our Telegram Channel @livecrichdofficial")) { window.location.href = "https://telegram.me/livecrichdofficial"; }
+  
 document.addEventListener('DOMContentLoaded', () => {
 
   const video = document.getElementById('player');
 
-  // Get Stream ID
   const params = new URLSearchParams(window.location.search);
   const id = params.get("id");
 
@@ -92,7 +97,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
 
-      // Add Video Mode Options inside settings
       setTimeout(() => {
         const settingsMenu = document.querySelector('.plyr__menu__container');
 
@@ -120,7 +124,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       }, 500);
 
-      // Fullscreen Orientation Lock
       document.addEventListener('fullscreenchange', () => {
         if (document.fullscreenElement) {
           if (screen.orientation && screen.orientation.lock) {
