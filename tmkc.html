@@ -13,11 +13,10 @@
 <style>
 #topBanner {
     position: fixed;
-    top: 12px;              /* little down from top */
+    top: 12px;
     left: 50%;
     transform: translateX(-50%);
-    width: 95%;             /* not full width */
-    max-width: 1100px;      /* limit size on PC */
+    width: 95%;              /* mobile default */
     z-index: 9999999;
     text-align: center;
 }
@@ -42,6 +41,14 @@
     font-weight: bold;
     cursor: pointer;
     border-radius: 6px;
+}
+
+/* ===== PC ONLY SIZE REDUCE ===== */
+@media (min-width: 1024px) {
+    #topBanner {
+        width: 60%;        /* smaller on PC */
+        max-width: 900px;  /* limit size */
+    }
 }
         .logo {
             position: absolute;
