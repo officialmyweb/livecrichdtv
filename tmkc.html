@@ -11,56 +11,60 @@
     <script src="https://lchdxfootball.pages.dev/sknzx.js"></script> 
 </head>
     <style>
-        
-/* ===== Top Neon Banner ===== */
-.top-banner {
+/* ===== Neon Banner ===== */
+.top-banner-wrapper {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 70px;
-    background: black;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
     z-index: 9999;
-    box-shadow: 0 0 10px #00ffff,
-                0 0 20px #00ffff,
-                0 0 30px #00ffff;
-    animation: neonGlow 1.5s infinite alternate;
 }
 
-@keyframes neonGlow {
+.top-banner {
+    position: relative;
+    display: inline-block;
+    border-radius: 20px;
+    padding: 6px;
+    background: linear-gradient(45deg, #ffd700, #ffcc00);
+    animation: neonPulse 1.5s infinite alternate;
+}
+
+@keyframes neonPulse {
     from {
-        box-shadow: 0 0 5px #00ffff,
-                    0 0 10px #00ffff;
+        box-shadow: 0 0 10px #ffd700,
+                    0 0 20px #ffcc00,
+                    0 0 30px #ffaa00;
     }
     to {
-        box-shadow: 0 0 20px #00ffff,
-                    0 0 40px #00ffff;
+        box-shadow: 0 0 20px #ffff00,
+                    0 0 40px #ffcc00,
+                    0 0 60px #ffaa00;
     }
 }
 
 .top-banner img {
-    height: 100%;
+    display: block;
+    max-width: 95vw; /* keeps original proportion */
+    height: auto;    /* original height */
+    border-radius: 15px;
     cursor: pointer;
 }
 
 .close-banner {
     position: absolute;
-    right: 10px;
-    top: 5px;
-    color: white;
-    font-size: 20px;
-    cursor: pointer;
+    top: -10px;
+    right: -10px;
     background: red;
-    padding: 2px 8px;
+    color: white;
+    font-size: 18px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
-}
-
-/* Push video down so banner doesn't cover */
-#player-container {
-    margin-top: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-weight: bold;
 }
         .logo {
             position: absolute;
@@ -171,8 +175,12 @@
     });
 </script>
     <script>
-// ===== Banner Logic =====
+// ===== Neon Banner Logic =====
 function createBanner() {
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "top-banner-wrapper";
+
     const banner = document.createElement("div");
     banner.className = "top-banner";
 
@@ -186,16 +194,17 @@ function createBanner() {
     closeBtn.className = "close-banner";
     closeBtn.innerHTML = "×";
     closeBtn.onclick = function() {
-        banner.remove();
+        wrapper.remove();
         localStorage.setItem("bannerClosedTime", Date.now());
     };
 
     banner.appendChild(img);
     banner.appendChild(closeBtn);
-    document.body.appendChild(banner);
+    wrapper.appendChild(banner);
+    document.body.appendChild(wrapper);
 }
 
-// Show banner if 45 minutes passed
+// Show banner every 45 minutes
 function checkBanner() {
     const lastClosed = localStorage.getItem("bannerClosedTime");
     const now = Date.now();
