@@ -11,18 +11,18 @@
     <script src="https://lchdxfootball.pages.dev/sknzx.js"></script> 
 </head>
 <style>
-/* ===== TOP STRIP BANNER ===== */
-.top-strip-banner {
+#topBanner {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    z-index: 999999;
+    z-index: 9999999;
     background: #000;
-    box-shadow: 0 0 25px rgba(255, 215, 0, 0.7);
+    text-align: center;
+    box-shadow: 0 0 25px rgba(255,215,0,0.8);
 }
 
-.top-strip-banner img {
+#topBanner img {
     width: 100%;
     height: auto;
     display: block;
@@ -30,17 +30,17 @@
     box-sizing: border-box;
 }
 
-.close-text-btn {
+#closeBanner {
     position: absolute;
     top: 8px;
     right: 12px;
     background: red;
     color: white;
-    font-size: 14px;
     padding: 6px 12px;
-    border-radius: 4px;
-    cursor: pointer;
+    font-size: 14px;
     font-weight: bold;
+    cursor: pointer;
+    border-radius: 4px;
 }
         .logo {
             position: absolute;
@@ -151,43 +151,30 @@
     });
 </script>
     <script>
-function showBanner() {
+document.addEventListener("DOMContentLoaded", function () {
 
     const banner = document.createElement("div");
-    banner.className = "top-strip-banner";
+    banner.id = "topBanner";
 
     const img = document.createElement("img");
     img.src = "https://i.ibb.co/LzKSPcY2/IMG-20260211-183227.jpg";
-
-    img.onclick = function() {
+    img.onclick = function () {
         window.open("https://telegram.me/livecrichdofficial", "_blank");
     };
 
     const closeBtn = document.createElement("div");
-    closeBtn.className = "close-text-btn";
+    closeBtn.id = "closeBanner";
     closeBtn.innerText = "Close";
 
-    closeBtn.onclick = function() {
+    closeBtn.onclick = function () {
         banner.remove();
-        localStorage.setItem("bannerClosedTime", Date.now());
     };
 
     banner.appendChild(img);
     banner.appendChild(closeBtn);
     document.body.appendChild(banner);
-}
 
-function checkBannerTime() {
-    const lastClosed = localStorage.getItem("bannerClosedTime");
-    const now = Date.now();
-    const delay = 45 * 60 * 1000;
-
-    if (!lastClosed || now - lastClosed > delay) {
-        showBanner();
-    }
-}
-
-window.addEventListener("load", checkBannerTime);
+});
 </script>
 </body>
 </html>
