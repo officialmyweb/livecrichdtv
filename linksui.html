@@ -129,104 +129,107 @@ document.addEventListener("DOMContentLoaded", () => {
   const id = params.get("id");
 
   if (!id) {
-  document.body.innerHTML =
-    "<h2 style='color:white;text-align:center;margin-top:20%;'>Invalid Stream ID</h2>";
-  return;
-}
-
-if (typeof streamMap === "undefined" || !streamMap[id]) {
-  setTimeout(() => {
-    if (typeof streamMap === "undefined" || !streamMap[id]) {
-      document.body.innerHTML =
-        "<h2 style='color:white;text-align:center;margin-top:20%;'>Invalid Stream ID</h2>";
-    }
-  }, 500);
-  return;
-}
-
-  const source = streamMap[id].url;
-  const poster = streamMap[id].poster;
-  if (poster) video.poster = poster;
-
-  if (Hls.isSupported()) {
-
-    const hls = new Hls({
-      maxBufferLength: 20,
-      maxMaxBufferLength: 40,
-      liveSyncDurationCount: 3,
-      enableWorker: true,
-      lowLatencyMode: true
-    });
-
-    hls.loadSource(source);
-    hls.attachMedia(video);
-
-    hls.on(Hls.Events.MANIFEST_PARSED, () => {
-
-  const qualities = hls.levels.map(l => l.height);
-  const defaultQuality = qualities[qualities.length - 1];
-
-  const player = new Plyr(video, {
-    controls: ["play-large","play","mute","volume","settings","fullscreen"],
-    settings: ["quality","speed"],
-    quality: {
-      default: defaultQuality,
-      options: qualities,
-      forced: true,
-      onChange: q => {
-        hls.levels.forEach((l,i)=>{
-          if(l.height===q) hls.currentLevel=i;
-        });
-      }
-    }
-  });
-
-  player.on("ready", () => {
-
-    const settingsMenu = document.querySelector(".plyr__menu__container");
-    if (!settingsMenu) return;
-
-    const modeHTML = `
-      <div class="plyr__menu__label">Screen Mode</div>
-      <button type="button" class="plyr__control" data-mode="contain">Normal Screen</button>
-      <button type="button" class="plyr__control" data-mode="cover">Full Screen</button>
-      <button type="button" class="plyr__control" data-mode="fill">Fit Screen</button>
-      <button type="button" class="plyr__control" data-mode="none">Zoom Screen</button>
-    `;
-
-    settingsMenu.insertAdjacentHTML("beforeend", modeHTML);
-
-    document.querySelectorAll("[data-mode]").forEach(btn => {
-      btn.addEventListener("click", function () {
-        video.classList.remove("fit-contain","fit-cover","fit-fill","fit-none");
-        video.classList.add("fit-" + this.dataset.mode);
-      });
-    });
-
-  });
-
-});
-
-      document.addEventListener("fullscreenchange", () => {
-        if (document.fullscreenElement) {
-          screen.orientation?.lock?.("landscape").catch(()=>{});
-        } else {
-          screen.orientation?.unlock?.().catch(()=>{});
-        }
-      });
-
-    });
-
-  } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
-    video.src = source;
-    new Plyr(video);
-  } else {
     document.body.innerHTML =
-      '<h2 style="color:white;text-align:center;margin-top:20%;">HLS Not Supported</h2>';
+      "<h2 style='color:white;text-align:center;margin-top:20%;'>Invalid Stream ID</h2>";
+    return;
   }
+
+  function waitForStream(callback){
+    if (typeof streamMap !== "undefined" && streamMap[id]) {
+      callback();
+    } else {
+      setTimeout(() => waitForStream(callback), 100);
+    }
+  }
+
+  waitForStream(() => {
+
+    const source = streamMap[id].url;
+    const poster = streamMap[id].poster;
+    if (poster) video.poster = poster;
+
+    if (Hls.isSupported()) {
+
+      const hls = new Hls({
+        maxBufferLength: 20,
+        maxMaxBufferLength: 40,
+        liveSyncDurationCount: 3,
+        enableWorker: true,
+        lowLatencyMode: true
+      });
+
+      hls.loadSource(source);
+      hls.attachMedia(video);
+
+      hls.on(Hls.Events.MANIFEST_PARSED, () => {
+
+        const qualities = hls.levels.map(l => l.height);
+        const defaultQuality = qualities[qualities.length - 1];
+
+        const player = new Plyr(video, {
+          controls: ["play-large","play","mute","volume","settings","fullscreen"],
+          settings: ["quality","speed"],
+          quality: {
+            default: defaultQuality,
+            options: qualities,
+            forced: true,
+            onChange: q => {
+              hls.levels.forEach((l,i)=>{
+                if(l.height === q) hls.currentLevel = i;
+              });
+            }
+          }
+        });
+
+        player.on("ready", () => {
+
+          const settingsMenu = document.querySelector(".plyr__menu__container");
+          if (!settingsMenu) return;
+
+          const modeHTML = `
+            <div class="plyr__menu__label">Screen Mode</div>
+            <button type="button" class="plyr__control" data-mode="contain">Normal Screen</button>
+            <button type="button" class="plyr__control" data-mode="cover">Full Screen</button>
+            <button type="button" class="plyr__control" data-mode="fill">Fit Screen</button>
+            <button type="button" class="plyr__control" data-mode="none">Zoom Screen</button>
+          `;
+
+          settingsMenu.insertAdjacentHTML("beforeend", modeHTML);
+
+          document.querySelectorAll("[data-mode]").forEach(btn => {
+            btn.addEventListener("click", function () {
+              video.classList.remove("fit-contain","fit-cover","fit-fill","fit-none");
+              video.classList.add("fit-" + this.dataset.mode);
+            });
+          });
+
+        });
+
+      });
+
+    } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+
+      video.src = source;
+      new Plyr(video);
+
+    } else {
+
+      document.body.innerHTML =
+        '<h2 style="color:white;text-align:center;margin-top:20%;">HLS Not Supported</h2>';
+
+    }
+
+  });
+
+  document.addEventListener("fullscreenchange", () => {
+    if (document.fullscreenElement) {
+      screen.orientation?.lock?.("landscape").catch(()=>{});
+    } else {
+      screen.orientation?.unlock?.().catch(()=>{});
+    }
+  });
 
 });
 </script>
-
 </body>
 </html>
