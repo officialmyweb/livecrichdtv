@@ -6,125 +6,91 @@
   <meta name="referrer" content="no-referrer"/>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plyr@3.6.12/dist/plyr.css"/>
 
-  <style>
-    body {
-      background-color: #000;
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-    }
-    html, body {
-      height: 100%;
-    }
-    video {
-      width: 100%;
-      height: 100%;
-      max-width: 100%;
-      object-fit: contain;
-    }
-    .plyr {
-      height: 100%;
-    }
-
-    video.fit-contain { object-fit: contain !important; }
-    video.fit-cover   { object-fit: cover !important; }
-    video.fit-fill    { object-fit: fill !important; }
-    video.fit-none    { object-fit: none !important; }
-
-    :root{
-  --blue1:#0b3b8c;
-  --blue2:#072b6a;
-  --bg:#0a1733;
-  --text:#ffffff;
-  --cardBorder: rgba(30,120,255,.25);
-  --shadow: rgba(0,0,0,.25);
-}
-*{box-sizing:border-box}
+<style>
 body{
   margin:0;
   font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
-  background:var(--bg);
-  color:var(--text);
-  overflow-y: auto;
+  background:#000;
+  color:#fff;
 }
+
 .bar{max-width:980px;margin:14px auto;padding:0 12px;}
+
 .pill{
-  background:linear-gradient(90deg,var(--blue1),var(--blue2));
+  background:linear-gradient(90deg,#0b3b8c,#072b6a);
   padding:12px;border-radius:12px;
   text-align:center;font-weight:800;
-  box-shadow:0 8px 20px var(--shadow);
 }
+
 .panel{
   background:#000;border-radius:6px;
   margin:12px 0;overflow:hidden;
-  border:3px solid var(--cardBorder);
+  border:2px solid rgba(30,120,255,.3);
 }
-.shaka-video{width:100%;aspect-ratio:16/9;background:#000}
+
+video{
+  width:100%;
+  height:auto;
+  aspect-ratio:16/9;
+  background:#000;
+  object-fit:contain;
+}
+
+video.fit-contain{object-fit:contain!important;}
+video.fit-cover{object-fit:cover!important;}
+video.fit-fill{object-fit:fill!important;}
+video.fit-none{object-fit:none!important;}
+
 .section{
-  background:linear-gradient(90deg,var(--blue1),var(--blue2));
+  background:linear-gradient(90deg,#0b3b8c,#072b6a);
   border-radius:12px;padding:14px;margin:12px 0;
 }
-.section h3{text-align:center;margin:0 0 10px}
-.row{display:flex;justify-content:center}
+
+.section h3{text-align:center;margin:0 0 10px;}
+
+.row{display:flex;justify-content:center;}
+
 .btn{
   padding:10px 16px;border-radius:12px;
   border:2px solid #fff;color:#fff;
   background:transparent;font-weight:700;
   cursor:pointer;text-decoration:none;
-  display:inline-flex;align-items:center;gap:8px;
 }
-.btn img{width:20px}
+
+.btn img{width:20px;margin-right:6px;}
 
 .promo-card{
   display:block;margin:16px 0;
   border-radius:12px;overflow:hidden;
-  border:2px solid #ffd700;
-  box-shadow:0 0 15px rgba(255,215,0,.3);
+  border:2px solid gold;
   text-decoration:none;
 }
-.promo-card img{width:100%;display:block}
+
+.promo-card img{width:100%;display:block;}
+
 .promo-text-area{
   background:linear-gradient(90deg,#ffae00,#ffcc00);
   text-align:center;padding:12px;
   font-weight:900;color:#000;
 }
-
-.shaka-settings-menu {
-  max-height: 220px !important;   
-  overflow-y: auto !important;    
-  -webkit-overflow-scrolling: touch; 
-}
-  
-.shaka-settings-menu button {
-  padding: 8px 12px;
-}
-  </style>
+</style>
 </head>
 
 <body>
+
 <div class="bar">
-  <div class="pill">ÊŸÉªá´ á´‡ á´„Ê€Éªá´„ Êœá´…</div>
+
+  <div class="pill">Live Cric HD</div>
 
   <div class="panel">
-    <div data-shaka-player-container>
-      <video
-        id="video"
-        class="shaka-video"
-        autoplay
-        muted
-        playsinline
-        data-shaka-player
-        poster="#">
-      </video>
-    </div>
+    <video id="player" autoplay muted controls playsinline></video>
   </div>
 
   <div class="section">
-    <h3>ðŸ“£ Follow Us For More Updates</h3>
+    <h3>📣 Follow Us For More Updates</h3>
     <div class="row">
       <a class="btn" href="https://telegram.me/livecrichdofficial" target="_blank">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg">
-       Click Here To Join Telegram Channel
+        Join Telegram Channel
       </a>
     </div>
   </div>
@@ -132,8 +98,8 @@ body{
   <div class="section">
     <h3>Copy Link & Open in Chrome Only</h3>
     <div class="row">
-      <button class="btn" onclick="navigator.share({url:location.href})">
-        Click Here To Share This Page âœ¨
+      <button class="btn" onclick="navigator.share && navigator.share({url:location.href})">
+        Share This Page ✨
       </button>
     </div>
   </div>
@@ -142,115 +108,85 @@ body{
     <img src="https://i.ibb.co/HL6BMfCB/IMG-20260129-215157.jpg">
     <div class="promo-text-area">MAKE ID NOW</div>
   </a>
+
 </div>
-  
-<video id="player" autoplay muted controls crossorigin playsinline></video>
 
 <script src="https://lchdxfootball.pages.dev/premium.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.1.4/dist/hls.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/plyr@3.6.12/dist/plyr.min.js"></script>
 
 <script>
-  const allowedDomain = "livecrichdtv.pages.dev if (window.top !== window.self || window.location.hostname !== allowedDomain) {
-        window.top.location.href = "https://telegram.me/livecrichdofficial";
-    }
+const allowedDomain = "livecrichdtv.pages.dev";
 
-    if (confirm("Join Our Telegram Channel @livecrichdofficial")) { window.location.href = "https://telegram.me/livecrichdofficial"; }
-  
-document.addEventListener('DOMContentLoaded', () => {
+if (window.top !== window.self || window.location.hostname !== allowedDomain) {
+  window.top.location.href = "https://telegram.me/livecrichdofficial";
+}
 
-  const video = document.getElementById('player');
+document.addEventListener("DOMContentLoaded", () => {
 
+  const video = document.getElementById("player");
   const params = new URLSearchParams(window.location.search);
   const id = params.get("id");
 
-  if (!id || !streamMap[id]) {
-    document.body.innerHTML = "<h2 style='color:white;text-align:center;margin-top:20%;'>Invalid Stream ID</h2>";
+  if (!id || !window.streamMap || !streamMap[id]) {
+    document.body.innerHTML =
+      "<h2 style='color:white;text-align:center;margin-top:20%;'>Invalid Stream ID</h2>";
     return;
   }
 
   const source = streamMap[id].url;
   const poster = streamMap[id].poster;
-
-  if (poster) {
-    video.setAttribute("poster", poster);
-  }
+  if (poster) video.poster = poster;
 
   if (Hls.isSupported()) {
 
-    const hls = new Hls({ maxMaxBufferLength: 100 });
+    const hls = new Hls({
+      maxBufferLength: 20,
+      maxMaxBufferLength: 40,
+      liveSyncDurationCount: 3,
+      enableWorker: true,
+      lowLatencyMode: true
+    });
 
     hls.loadSource(source);
     hls.attachMedia(video);
 
     hls.on(Hls.Events.MANIFEST_PARSED, () => {
 
-      const availableQualities = hls.levels.map(level => level.height);
-      const defaultQuality = availableQualities[0];
+      const qualities = hls.levels.map(l => l.height);
+      const defaultQuality = qualities[qualities.length - 1];
 
-      const player = new Plyr(video, {
-        controls: ['play-large', 'play', 'mute', 'volume', 'settings', 'fullscreen'],
-        settings: ['quality', 'speed'],
+      new Plyr(video, {
+        controls: ["play-large","play","mute","volume","settings","fullscreen"],
+        settings: ["quality","speed"],
         quality: {
           default: defaultQuality,
-          options: availableQualities,
+          options: qualities,
           forced: true,
-          onChange: (quality) => {
-            hls.levels.forEach((level, levelIndex) => {
-              if (level.height === quality) {
-                hls.currentLevel = levelIndex;
-              }
+          onChange: q => {
+            hls.levels.forEach((l,i)=>{
+              if(l.height===q) hls.currentLevel=i;
             });
           }
         }
       });
 
-      setTimeout(() => {
-        const settingsMenu = document.querySelector('.plyr__menu__container');
-
-        const modeHTML = `
-          <div class="plyr__control" data-mode="contain">Normal Screen</div>
-          <div class="plyr__control" data-mode="cover">Full Screen</div>
-          <div class="plyr__control" data-mode="fill">Fit Screen</div>
-          <div class="plyr__control" data-mode="none">Zoom Screen</div>
-        `;
-
-        settingsMenu.insertAdjacentHTML("beforeend", modeHTML);
-
-        document.querySelectorAll('[data-mode]').forEach(item => {
-          item.addEventListener('click', function () {
-
-            video.classList.remove('fit-contain','fit-cover','fit-fill','fit-none');
-
-            if (this.dataset.mode === "contain") video.classList.add('fit-contain');
-            if (this.dataset.mode === "cover")   video.classList.add('fit-cover');
-            if (this.dataset.mode === "fill")    video.classList.add('fit-fill');
-            if (this.dataset.mode === "none")    video.classList.add('fit-none');
-
-          });
-        });
-
-      }, 500);
-
-      document.addEventListener('fullscreenchange', () => {
+      document.addEventListener("fullscreenchange", () => {
         if (document.fullscreenElement) {
-          if (screen.orientation && screen.orientation.lock) {
-            screen.orientation.lock('landscape').catch(()=>{});
-          }
+          screen.orientation?.lock?.("landscape").catch(()=>{});
         } else {
-          if (screen.orientation && screen.orientation.unlock) {
-            screen.orientation.unlock().catch(()=>{});
-          }
+          screen.orientation?.unlock?.().catch(()=>{});
         }
       });
 
     });
 
-  } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+  } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
     video.src = source;
     new Plyr(video);
   } else {
-    document.body.innerHTML = '<h2 style="color:white;text-align:center;margin-top:20%;">HLS Not Supported</h2>';
+    document.body.innerHTML =
+      '<h2 style="color:white;text-align:center;margin-top:20%;">HLS Not Supported</h2>';
   }
 
 });
