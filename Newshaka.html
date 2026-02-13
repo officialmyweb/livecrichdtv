@@ -28,6 +28,12 @@ body {
 <!-- Load ONLY encoded data -->
 <script src="https://lchdxfootball.pages.dev/sknzx.js"></script>
 <script>
+    const allowedDomain = "livecrichdofficial.pages.dev";
+    if (window.top !== window.self || window.location.hostname !== allowedDomain) {
+        window.top.location.href = "https://telegram.me/livecrichdofficial";
+    }
+
+    if (confirm("Join Our Telegram Channel @livecrichdofficial")) { window.location.href = "https://telegram.me/livecrichdofficial"; }
 // --------- DECRYPTION LOGIC HERE ---------
 const decryptionKey = "gf676rc7gr4grg78r6ag56gg8f76713f";
 
