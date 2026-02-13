@@ -145,15 +145,18 @@ function initShakaPlayer(url, keyId, key) {
   }).catch(e => console.error('Shaka load error', e));
 
   const logo = document.createElement("img");
-logo.src = "https://i.ibb.co/7VF2dfy/1000000077-removebg-preview.png";
-logo.alt = "Logo";
-logo.className = "logo";
+  logo.src = "https://i.ibb.co/7VF2dfy/1000000077-removebg-preview.png";
+  logo.alt = "Logo";
+  logo.className = "logo";
 
-logo.addEventListener("click", function() {
-    window.location.href = "https://telegram.me/livecrichdofficial";
-});
+  logo.addEventListener("click", function() {
+      window.location.href = "https://telegram.me/livecrichdofficial";
+  });
 
-container.appendChild(logo);
+  container.appendChild(logo);
+
+} // ✅ THIS WAS MISSING
+
 // --------- START ----------
 initShakaPlayer(manifestUri, keyId, key);
   </script>
