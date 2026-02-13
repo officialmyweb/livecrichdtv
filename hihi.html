@@ -27,13 +27,15 @@ body {
 <div id="player"></div>
 <!-- Load ONLY encoded data -->
 <script src="https://lchdxfootball.pages.dev/sknzx.js"></script>
+<script src="https://lchdxfootball.pages.dev/config.js"></script>
 <script>
-    const allowedDomain = "livecrichdtv.pages.dev";
-    if (window.top !== window.self || window.location.hostname !== allowedDomain) {
-        window.top.location.href = "https://telegram.me/livecrichdofficial";
-    }
+const allowedDomain = "livecrichdtv.pages.dev";
+if (window.top !== window.self || window.location.hostname !== allowedDomain) {
+    window.top.location.href = "https://telegram.me/livecrichdofficial";
+}
 
-    if (confirm("Join Our Telegram Channel @livecrichdofficial")) { window.location.href = "https://telegram.me/livecrichdofficial"; }
+if (confirm("Join Our Telegram Channel @livecrichdofficial")) {window.location.href = TELEGRAM_CONFIG.channelLink;}
+
 // --------- DECRYPTION LOGIC HERE ---------
 const decryptionKey = "gf676rc7gr4grg78r6ag56gg8f76713f";
 
@@ -58,13 +60,12 @@ const id = getURLParameter("id");
 
 if (!encodedChannelData[id]) {
     alert("Invalid ID! Redirecting...");
-    window.location.href = "https://telegram.me/livecrichdofficial";
+    window.location.href = TELEGRAM_CONFIG.channelLink;
 }
 
 // --------- DECRYPT ----------
 const selectedData = decryptBase64(encodedChannelData[id], decryptionKey);
 
-// Your real JSON structure
 const manifestUri = selectedData.ManifestURI;
 const keyId = Object.keys(selectedData.DRMKeys)[0];
 const key = selectedData.DRMKeys[keyId];
@@ -119,7 +120,7 @@ function initShakaPlayer(url, keyId, key) {
         base: 'rgba(255,255,255,0.3)',
         level: 'rgba(6,182,212,0.9)'
       }
-    };
+  };
 
   ui.configure(uiConfig);
 
@@ -127,21 +128,48 @@ function initShakaPlayer(url, keyId, key) {
     video.play().catch(e => console.error('Shaka play error', e));
   }).catch(e => console.error('Shaka load error', e));
 
+  // ✅ Replay icon fix (keep normal play button)
+  player.addEventListener('ended', function () {
+      video.currentTime = 0;
+  });
+
+  // -------- LOGO --------
   const logo = document.createElement("img");
   logo.src = "https://i.ibb.co/7VF2dfy/1000000077-removebg-preview.png";
   logo.alt = "Logo";
   logo.className = "logo";
 
   logo.addEventListener("click", function() {
-      window.location.href = "https://telegram.me/livecrichdofficial";
+      window.location.href = TELEGRAM_CONFIG.channelLink;
   });
 
   container.appendChild(logo);
 
-} // ✅ THIS WAS MISSING
+  // -------- DOUBLE TAP SKIP --------
+  let lastTap = 0;
+
+  container.addEventListener('touchend', function (e) {
+      const currentTime = new Date().getTime();
+      const tapLength = currentTime - lastTap;
+
+      if (tapLength < 300 && tapLength > 0) {
+          const rect = container.getBoundingClientRect();
+          const tapX = e.changedTouches[0].clientX - rect.left;
+
+          if (tapX < rect.width / 2) {
+              video.currentTime = Math.max(0, video.currentTime - 5);
+          } else {
+              video.currentTime = Math.min(video.duration, video.currentTime + 5);
+          }
+      }
+
+      lastTap = currentTime;
+  });
+
+}
 
 // --------- START ----------
-initShakaPlayer(manifestUri, keyId, key);
-  </script>
+initShakaPlayer(manifestUri, keyId, key);    
+</script>
 </body>
 </html>
