@@ -144,13 +144,16 @@ function initShakaPlayer(url, keyId, key) {
     video.play().catch(e => console.error('Shaka play error', e));
   }).catch(e => console.error('Shaka load error', e));
 
-  const logo = document.createElement('img');
-  logo.className = 'shaka-logo';
-  logo.alt = 'WinStrike logo';
-  logo.src = 'https://i.ibb.co/7VF2dfy/1000000077-removebg-preview.png';
-  container.appendChild(logo);
-}
+  const logo = document.createElement("img");
+logo.src = "https://i.ibb.co/7VF2dfy/1000000077-removebg-preview.png";
+logo.alt = "Logo";
+logo.className = "logo";
 
+logo.addEventListener("click", function() {
+    window.location.href = "https://telegram.me/livecrichdofficial";
+});
+
+container.appendChild(logo);
 // --------- START ----------
 initShakaPlayer(manifestUri, keyId, key);
   </script>
