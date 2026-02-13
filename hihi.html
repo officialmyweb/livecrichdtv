@@ -124,14 +124,7 @@ function initShakaPlayer(url, keyId, key) {
 
   ui.configure(uiConfig);
 
-  player.load(url).then(() => {
-    video.play().catch(e => console.error('Shaka play error', e));
-  }).catch(e => console.error('Shaka load error', e));
-
-  // ✅ Replay icon fix (keep normal play button)
-  player.addEventListener('ended', function () {
-      video.currentTime = 0;
-  });
+player.load(url).catch(e => console.error('Shaka load error', e));
 
   // -------- LOGO --------
   const logo = document.createElement("img");
