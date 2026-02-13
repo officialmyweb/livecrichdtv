@@ -100,8 +100,10 @@ function initShakaPlayer(url, keyId, key) {
   video.style.width = '100%';
   video.style.height = '100%';
   video.setAttribute('playsinline', '');
+  video.setAttribute('controls', '');
   video.setAttribute('autoplay', '');
   video.muted = true;
+  video.controls = false;
 
   container.appendChild(video);
 
@@ -138,12 +140,12 @@ function initShakaPlayer(url, keyId, key) {
         base: 'rgba(255,255,255,0.3)',
         level: 'rgba(6,182,212,0.9)'
       }
-  };
+    };
 
   ui.configure(uiConfig);
 
   player.load(url).then(() => {
-    video.play().catch(e => console.log("Autoplay blocked"));
+    video.play().catch(e => console.error('Shaka play error', e));
   }).catch(e => console.error('Shaka load error', e));
 
   const logo = document.createElement('img');
@@ -152,6 +154,9 @@ function initShakaPlayer(url, keyId, key) {
   logo.src = 'https://d1gvwx1uptx1i3.cloudfront.net/khelocdn/public/assets/general_setting/winstrike/logo.png';
   container.appendChild(logo);
 }
+
+// --------- START ----------
+initShakaPlayer(manifestUri, keyId, key);
   </script>
 </body>
 </html>
