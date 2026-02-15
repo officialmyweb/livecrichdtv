@@ -8,30 +8,23 @@
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/plyr@3.7.8/dist/plyr.polyfilled.js"></script>
     <style>
-        html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    width: 100%;
-    background: #000;
-    overflow: hidden;
-}
-
-.video-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: #000;
-}
-
-video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;   
-    background: #000;
-}
+        body {
+        background-color: #000000;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+      html, body {
+        height: 100%;
+      }
+      video {
+        width: 100%;
+        height: 100%;
+        max-width: 100%;
+      }
+      .plyr {
+        height: 100%;
+      }
     </style>
 </head>
     
