@@ -3,6 +3,7 @@
 <head>
   <title>Live Stream</title>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <meta name="referrer" content="no-referrer"/>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plyr@3.6.12/dist/plyr.css"/>
   <style>
     body { margin:0; background:#000; height:100vh; }
@@ -13,37 +14,61 @@
 
 <video id="player" autoplay muted controls playsinline></video>
 
-<script src="https://cdn.jsdelivr.net/npm/hls.js@1.1.4/dist/hls.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 <script src="https://cdn.jsdelivr.net/npm/plyr@3.6.12/dist/plyr.min.js"></script>
 
 <script>
 document.addEventListener('DOMContentLoaded', async () => {
 
   const video = document.getElementById('player');
+  let hls;
 
   async function getSecureUrl() {
-    const res = await fetch("https://manitssky.xojiv79335.workers.dev/token");
+    const res = await fetch("https://rapid-wind-5c1d.xojiv79335.workers.dev/token");
     const data = await res.json();
-    return "https://manitssky.xojiv79335.workers.dev" + data.url;
+    return "https://rapid-wind-5c1d.xojiv79335.workers.dev" + data.url;
   }
 
-  const source = await getSecureUrl();
+  async function startStream() {
 
-  if (Hls.isSupported()) {
-    const hls = new Hls();
-    hls.loadSource(source);
-    hls.attachMedia(video);
+    const source = await getSecureUrl();
 
-    hls.on(Hls.Events.MANIFEST_PARSED, () => {
-      new Plyr(video);
-    });
+    if (Hls.isSupported()) {
 
-    // refresh token every 4 min
-    setInterval(async () => {
-      const newSource = await getSecureUrl();
-      hls.loadSource(newSource);
-    }, 240000);
+      if (hls) {
+        hls.destroy(); // destroy old instance before reload
+      }
+
+      hls = new Hls({
+        liveSyncDurationCount: 3,
+        maxBufferLength: 30
+      });
+
+      hls.loadSource(source);
+      hls.attachMedia(video);
+
+      hls.on(Hls.Events.MANIFEST_PARSED, function() {
+        new Plyr(video);
+        video.play().catch(() => {});
+      });
+
+      hls.on(Hls.Events.ERROR, function(event, data) {
+        console.log("HLS Error:", data);
+      });
+
+    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      video.src = source;
+      video.play();
+    }
   }
+
+  await startStream();
+
+  // 🔄 Refresh token every 4 minutes safely
+  setInterval(async () => {
+    await startStream();
+  }, 240000);
+
 });
 </script>
 
