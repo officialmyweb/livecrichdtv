@@ -1,105 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Live Stream Player</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Player</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plyr@3.7.8/dist/plyr.css">
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/plyr@3.7.8/dist/plyr.polyfilled.js"></script>
+  <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <meta name="referrer" content="origin">
-
-  <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/plyr@3.6.12/dist/plyr.css"/>
-
-  <style>
-    body {
-      margin: 0;
-      background: #000;
-      height: 100vh;
-      overflow: hidden;
-    }
-    video {
-      width: 100%;
-      height: 100%;
-    }
-    .plyr {
-      height: 100%;
-    }
-  </style>
-</head>
-<body>
-
-<video id="player"
-       autoplay
-       muted
-       controls
-       playsinline
-       crossorigin></video>
-
-<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-<script src="https://cdn.jsdelivr.net/npm/plyr@3.6.12/dist/plyr.min.js"></script>
-
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-
-  const video = document.getElementById("player");
-
-  const streamUrl =
-    "https://media.onestream.live/mumbai-1/content/hls/live_4909699.m3u8?auth=p_49096999_y2k721z_z2xc5h51h";
-
-  if (Hls.isSupported()) {
-
-    const hls = new Hls({
-      maxBufferLength: 30,
-
-      xhrSetup: function (xhr, url) {
-
-        // Allowed custom headers (if CORS allows)
-        xhr.setRequestHeader("Referer", "https://ap.lbstsirp");
-        xhr.setRequestHeader("X-Origin-Header", "south-asia");
-        xhr.setRequestHeader("vKey", "auth_4909699");
-
-        // These are protected headers (browser ignores override)
-        try {
-          xhr.setRequestHeader("Origin", "https://ap.lbstsirp");
-          xhr.setRequestHeader("User-Agent",
-            "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Mobile Safari/537.36"
-          );
-        } catch (e) {
-          console.log("Some headers cannot be modified.");
+  gtag('config', 'G-FMP9REY96D');
+</script>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-      }
-    });
+        .video-container {
+            position: relative;
+            width: 110%;
+            height: 100%;
+            background: #000;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-    hls.loadSource(streamUrl);
-    hls.attachMedia(video);
+        video {
+            width: 110%;
+            max-height: 100%;
+            object-fit: contain;
+            background: #000;
+        }
+    </style>
+</head>
+    
+    <body>
+    <div class="video-container">
+        <video autoplay="yes" oncanplay="this.muted=true" id="player" controls preload="metadata" poster="https://www.deccanchronicle.com/h-upload/2024/05/24/1092312-untitleddesign.webp"></video>
+    </div>
 
-    hls.on(Hls.Events.MANIFEST_PARSED, function () {
-      video.play().catch(err => console.log("Autoplay blocked:", err));
-    });
-
-    hls.on(Hls.Events.ERROR, function (event, data) {
-      console.log("HLS Error:", data);
-    });
-
-  } 
-  else if (video.canPlayType("application/vnd.apple.mpegurl")) {
-
-    video.src = streamUrl;
-
-    video.addEventListener("loadedmetadata", function () {
-      video.play();
-    });
-
-  } 
-  else {
-    document.body.innerHTML =
-      "<p style='color:white;text-align:center'>Your browser does not support HLS playback.</p>";
-  }
-
-  new Plyr(video);
-
-});
-</script>
+    <script>
+function _0x2567(_0x545c30,_0x1e0861){_0x545c30=_0x545c30-(-0x1*-0x12b7+-0xb5*0xd+-0x86d);const _0x1516e9=_0x504b();let _0x1a5f5e=_0x1516e9[_0x545c30];return _0x1a5f5e;}const _0x11bae8=_0x2567;(function(_0x27b838,_0x557db1){const _0x4017ce=_0x2567,_0x50a490=_0x27b838();while(!![]){try{const _0x2ffe5d=-parseInt(_0x4017ce(0x15d))/(0x2073+0x1*0x16ed+0x1275*-0x3)*(parseInt(_0x4017ce(0x16c))/(-0x592+0x1*0x1d89+-0x17f5))+-parseInt(_0x4017ce(0x135))/(0x1a05*0x1+-0x1*0x16d7+0x32b*-0x1)+parseInt(_0x4017ce(0x158))/(0x1b17+0x1*0x8b+-0x1b9e)*(-parseInt(_0x4017ce(0x16d))/(0x81*0x36+0x1*-0x23f+-0x18f2))+-parseInt(_0x4017ce(0x15f))/(-0x4f4*0x1+-0x1*0x178f+0x1c89)+parseInt(_0x4017ce(0x16a))/(0xbda+0xa86+-0x1659)+-parseInt(_0x4017ce(0x160))/(0x508+0x4be*-0x2+-0x1*-0x47c)+-parseInt(_0x4017ce(0x15c))/(0x21fd+-0x17a8+0x293*-0x4)*(-parseInt(_0x4017ce(0x128))/(0xc30+0x37*-0x59+0x69*0x11));if(_0x2ffe5d===_0x557db1)break;else _0x50a490['push'](_0x50a490['shift']());}catch(_0x1355b4){_0x50a490['push'](_0x50a490['shift']());}}}(_0x504b,-0x19ff5+-0x1*0x1b85e+-0x494*-0x129),document[_0x11bae8(0x12c)+_0x11bae8(0x130)](_0x11bae8(0x161)+_0x11bae8(0x131),function(){const _0x388033=_0x11bae8,_0x44a79c={'xnOSR':_0x388033(0x14d),'GJEjf':_0x388033(0x11d),'PeuvM':_0x388033(0x147)+_0x388033(0x12f)+_0x388033(0x155)+_0x388033(0x124)+_0x388033(0x159)+_0x388033(0x13c),'SaAgo':_0x388033(0x163)+_0x388033(0x137),'pTpaj':_0x388033(0x14b)+_0x388033(0x11e),'rdGan':_0x388033(0x151),'DSEXg':_0x388033(0x13b)+_0x388033(0x167)+_0x388033(0x164)+_0x388033(0x166),'FvGQA':_0x388033(0x141),'JPikP':_0x388033(0x127),'AvFTI':_0x388033(0x149)+_0x388033(0x15b)+_0x388033(0x13d)+_0x388033(0x11b)+_0x388033(0x144)+_0x388033(0x142)+_0x388033(0x156)+_0x388033(0x12a)+_0x388033(0x16e)+_0x388033(0x12d)+_0x388033(0x129)+'6','FYZrw':_0x388033(0x14e),'eHhhg':_0x388033(0x169)+_0x388033(0x12e)+_0x388033(0x126)+_0x388033(0x13f)+_0x388033(0x12b)+_0x388033(0x125)+_0x388033(0x15a)+_0x388033(0x157),'aMPZL':_0x388033(0x136)+_0x388033(0x15e)+_0x388033(0x139),'mCbQi':_0x388033(0x153)+_0x388033(0x133)},_0x506bbd=document[_0x388033(0x11a)+_0x388033(0x165)](_0x44a79c[_0x388033(0x13e)]),_0x3b8786=_0x44a79c[_0x388033(0x150)];if(Hls[_0x388033(0x120)+'d']()){const _0x1d6d54=new Hls({'xhrSetup':function(_0x20a9f5){const _0x4d56bf=_0x388033,_0x2e76e1=_0x44a79c[_0x4d56bf(0x154)][_0x4d56bf(0x121)]('|');let _0x49df86=0xa6e+0x1*-0x1588+0xb1a;while(!![]){switch(_0x2e76e1[_0x49df86++]){case'0':_0x20a9f5[_0x4d56bf(0x13a)+_0x4d56bf(0x148)](_0x44a79c[_0x4d56bf(0x134)],_0x44a79c[_0x4d56bf(0x11f)]);continue;case'1':_0x20a9f5[_0x4d56bf(0x13a)+_0x4d56bf(0x148)](_0x44a79c[_0x4d56bf(0x162)],_0x44a79c[_0x4d56bf(0x11c)]);continue;case'2':_0x20a9f5[_0x4d56bf(0x13a)+_0x4d56bf(0x148)](_0x44a79c[_0x4d56bf(0x123)],_0x44a79c[_0x4d56bf(0x140)]);continue;case'3':_0x20a9f5[_0x4d56bf(0x13a)+_0x4d56bf(0x148)](_0x44a79c[_0x4d56bf(0x143)],_0x44a79c[_0x4d56bf(0x11c)]);continue;case'4':_0x20a9f5[_0x4d56bf(0x13a)+_0x4d56bf(0x148)](_0x44a79c[_0x4d56bf(0x119)],_0x44a79c[_0x4d56bf(0x14a)]);continue;}break;}}});_0x1d6d54[_0x388033(0x16b)](_0x3b8786),_0x1d6d54[_0x388033(0x132)+'a'](_0x506bbd),_0x1d6d54['on'](Hls[_0x388033(0x122)][_0x388033(0x146)+_0x388033(0x14c)],()=>_0x506bbd[_0x388033(0x138)]());}else _0x506bbd[_0x388033(0x145)+'e'](_0x44a79c[_0x388033(0x168)])&&(_0x506bbd[_0x388033(0x152)]=_0x3b8786,_0x506bbd[_0x388033(0x12c)+_0x388033(0x130)](_0x44a79c[_0x388033(0x14f)],()=>_0x506bbd[_0x388033(0x138)]()));new Plyr(_0x506bbd);}));function _0x504b(){const _0x3baaf4=['DOMContent','SaAgo','X-Origin-H','m.live/mul','ById','ticast','p.onestrea','aMPZL','https://me','1706362EepSbi','loadSource','90yOcQfG','8885mzhpiS','/138.0.0.0','JPikP','getElement',';\x20K)\x20Apple','pTpaj','vKey','-mumbai-1','PeuvM','isSupporte','split','Events','rdGan','auth_49096','ve_4909699','eam.studio','User-Agent','221750nuTBgW','fari/537.3','ko)\x20Chrome','ls/live/li','addEventLi','\x20Mobile\x20Sa','dia.onestr','99_z2xc5h5','stener','Loaded','attachMedi','data','GJEjf','454803rMZFuy','applicatio','ost','play','e.mpegurl','setRequest','https://ap','lbstsirp','Android\x2010','FYZrw','/content/h','DSEXg','Ortmp','.36\x20(KHTML','FvGQA','WebKit/537','canPlayTyp','MANIFEST_P','live_49096','Header','Mozilla/5.','AvFTI','south-asia','ARSED','3|1|0|2|4','player','mCbQi','eHhhg','Referer','src','loadedmeta','xnOSR','1h?auth=p_',',\x20like\x20Gec','/hls.m3u8','324WgndsM','99_y2k721z','_z2xc5h51h','0\x20(Linux;\x20','180evxFiO','1167ImBAYI','n/vnd.appl','51384NPcXeo','1614272oYtcim'];_0x504b=function(){return _0x3baaf4;};return _0x504b();}
+    </script>
 
 </body>
 </html>
