@@ -1,207 +1,50 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="referrer" content="no-referrer">
-<title>Telegram-Live-Cric-Hd</title>
-
-<!-- Shaka Player -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.6/shaka-player.ui.min.js" crossorigin="anonymous"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.6/controls.min.css" crossorigin="anonymous">
-
-<link rel="stylesheet" href="https://livecrichdofficial.pages.dev/livecrichd2.css">
-<script src="https://lchdxfootball.pages.dev/sknzx.js"></script>
-
-<style>
-.logo{
-    position:absolute;
-    top:12px;
-    right:12px;
-    width:70px;
-    z-index:40;
-    opacity:.85;
-    cursor:pointer;
-}
-.skip-btn{
-    position:absolute;
-    bottom:160px;
-    right:20px;
-    z-index:60;
-    padding:8px 14px;
-    font-size:14px;
-    background:#000;
-    color:#fff;
-    border:1px solid #fff;
-    cursor:pointer;
-}
-</style>
+  <title>Live Stream</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plyr@3.6.12/dist/plyr.css"/>
+  <style>
+    body { margin:0; background:#000; height:100vh; }
+    video { width:100%; height:100%; }
+  </style>
 </head>
-
 <body>
 
-<div id="player-container">
-<div data-shaka-player-container class="shaka-video-container">
-    <video autoplay playsinline data-shaka-player id="video"></video>
-</div>
-</div>
+<video id="player" autoplay muted controls playsinline></video>
+
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1.1.4/dist/hls.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/plyr@3.6.12/dist/plyr.min.js"></script>
 
 <script>
-/* DOMAIN LOCK */
-const allowedDomain = "livecrichdtv.pages.dev";
-if (window.top !== window.self || location.hostname !== allowedDomain) {
-    location.href = "https://telegram.me/livecrichdofficial";
-}
+document.addEventListener('DOMContentLoaded', async () => {
 
-/* TELEGRAM PROMPT */
-if (confirm("Join Our Telegram Channel @livecrichdofficial")) {
-    location.href = "https://telegram.me/livecrichdofficial";
-}
+  const video = document.getElementById('player');
 
-/* DECRYPT DATA */
-const decryptionKey = "gf676rc7gr4grg78r6ag56gg8f76713f";
-function decryptBase64(encoded, key) {
-    const decoded = atob(encoded);
-    let out = '';
-    for (let i = 0; i < decoded.length; i++) {
-        out += String.fromCharCode(decoded.charCodeAt(i) ^ key.charCodeAt(i % key.length));
-    }
-    return JSON.parse(out);
-}
-function getURLParameter(name) {
-    return new URLSearchParams(location.search).get(name);
-}
+  async function getSecureUrl() {
+    const res = await fetch("https://manitssky.xojiv79335.workers.dev/token");
+    const data = await res.json();
+    return "https://manitssky.xojiv79335.workers.dev" + data.url;
+  }
 
-const id = getURLParameter("id");
-if (!encodedChannelData[id]) {
-    alert("Invalid ID");
-    location.href = "https://telegram.me/livecrichdofficial";
-}
-const selectedData = decryptBase64(encodedChannelData[id], decryptionKey);
+  const source = await getSecureUrl();
 
-/* DEMO VAST XML (REPLACE WITH COMPANY TAG LATER) */
-const DEMO_VAST_XML = `
-<VAST version="3.0">
-  <Ad>
-    <InLine>
-      <Creatives>
-        <Creative>
-          <Linear skipoffset="00:00:05">
-            <MediaFiles>
-              <MediaFile type="application/dash+xml">
-                https://storage.googleapis.com/shaka-demo-assets/angel-one/dash.mpd
-              </MediaFile>
-            </MediaFiles>
-            <VideoClicks>
-              <ClickThrough>https://example.com</ClickThrough>
-            </VideoClicks>
-          </Linear>
-        </Creative>
-      </Creatives>
-    </InLine>
-  </Ad>
-</VAST>
-`;
+  if (Hls.isSupported()) {
+    const hls = new Hls();
+    hls.loadSource(source);
+    hls.attachMedia(video);
 
-/* PARSE VAST */
-function parseVast(xml) {
-    const doc = new DOMParser().parseFromString(xml, "text/xml");
-    const media = doc.querySelector("MediaFile").textContent.trim();
-    const skip = doc.querySelector("Linear")?.getAttribute("skipoffset") || "00:00:05";
-    const click = doc.querySelector("ClickThrough")?.textContent?.trim() || null;
-    const skipSec = skip.split(":").reduce((a, v) => a * 60 + Number(v), 0);
-    return { adMPD: media, skipTime: skipSec, clickUrl: click };
-}
-
-/* CONTROL VISIBILITY */
-function hideControls() {
-    const c = document.querySelector(".shaka-controls-container");
-    if (c) c.style.display = "none";
-}
-function showControls() {
-    const c = document.querySelector(".shaka-controls-container");
-    if (c) c.style.display = "flex";
-}
-
-/* INIT PLAYER */
-async function initPlayer() {
-    const video = document.getElementById("video");
-    const ui = video.ui;
-    const player = ui.getControls().getPlayer();
-
-    ui.configure({
-        controlPanelElements: [
-            'play_pause','mute','spacer',
-            'time_and_duration','quality','fullscreen'
-        ]
+    hls.on(Hls.Events.MANIFEST_PARSED, () => {
+      new Plyr(video);
     });
 
-    player.configure({
-        drm: { clearKeys: selectedData.DRMKeys }
-    });
-
-    addLogo();
-
-    const vast = parseVast(DEMO_VAST_XML);
-    await playVastPreroll(player, vast);
-}
-
-/* LOGO */
-function addLogo() {
-    const img = document.createElement("img");
-    img.src = "https://i.ibb.co/7VF2dfy/1000000077-removebg-preview.png";
-    img.className = "logo";
-    img.onclick = () => location.href = "https://telegram.me/livecrichdofficial";
-    document.querySelector(".shaka-video-container").appendChild(img);
-}
-
-/* VAST PRE-ROLL WITH CLICK + NO UI */
-async function playVastPreroll(player, vast) {
-    const MAIN_MPD = selectedData.ManifestURI;
-    const container = document.querySelector(".shaka-video-container");
-    let switched = false;
-
-    hideControls();
-
-    const skipBtn = document.createElement("button");
-    skipBtn.className = "skip-btn";
-    skipBtn.textContent = `Skip Ad (${vast.skipTime})`;
-    container.appendChild(skipBtn);
-
-    let counter = vast.skipTime;
-    const timer = setInterval(() => {
-        counter--;
-        skipBtn.textContent = counter > 0 ? `Skip Ad (${counter})` : "Skip Ad";
-        if (counter <= 0) {
-            skipBtn.onclick = loadMain;
-            clearInterval(timer);
-        }
-    }, 1000);
-
-    function loadMain() {
-        if (switched) return;
-        switched = true;
-        skipBtn.remove();
-        showControls();
-        player.load(MAIN_MPD);
-    }
-
-    try {
-        await player.load(vast.adMPD);
-
-        const videoEl = player.getMediaElement();
-        if (vast.clickUrl) {
-            videoEl.style.cursor = "pointer";
-            videoEl.onclick = () => window.open(vast.clickUrl, "_blank");
-        }
-
-        setTimeout(loadMain, 15000); // safety fallback
-    } catch {
-        loadMain();
-    }
-}
-
-document.addEventListener("shaka-ui-loaded", initPlayer);
+    // refresh token every 4 min
+    setInterval(async () => {
+      const newSource = await getSecureUrl();
+      hls.loadSource(newSource);
+    }, 240000);
+  }
+});
 </script>
 
 </body>
