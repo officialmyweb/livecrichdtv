@@ -2,40 +2,26 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>ISL 2025-26</title>
+<title>ISL Streams</title>
 <style>
-body{
-  background:#111;
-  color:white;
-  font-family:Arial;
-  padding:15px;
-}
-select{
-  padding:8px;
-  margin:5px;
-}
-iframe{
-  width:100%;
-  height:70vh;
-  border:none;
-  margin-top:10px;
-  background:black;
-}
+body{background:#111;color:white;font-family:Arial;padding:15px;}
+select{padding:8px;margin:5px;}
+iframe{width:100%;height:70vh;border:none;margin-top:10px;background:black;}
 </style>
 </head>
 <body>
 
-<h2 id="matchTitle">Loading ISL Match...</h2>
+<h2 id="title">ISL 2025 - 2026</h2>
 
-<select id="languageSelect">
+<select id="lang">
 <option>Select Language</option>
 </select>
 
-<select id="qualitySelect">
+<select id="quality">
 <option>Select Quality</option>
 </select>
 
-<iframe id="playerFrame"></iframe>
+<iframe id="frame"></iframe>
 
 <script>
 
@@ -44,79 +30,78 @@ const jsonUrl = "https://raw.githubusercontent.com/Jitendra-unatti/fancode/main/
 let streams = {};
 
 fetch(jsonUrl)
-.then(res => res.json())
-.then(data => {
+.then(r=>r.json())
+.then(data=>{
 
-  const islMatches = data.filter(m =>
+  // FILTER ONLY ISL FOOTBALL
+  const isl = data.filter(m =>
     m.category === "Football" &&
     m.tournament &&
-    m.tournament.includes("ISL 2025-26") &&
-    m.streamingStatus === "STARTED"
+    m.tournament.includes("ISL 2025-26")
   );
 
-  if(!islMatches.length){
-    document.getElementById("matchTitle").innerText = "No Live Match Found";
+  if(!isl.length){
+    document.getElementById("title").innerText="No ISL Found";
     return;
   }
 
-  const matchId = islMatches[0].match_id;
-  const sameMatch = islMatches.filter(m => m.match_id === matchId);
+  // GROUP SAME MATCH
+  const matchId = isl[0].match_id;
+  const sameMatch = isl.filter(m=>m.match_id===matchId);
 
-  document.getElementById("matchTitle").innerText =
-    sameMatch[0].title;
+  document.getElementById("title").innerText = sameMatch[0].title;
 
-  sameMatch.forEach(match => {
+  sameMatch.forEach(m=>{
 
-    const lang = match.language;
+    const lang = m.language;
     streams[lang] = {};
 
-    const autoText = match.auto_streams[0].auto;
+    const auto = m.auto_streams?.[0]?.auto;
+    if(!auto) return;
 
-    const urls = autoText.match(/https:\/\/.*?\.m3u8\?hdntl=.*?(?=\n|$)/g);
+    const urls = auto.match(/https:\/\/.*?\.m3u8\?hdntl=.*?(?=\n|$)/g);
 
     if(urls){
-      urls.forEach(url => {
-        const qMatch = url.match(/\/(\d+p5?|\d+p)\.m3u8/);
-        if(qMatch){
-          streams[lang][qMatch[1]] = url;
+      urls.forEach(u=>{
+        const q = u.match(/\/(\d+p5?|\d+p)\.m3u8/);
+        if(q){
+          streams[lang][q[1]] = u;
         }
       });
     }
 
   });
 
-  const langSelect = document.getElementById("languageSelect");
-
-  Object.keys(streams).forEach(lang => {
-    langSelect.innerHTML += `<option value="${lang}">${lang}</option>`;
+  // populate languages
+  const langSelect = document.getElementById("lang");
+  Object.keys(streams).forEach(l=>{
+    langSelect.innerHTML += `<option value="${l}">${l}</option>`;
   });
 
 });
 
-document.getElementById("languageSelect").addEventListener("change", function(){
+// language change
+document.getElementById("lang").addEventListener("change",function(){
+
+  const qSelect = document.getElementById("quality");
+  qSelect.innerHTML="<option>Select Quality</option>";
 
   const lang = this.value;
-  const qualitySelect = document.getElementById("qualitySelect");
-
-  qualitySelect.innerHTML = "<option>Select Quality</option>";
-
   if(streams[lang]){
-    Object.keys(streams[lang]).forEach(q => {
-      qualitySelect.innerHTML +=
-        `<option value="${streams[lang][q]}">${q}</option>`;
+    Object.keys(streams[lang]).forEach(q=>{
+      qSelect.innerHTML += `<option value="${streams[lang][q]}">${q}</option>`;
     });
   }
 
 });
 
-document.getElementById("qualitySelect").addEventListener("change", function(){
+// quality change
+document.getElementById("quality").addEventListener("change",function(){
 
   const url = this.value;
-
   if(url){
-    const encoded = encodeURIComponent(url);
-    document.getElementById("playerFrame").src =
-      "tmkc.html?url=" + encoded;
+    document.getElementById("frame").src =
+      "player.html?url="+encodeURIComponent(url);
   }
 
 });
