@@ -42,18 +42,22 @@ button{
 
 <script>
 
-const jsonUrl = "https://raw.githubusercontent.com/Jitendra-unatti/fancode/refs/heads/main/data/fancode.json";
+const jsonUrl = "https://raw.githubusercontent.com/Jitendra-unatti/fancode/main/data/fancode.json";
 
 let streams = {};
 
 fetch(jsonUrl)
 .then(res => res.json())
-.then(data => {
+.then(raw => {
 
-  console.log("JSON Loaded:", data);
+  const data = raw.data; // ✅ IMPORTANT FIX
 
-  // JSON root is ARRAY (your structure)
-  // Filter ISL Football matches only
+  if(!Array.isArray(data)){
+    document.getElementById("matchTitle").innerText = "Invalid JSON Structure";
+    return;
+  }
+
+  // Filter ISL Football matches
   const islMatches = data.filter(m =>
     m.category === "Football" &&
     m.tournament &&
@@ -65,22 +69,19 @@ fetch(jsonUrl)
     return;
   }
 
-  // Group by match_id (first match only)
   const matchId = islMatches[0].match_id;
   const sameMatch = islMatches.filter(m => m.match_id === matchId);
 
   document.getElementById("matchTitle").innerText =
     "Live Match - " + sameMatch[0].title;
 
-  // Extract language streams
   sameMatch.forEach(match => {
 
     const lang = match.language;
     streams[lang] = {};
 
-    if(!match.auto_streams || !match.auto_streams[0]) return;
-
-    const autoText = match.auto_streams[0].auto;
+    const autoText = match.auto_streams?.[0]?.auto;
+    if(!autoText) return;
 
     const urls = autoText.match(/https:\/\/.*?\.m3u8\?hdntl=.*?(?=\n|$)/g);
 
@@ -102,13 +103,13 @@ fetch(jsonUrl)
   });
 
 })
-.catch(err => {
-  console.log("FETCH ERROR:", err);
+.catch(err=>{
+  console.log(err);
   document.getElementById("matchTitle").innerText = "Error Loading JSON";
 });
 
 
-// Language change → show quality
+// Language change
 document.getElementById("languageSelect").addEventListener("change", function(){
 
   const lang = this.value;
