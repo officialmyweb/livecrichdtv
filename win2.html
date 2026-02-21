@@ -40,7 +40,9 @@ button{
 
 <button id="goBtn">Watch Stream</button>
 
-<script>
+
+  <script>
+document.addEventListener("DOMContentLoaded", function(){
 
 const jsonUrl = "https://raw.githubusercontent.com/Jitendra-unatti/fancode/main/data/fancode.json";
 
@@ -50,18 +52,14 @@ fetch(jsonUrl)
 .then(res => res.json())
 .then(raw => {
 
-  const data = raw.data; // ✅ IMPORTANT FIX
+  console.log("JSON Loaded");
 
-  if(!Array.isArray(data)){
-    document.getElementById("matchTitle").innerText = "Invalid JSON Structure";
-    return;
-  }
+  const data = raw.data;
 
-  // Filter ISL Football matches
   const islMatches = data.filter(m =>
     m.category === "Football" &&
     m.tournament &&
-    m.tournament.includes("ISL 2025-26")
+    m.tournament.includes("ISL")
   );
 
   if(!islMatches.length){
@@ -96,49 +94,19 @@ fetch(jsonUrl)
 
   });
 
-  // Populate languages
   const langSelect = document.getElementById("languageSelect");
+
   Object.keys(streams).forEach(lang => {
     langSelect.innerHTML += `<option value="${lang}">${lang}</option>`;
   });
 
 })
 .catch(err=>{
-  console.log(err);
+  console.log("FETCH ERROR:", err);
   document.getElementById("matchTitle").innerText = "Error Loading JSON";
 });
 
-
-// Language change
-document.getElementById("languageSelect").addEventListener("change", function(){
-
-  const lang = this.value;
-  const qualitySelect = document.getElementById("qualitySelect");
-
-  qualitySelect.innerHTML = "<option>Select Quality</option>";
-
-  if(streams[lang]){
-    Object.keys(streams[lang]).forEach(q=>{
-      qualitySelect.innerHTML += `<option value="${streams[lang][q]}">${q}</option>`;
-    });
-  }
-
 });
-
-// Redirect on click
-document.getElementById("goBtn").addEventListener("click", function(){
-
-  const url = document.getElementById("qualitySelect").value;
-
-  if(!url){
-    alert("Select language and quality");
-    return;
-  }
-
-  window.location.href = url;
-
-});
-
 </script>
 
 </body>
