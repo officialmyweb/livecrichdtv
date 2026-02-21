@@ -2,26 +2,43 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>ISL Streams</title>
+<title>ISL 2025 - 2026</title>
 <style>
-body{background:#111;color:white;font-family:Arial;padding:15px;}
-select{padding:8px;margin:5px;}
-iframe{width:100%;height:70vh;border:none;margin-top:10px;background:black;}
+body{
+  background:#111;
+  color:white;
+  font-family:Arial;
+  padding:20px;
+}
+h1,h2{
+  margin:10px 0;
+}
+select{
+  padding:10px;
+  margin:10px 5px 10px 0;
+  font-size:15px;
+}
+button{
+  padding:10px 15px;
+  font-size:15px;
+  cursor:pointer;
+}
 </style>
 </head>
 <body>
 
-<h2 id="title">ISL 2025 - 2026</h2>
+<h1>ISL 2025 - 2026</h1>
+<h2 id="matchTitle">Loading Live Match...</h2>
 
-<select id="lang">
-<option>Select Language</option>
+<select id="languageSelect">
+  <option>Select Language</option>
 </select>
 
-<select id="quality">
-<option>Select Quality</option>
+<select id="qualitySelect">
+  <option>Select Quality</option>
 </select>
 
-<iframe id="frame"></iframe>
+<button id="goBtn">Watch Stream</button>
 
 <script>
 
@@ -30,79 +47,93 @@ const jsonUrl = "https://raw.githubusercontent.com/Jitendra-unatti/fancode/main/
 let streams = {};
 
 fetch(jsonUrl)
-.then(r=>r.json())
-.then(data=>{
+.then(res => res.json())
+.then(raw => {
 
-  // FILTER ONLY ISL FOOTBALL
-  const isl = data.filter(m =>
+  // If JSON root is object with data[]
+  const data = Array.isArray(raw) ? raw : raw.data;
+
+  // Filter ISL Football matches
+  const islMatches = data.filter(m =>
     m.category === "Football" &&
     m.tournament &&
     m.tournament.includes("ISL 2025-26")
   );
 
-  if(!isl.length){
-    document.getElementById("title").innerText="No ISL Found";
+  if(!islMatches.length){
+    document.getElementById("matchTitle").innerText = "No ISL Match Found";
     return;
   }
 
-  // GROUP SAME MATCH
-  const matchId = isl[0].match_id;
-  const sameMatch = isl.filter(m=>m.match_id===matchId);
+  // Take first ISL match group
+  const matchId = islMatches[0].match_id;
+  const sameMatch = islMatches.filter(m => m.match_id === matchId);
 
-  document.getElementById("title").innerText = sameMatch[0].title;
+  document.getElementById("matchTitle").innerText =
+    "Live Match - " + sameMatch[0].title;
 
-  sameMatch.forEach(m=>{
+  // Extract language streams
+  sameMatch.forEach(match => {
 
-    const lang = m.language;
+    const lang = match.language;
     streams[lang] = {};
 
-    const auto = m.auto_streams?.[0]?.auto;
-    if(!auto) return;
+    const autoText = match.auto_streams?.[0]?.auto;
+    if(!autoText) return;
 
-    const urls = auto.match(/https:\/\/.*?\.m3u8\?hdntl=.*?(?=\n|$)/g);
+    const urls = autoText.match(/https:\/\/.*?\.m3u8\?hdntl=.*?(?=\n|$)/g);
 
     if(urls){
-      urls.forEach(u=>{
-        const q = u.match(/\/(\d+p5?|\d+p)\.m3u8/);
-        if(q){
-          streams[lang][q[1]] = u;
+      urls.forEach(url => {
+        const qMatch = url.match(/\/(\d+p5?|\d+p)\.m3u8/);
+        if(qMatch){
+          streams[lang][qMatch[1]] = url;
         }
       });
     }
 
   });
 
-  // populate languages
-  const langSelect = document.getElementById("lang");
-  Object.keys(streams).forEach(l=>{
-    langSelect.innerHTML += `<option value="${l}">${l}</option>`;
+  // Populate languages
+  const langSelect = document.getElementById("languageSelect");
+  Object.keys(streams).forEach(lang => {
+    langSelect.innerHTML += `<option value="${lang}">${lang}</option>`;
   });
 
+})
+.catch(err=>{
+  document.getElementById("matchTitle").innerText = "Error Loading JSON";
+  console.log(err);
 });
 
-// language change
-document.getElementById("lang").addEventListener("change",function(){
+// When language changes → show qualities
+document.getElementById("languageSelect").addEventListener("change", function(){
 
-  const qSelect = document.getElementById("quality");
-  qSelect.innerHTML="<option>Select Quality</option>";
+  const qualitySelect = document.getElementById("qualitySelect");
+  qualitySelect.innerHTML = "<option>Select Quality</option>";
 
   const lang = this.value;
+
   if(streams[lang]){
     Object.keys(streams[lang]).forEach(q=>{
-      qSelect.innerHTML += `<option value="${streams[lang][q]}">${q}</option>`;
+      qualitySelect.innerHTML += `<option value="${streams[lang][q]}">${q}</option>`;
     });
   }
 
 });
 
-// quality change
-document.getElementById("quality").addEventListener("change",function(){
+// When user clicks Watch → redirect
+document.getElementById("goBtn").addEventListener("click", function(){
 
-  const url = this.value;
-  if(url){
-    document.getElementById("frame").src =
-      "player.html?url="+encodeURIComponent(url);
+  const selectedUrl = document.getElementById("qualitySelect").value;
+
+  if(!selectedUrl){
+    alert("Please select language and quality");
+    return;
   }
+
+  // Redirect directly to M3U8
+  window.location.href = selectedUrl;
 
 });
 
