@@ -2,11 +2,11 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>ISL 2026 Multi Stream</title>
+<title>ISL 2026 Streams</title>
 <style>
 body { background:#111; color:white; font-family:Arial; padding:15px;}
 select { padding:8px; margin:5px;}
-iframe { width:100%; height:70vh; border:none; margin-top:10px; background:black;}
+iframe { width:100%; height:70vh; border:none; background:black; margin-top:10px;}
 </style>
 </head>
 <body>
@@ -33,17 +33,17 @@ fetch(jsonUrl)
 .then(res => res.json())
 .then(data => {
 
-  // Filter ISL 2025-26 matches
+  // FILTER CORRECTLY
   const islMatches = data.filter(m => 
-    m.tournament && m.tournament.includes("ISL")
+    m.tournament && m.tournament.includes("ISL 2025-26")
   );
 
   if(!islMatches.length){
-    document.getElementById("matchTitle").innerText = "No ISL Match Found";
+    document.getElementById("matchTitle").innerText = "No ISL 2025-26 Match Found";
     return;
   }
 
-  const match = islMatches[0]; // first ISL match
+  const match = islMatches[0]; // First ISL match
   document.getElementById("matchTitle").innerText = match.title;
 
   islMatches.forEach(m => {
@@ -54,16 +54,18 @@ fetch(jsonUrl)
 
     const autoText = m.auto_streams[0].auto;
 
-    const urls = autoText.match(/https.*?\.m3u8\?hdntl=.*?(?=\n|$)/g);
+    // Extract only real m3u8 URLs
+    const urls = autoText.match(/https:\/\/.*?\.m3u8\?hdntl=.*?(?=\n|$)/g);
 
     if(urls){
       urls.forEach(url => {
-        const quality = url.match(/\/(\d+p5?|\d+p)\.m3u8/);
-        if(quality){
-          streamData[lang][quality[1]] = url;
+        const qualityMatch = url.match(/\/(\d+p5?|\d+p)\.m3u8/);
+        if(qualityMatch){
+          streamData[lang][qualityMatch[1]] = url;
         }
       });
     }
+
   });
 
   const langSelect = document.getElementById("languageSelect");
@@ -99,6 +101,5 @@ document.getElementById("qualitySelect").addEventListener("change", function(){
 });
 
 </script>
-
 </body>
 </html>
