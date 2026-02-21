@@ -2,38 +2,99 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Live Player</title>
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <title>ISL 2026 Multi Language Player</title>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js"></script>
   <style>
-    body {
-      margin: 0;
-      background: black;
-    }
-    video {
-      width: 100%;
-      height: 100vh;
-    }
+    body { font-family: Arial, sans-serif; background: #222; color: white; padding: 20px; }
+    select, button { margin: 5px; padding: 8px; font-size: 14px; }
+    video { width: 100%; height: 60vh; margin-top: 15px; background: black; }
   </style>
 </head>
 <body>
 
-<video id="video" controls autoplay></video>
+<h2>ISL 2026 Live Streams</h2>
+
+<select id="matchSelect">
+  <option>Loading matches...</option>
+</select>
+
+<select id="langSelect">
+  <option>Select language</option>
+</select>
+
+<select id="qualitySelect">
+  <option>Select quality</option>
+</select>
+
+<button id="playBtn">Play Stream</button>
+
+<video id="player" controls></video>
 
 <script>
-  var video = document.getElementById('video');
+(async function(){
+  const jsonUrl = "https://raw.githubusercontent.com/Jitendra-unatti/fancode/refs/heads/main/data/fancode.json";
+  const data = await fetch(jsonUrl).then(res => res.json());
 
-  var videoSrc = "https://in-mc-flive.fancode.com/mumbai/140439_english_hls_949484ff3954082_1ta-di_h264/1080p5.m3u8?hdntl=Expires=1771759145~_GO=Generated~acl=/mumbai/140439_english_hls_949484ff3954082_1ta-di_h264/*~Signature=AScLvDux7SSNTcfQmPbZPQMhcu4x8PPtmfPZM-NljVsAGQS6wKdS76vpfi0xw4VEp6fr14jMp7SFUPwBTy_SD0yeInUL";
+  // Filter only ISL 2026 entries
+  const islMatches = data.filter(item => item.tour && item.tour.name && item.tour.name.includes("ISL")); 
 
-  if (Hls.isSupported()) {
-      var hls = new Hls({
-          maxBufferLength: 30,
-          maxMaxBufferLength: 60,
+  const matchSelect = document.getElementById("matchSelect");
+  const langSelect = document.getElementById("langSelect");
+  const qualitySelect = document.getElementById("qualitySelect");
+  const player = document.getElementById("player");
+
+  // Populate match list
+  matchSelect.innerHTML = "";
+  islMatches.forEach((m, idx) => {
+    matchSelect.innerHTML += `<option value="${idx}">${m.name}</option>`;
+  });
+
+  matchSelect.onchange = () => {
+    const idx = matchSelect.value;
+    const match = islMatches[idx];
+    const langs = {};
+
+    // Group streams by language
+    match.auto_streams.forEach(stream => {
+      const lang = stream.language;
+      if (!langs[lang]) langs[lang] = [];
+      langs[lang].push(stream.auto);
+    });
+
+    // Populate languages
+    langSelect.innerHTML = "<option>Select language</option>";
+    for (let l in langs) {
+      langSelect.innerHTML += `<option value="${l}">${l}</option>`;
+    }
+
+    langSelect.onchange = () => {
+      const selectedLang = langSelect.value;
+      const streams = langs[selectedLang];
+
+      qualitySelect.innerHTML = "<option>Select quality</option>";
+      streams.forEach(s => {
+        // Extract resolution from m3u8 URL
+        const quality = s.match(/\\/(\\d+p5?)\\.m3u8/);
+        const label = quality ? quality[1] : s;
+        qualitySelect.innerHTML += `<option value="${s}">${label}</option>`;
       });
-      hls.loadSource(videoSrc);
-      hls.attachMedia(video);
-  } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-      video.src = videoSrc;
-  }
+    };
+  };
+
+  document.getElementById("playBtn").onclick = () => {
+    const url = qualitySelect.value;
+    if (!url) return alert("Select quality first");
+
+    if (Hls.isSupported()) {
+      const hls = new Hls();
+      hls.loadSource(url);
+      hls.attachMedia(player);
+    } else {
+      player.src = url;
+    }
+  };
+
+})();
 </script>
 
 </body>
