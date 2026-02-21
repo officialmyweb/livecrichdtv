@@ -42,18 +42,18 @@ button{
 
 <script>
 
-const jsonUrl = "https://raw.githubusercontent.com/Jitendra-unatti/fancode/refs/heads/main/data/fancode.json";
+const jsonUrl = "https://raw.githubusercontent.com/Jitendra-unatti/fancode/main/data/fancode.json";
 
 let streams = {};
 
 fetch(jsonUrl)
 .then(res => res.json())
-.then(raw => {
+.then(data => {
 
-  // If JSON root is object with data[]
-  const data = Array.isArray(raw) ? raw : raw.data;
+  console.log("JSON Loaded:", data);
 
-  // Filter ISL Football matches
+  // JSON root is ARRAY (your structure)
+  // Filter ISL Football matches only
   const islMatches = data.filter(m =>
     m.category === "Football" &&
     m.tournament &&
@@ -65,7 +65,7 @@ fetch(jsonUrl)
     return;
   }
 
-  // Take first ISL match group
+  // Group by match_id (first match only)
   const matchId = islMatches[0].match_id;
   const sameMatch = islMatches.filter(m => m.match_id === matchId);
 
@@ -78,16 +78,17 @@ fetch(jsonUrl)
     const lang = match.language;
     streams[lang] = {};
 
-    const autoText = match.auto_streams?.[0]?.auto;
-    if(!autoText) return;
+    if(!match.auto_streams || !match.auto_streams[0]) return;
+
+    const autoText = match.auto_streams[0].auto;
 
     const urls = autoText.match(/https:\/\/.*?\.m3u8\?hdntl=.*?(?=\n|$)/g);
 
     if(urls){
       urls.forEach(url => {
-        const qMatch = url.match(/\/(\d+p5?|\d+p)\.m3u8/);
-        if(qMatch){
-          streams[lang][qMatch[1]] = url;
+        const q = url.match(/\/(\d+p5?|\d+p)\.m3u8/);
+        if(q){
+          streams[lang][q[1]] = url;
         }
       });
     }
@@ -101,18 +102,19 @@ fetch(jsonUrl)
   });
 
 })
-.catch(err=>{
+.catch(err => {
+  console.log("FETCH ERROR:", err);
   document.getElementById("matchTitle").innerText = "Error Loading JSON";
-  console.log(err);
 });
 
-// When language changes → show qualities
+
+// Language change → show quality
 document.getElementById("languageSelect").addEventListener("change", function(){
 
-  const qualitySelect = document.getElementById("qualitySelect");
-  qualitySelect.innerHTML = "<option>Select Quality</option>";
-
   const lang = this.value;
+  const qualitySelect = document.getElementById("qualitySelect");
+
+  qualitySelect.innerHTML = "<option>Select Quality</option>";
 
   if(streams[lang]){
     Object.keys(streams[lang]).forEach(q=>{
@@ -122,18 +124,17 @@ document.getElementById("languageSelect").addEventListener("change", function(){
 
 });
 
-// When user clicks Watch → redirect
+// Redirect on click
 document.getElementById("goBtn").addEventListener("click", function(){
 
-  const selectedUrl = document.getElementById("qualitySelect").value;
+  const url = document.getElementById("qualitySelect").value;
 
-  if(!selectedUrl){
-    alert("Please select language and quality");
+  if(!url){
+    alert("Select language and quality");
     return;
   }
 
-  // Redirect directly to M3U8
-  window.location.href = selectedUrl;
+  window.location.href = url;
 
 });
 
