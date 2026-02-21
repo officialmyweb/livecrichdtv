@@ -2,17 +2,16 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>ISL 2026 Multi Language Player</title>
-<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+<title>ISL 2026 Multi Stream</title>
 <style>
 body { background:#111; color:white; font-family:Arial; padding:15px;}
-select,button { padding:8px; margin:5px;}
-video { width:100%; height:60vh; background:black; margin-top:10px;}
+select { padding:8px; margin:5px;}
+iframe { width:100%; height:70vh; border:none; margin-top:10px; background:black;}
 </style>
 </head>
 <body>
 
-<h2 id="matchTitle">Loading...</h2>
+<h2 id="matchTitle">Loading ISL Match...</h2>
 
 <select id="languageSelect">
 <option>Select Language</option>
@@ -22,21 +21,19 @@ video { width:100%; height:60vh; background:black; margin-top:10px;}
 <option>Select Quality</option>
 </select>
 
-<button onclick="playStream()">Play</button>
-
-<video id="video" controls autoplay></video>
+<iframe id="playerFrame"></iframe>
 
 <script>
 
 const jsonUrl = "https://raw.githubusercontent.com/Jitendra-unatti/fancode/refs/heads/main/data/fancode.json";
 
-let currentStreams = {};
+let streamData = {};
 
 fetch(jsonUrl)
 .then(res => res.json())
 .then(data => {
 
-  // Filter only ISL matches
+  // Filter ISL 2025-26 matches
   const islMatches = data.filter(m => 
     m.tournament && m.tournament.includes("ISL")
   );
@@ -49,65 +46,59 @@ fetch(jsonUrl)
   const match = islMatches[0]; // first ISL match
   document.getElementById("matchTitle").innerText = match.title;
 
-  const langSelect = document.getElementById("languageSelect");
-
-  // Group by language
   islMatches.forEach(m => {
 
     const lang = m.language;
 
-    if(!currentStreams[lang]) currentStreams[lang] = {};
+    if(!streamData[lang]) streamData[lang] = {};
 
     const autoText = m.auto_streams[0].auto;
 
-    // Extract all m3u8 links
     const urls = autoText.match(/https.*?\.m3u8\?hdntl=.*?(?=\n|$)/g);
 
     if(urls){
       urls.forEach(url => {
         const quality = url.match(/\/(\d+p5?|\d+p)\.m3u8/);
         if(quality){
-          currentStreams[lang][quality[1]] = url;
+          streamData[lang][quality[1]] = url;
         }
       });
     }
   });
 
-  // Populate languages
-  Object.keys(currentStreams).forEach(lang => {
+  const langSelect = document.getElementById("languageSelect");
+
+  Object.keys(streamData).forEach(lang => {
     langSelect.innerHTML += `<option value="${lang}">${lang}</option>`;
   });
 
 });
 
 document.getElementById("languageSelect").addEventListener("change", function(){
+
   const lang = this.value;
   const qualitySelect = document.getElementById("qualitySelect");
 
   qualitySelect.innerHTML = "<option>Select Quality</option>";
 
-  if(currentStreams[lang]){
-    Object.keys(currentStreams[lang]).forEach(q => {
-      qualitySelect.innerHTML += `<option value="${currentStreams[lang][q]}">${q}</option>`;
+  if(streamData[lang]){
+    Object.keys(streamData[lang]).forEach(q => {
+      qualitySelect.innerHTML += `<option value="${streamData[lang][q]}">${q}</option>`;
     });
   }
+
 });
 
-function playStream(){
-  const url = document.getElementById("qualitySelect").value;
-  const video = document.getElementById("video");
+document.getElementById("qualitySelect").addEventListener("change", function(){
 
-  if(!url) return alert("Select quality first");
-
-  if(Hls.isSupported()){
-    const hls = new Hls();
-    hls.loadSource(url);
-    hls.attachMedia(video);
-  } else {
-    video.src = url;
+  const url = this.value;
+  if(url){
+    document.getElementById("playerFrame").src = url;
   }
-}
+
+});
 
 </script>
+
 </body>
 </html>
