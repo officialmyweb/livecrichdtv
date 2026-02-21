@@ -2,11 +2,25 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>ISL 2026 Streams</title>
+<title>ISL 2025-26</title>
 <style>
-body { background:#111; color:white; font-family:Arial; padding:15px;}
-select { padding:8px; margin:5px;}
-iframe { width:100%; height:70vh; border:none; background:black; margin-top:10px;}
+body{
+  background:#111;
+  color:white;
+  font-family:Arial;
+  padding:15px;
+}
+select{
+  padding:8px;
+  margin:5px;
+}
+iframe{
+  width:100%;
+  height:70vh;
+  border:none;
+  margin-top:10px;
+  background:black;
+}
 </style>
 </head>
 <body>
@@ -27,41 +41,44 @@ iframe { width:100%; height:70vh; border:none; background:black; margin-top:10px
 
 const jsonUrl = "https://raw.githubusercontent.com/Jitendra-unatti/fancode/main/data/fancode.json";
 
-let streamData = {};
+let streams = {};
 
 fetch(jsonUrl)
 .then(res => res.json())
 .then(data => {
 
-  // FILTER CORRECTLY
-  const islMatches = data.filter(m => 
-    m.tournament && m.tournament.includes("ISL 2025-26")
+  const islMatches = data.filter(m =>
+    m.category === "Football" &&
+    m.tournament &&
+    m.tournament.includes("ISL 2025-26") &&
+    m.streamingStatus === "STARTED"
   );
 
   if(!islMatches.length){
-    document.getElementById("matchTitle").innerText = "No ISL 2025-26 Match Found";
+    document.getElementById("matchTitle").innerText = "No Live Match Found";
     return;
   }
 
-  const match = islMatches[0]; // First ISL match
-  document.getElementById("matchTitle").innerText = match.title;
+  const matchId = islMatches[0].match_id;
+  const sameMatch = islMatches.filter(m => m.match_id === matchId);
 
-  islMatches.forEach(m => {
+  document.getElementById("matchTitle").innerText =
+    sameMatch[0].title;
 
-    const lang = m.language;
+  sameMatch.forEach(match => {
 
-    if(!streamData[lang]) streamData[lang] = {};
+    const lang = match.language;
+    streams[lang] = {};
 
-    const autoText = m.auto_streams[0].auto;
+    const autoText = match.auto_streams[0].auto;
 
-    // Extract only real m3u8 URLs
     const urls = autoText.match(/https:\/\/.*?\.m3u8\?hdntl=.*?(?=\n|$)/g);
 
     if(urls){
       urls.forEach(url => {
-        const qualityMatch = url.match(/\/(\d+p5?|\d+p)\.m3u8/);
-        if(qualityMatch){
-          streamData[lang][qualityMatch[1]] = url;
+        const qMatch = url.match(/\/(\d+p5?|\d+p)\.m3u8/);
+        if(qMatch){
+          streams[lang][qMatch[1]] = url;
         }
       });
     }
@@ -70,7 +87,7 @@ fetch(jsonUrl)
 
   const langSelect = document.getElementById("languageSelect");
 
-  Object.keys(streamData).forEach(lang => {
+  Object.keys(streams).forEach(lang => {
     langSelect.innerHTML += `<option value="${lang}">${lang}</option>`;
   });
 
@@ -83,9 +100,10 @@ document.getElementById("languageSelect").addEventListener("change", function(){
 
   qualitySelect.innerHTML = "<option>Select Quality</option>";
 
-  if(streamData[lang]){
-    Object.keys(streamData[lang]).forEach(q => {
-      qualitySelect.innerHTML += `<option value="${streamData[lang][q]}">${q}</option>`;
+  if(streams[lang]){
+    Object.keys(streams[lang]).forEach(q => {
+      qualitySelect.innerHTML +=
+        `<option value="${streams[lang][q]}">${q}</option>`;
     });
   }
 
@@ -94,12 +112,16 @@ document.getElementById("languageSelect").addEventListener("change", function(){
 document.getElementById("qualitySelect").addEventListener("change", function(){
 
   const url = this.value;
+
   if(url){
-    document.getElementById("playerFrame").src = url;
+    const encoded = encodeURIComponent(url);
+    document.getElementById("playerFrame").src =
+      "tmkc.html?url=" + encoded;
   }
 
 });
 
 </script>
+
 </body>
 </html>
