@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>ISL 2025-26 Live</title>
+
 <style>
 body{
   margin:0;
@@ -20,42 +21,45 @@ header{
 }
 
 .match{
+  background:#1e293b;
   margin:20px auto;
   padding:20px;
-  background:#1e293b;
-  width:90%;
+  width:92%;
   max-width:900px;
-  border-radius:10px;
-  box-shadow:0 0 15px rgba(0,0,0,0.5);
+  border-radius:12px;
+  box-shadow:0 0 15px rgba(0,0,0,0.4);
+}
+
+h2{
+  margin-top:0;
 }
 
 button{
-  margin:5px;
-  padding:10px 15px;
+  padding:10px 14px;
+  margin:6px;
   border:none;
-  border-radius:6px;
+  border-radius:8px;
   background:#2563eb;
   color:white;
-  cursor:pointer;
   font-weight:bold;
+  cursor:pointer;
+  min-width:80px;
 }
 
 button:hover{
   background:#1d4ed8;
 }
 
-.qualities{
-  margin-top:10px;
+.back-btn{
+  background:#dc2626;
 }
 
-iframe{
-  margin-top:20px;
-  width:90%;
-  max-width:900px;
-  height:500px;
-  border:none;
-  border-radius:10px;
-  background:black;
+.back-btn:hover{
+  background:#b91c1c;
+}
+
+.lang-box, .quality-box{
+  margin-top:15px;
 }
 
 .upcoming{
@@ -65,26 +69,25 @@ iframe{
 }
 </style>
 </head>
+
 <body>
 
 <header>ISL 2025-26 Live Matches</header>
 
 <div id="content"></div>
 
-<iframe id="player"></iframe>
-
 <script>
-const workerURL = "https://isl2026.xojiv79335.workers.dev/";
+
+const workerURL = "YOUR_WORKER_URL"; // 🔥 Replace this
 
 fetch(workerURL)
 .then(res => res.json())
 .then(data => {
 
   const container = document.getElementById("content");
-
-  // Group by match title
   const grouped = {};
 
+  // Group matches by title
   data.matches.forEach(match => {
     if(!grouped[match.title]){
       grouped[match.title] = [];
@@ -103,7 +106,6 @@ fetch(workerURL)
 
     const matches = grouped[title];
 
-    // Check if all are NOT_STARTED
     const isUpcoming = matches.every(m => m.status === "NOT_STARTED");
 
     if(isUpcoming){
@@ -115,6 +117,13 @@ fetch(workerURL)
       return;
     }
 
+    const langBox = document.createElement("div");
+    langBox.className = "lang-box";
+
+    const qualityBox = document.createElement("div");
+    qualityBox.className = "quality-box";
+    qualityBox.style.display = "none";
+
     matches.forEach(match => {
 
       if(match.status !== "LIVE") return;
@@ -122,36 +131,54 @@ fetch(workerURL)
       const langBtn = document.createElement("button");
       langBtn.innerText = match.language;
 
-      const qualityDiv = document.createElement("div");
-      qualityDiv.className = "qualities";
-
       langBtn.onclick = () => {
 
-        qualityDiv.innerHTML = "";
+        langBox.style.display = "none";
+        qualityBox.style.display = "block";
+        qualityBox.innerHTML = "";
+
+        const backBtn = document.createElement("button");
+        backBtn.innerText = "⬅ Back";
+        backBtn.className = "back-btn";
+
+        backBtn.onclick = () => {
+          qualityBox.style.display = "none";
+          langBox.style.display = "block";
+        };
+
+        qualityBox.appendChild(backBtn);
 
         Object.keys(match.streams).forEach(q => {
+
           const qBtn = document.createElement("button");
           qBtn.innerText = q;
 
+          // 🔥 Direct Redirect to M3U8
           qBtn.onclick = () => {
-            document.getElementById("player").src = match.streams[q];
+            window.location.href = match.streams[q];
           };
 
-          qualityDiv.appendChild(qBtn);
+          qualityBox.appendChild(qBtn);
         });
 
       };
 
-      matchDiv.appendChild(langBtn);
-      matchDiv.appendChild(qualityDiv);
-
+      langBox.appendChild(langBtn);
     });
+
+    matchDiv.appendChild(langBox);
+    matchDiv.appendChild(qualityBox);
 
     container.appendChild(matchDiv);
 
   });
 
+})
+.catch(err => {
+  document.getElementById("content").innerHTML =
+    "<p style='color:red;'>Failed to load matches.</p>";
 });
+
 </script>
 
 </body>
