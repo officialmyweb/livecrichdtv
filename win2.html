@@ -2,109 +2,154 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>ISL 2025 - 2026</title>
+<title>ISL 2025-26 Live</title>
 <style>
 body{
-  background:#111;
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:#0f172a;
   color:white;
-  font-family:Arial;
+  text-align:center;
+}
+
+header{
+  background:#1e293b;
+  padding:15px;
+  font-size:22px;
+  font-weight:bold;
+}
+
+.match{
+  margin:20px auto;
   padding:20px;
+  background:#1e293b;
+  width:90%;
+  max-width:900px;
+  border-radius:10px;
+  box-shadow:0 0 15px rgba(0,0,0,0.5);
 }
-h1,h2{
-  margin:10px 0;
-}
-select{
-  padding:10px;
-  margin:10px 5px 10px 0;
-  font-size:15px;
-}
+
 button{
+  margin:5px;
   padding:10px 15px;
-  font-size:15px;
+  border:none;
+  border-radius:6px;
+  background:#2563eb;
+  color:white;
   cursor:pointer;
+  font-weight:bold;
+}
+
+button:hover{
+  background:#1d4ed8;
+}
+
+.qualities{
+  margin-top:10px;
+}
+
+iframe{
+  margin-top:20px;
+  width:90%;
+  max-width:900px;
+  height:500px;
+  border:none;
+  border-radius:10px;
+  background:black;
+}
+
+.upcoming{
+  color:#facc15;
+  font-weight:bold;
+  margin-top:10px;
 }
 </style>
 </head>
 <body>
 
-<h1>ISL 2025 - 2026</h1>
-<h2 id="matchTitle">Loading Live Match...</h2>
+<header>ISL 2025-26 Live Matches</header>
 
-<select id="languageSelect">
-  <option>Select Language</option>
-</select>
+<div id="content"></div>
 
-<select id="qualitySelect">
-  <option>Select Quality</option>
-</select>
+<iframe id="player"></iframe>
 
-<button id="goBtn">Watch Stream</button>
+<script>
+const workerURL = "https://isl2026.xojiv79335.workers.dev/";
 
-
-  <script>
-document.addEventListener("DOMContentLoaded", function(){
-
-const jsonUrl = "https://raw.githubusercontent.com/Jitendra-unatti/fancode/main/data/fancode.json";
-
-let streams = {};
-
-fetch(jsonUrl)
+fetch(workerURL)
 .then(res => res.json())
-.then(raw => {
+.then(data => {
 
-  console.log("JSON Loaded");
+  const container = document.getElementById("content");
 
-  const data = raw.data;
+  // Group by match title
+  const grouped = {};
 
-  const islMatches = data.filter(m =>
-    m.category === "Football" &&
-    m.tournament &&
-    m.tournament.includes("ISL")
-  );
+  data.matches.forEach(match => {
+    if(!grouped[match.title]){
+      grouped[match.title] = [];
+    }
+    grouped[match.title].push(match);
+  });
 
-  if(!islMatches.length){
-    document.getElementById("matchTitle").innerText = "No ISL Match Found";
-    return;
-  }
+  Object.keys(grouped).forEach(title => {
 
-  const matchId = islMatches[0].match_id;
-  const sameMatch = islMatches.filter(m => m.match_id === matchId);
+    const matchDiv = document.createElement("div");
+    matchDiv.className = "match";
 
-  document.getElementById("matchTitle").innerText =
-    "Live Match - " + sameMatch[0].title;
+    const titleEl = document.createElement("h2");
+    titleEl.innerText = title;
+    matchDiv.appendChild(titleEl);
 
-  sameMatch.forEach(match => {
+    const matches = grouped[title];
 
-    const lang = match.language;
-    streams[lang] = {};
+    // Check if all are NOT_STARTED
+    const isUpcoming = matches.every(m => m.status === "NOT_STARTED");
 
-    const autoText = match.auto_streams?.[0]?.auto;
-    if(!autoText) return;
-
-    const urls = autoText.match(/https:\/\/.*?\.m3u8\?hdntl=.*?(?=\n|$)/g);
-
-    if(urls){
-      urls.forEach(url => {
-        const q = url.match(/\/(\d+p5?|\d+p)\.m3u8/);
-        if(q){
-          streams[lang][q[1]] = url;
-        }
-      });
+    if(isUpcoming){
+      const up = document.createElement("div");
+      up.className = "upcoming";
+      up.innerText = "Upcoming Soon";
+      matchDiv.appendChild(up);
+      container.appendChild(matchDiv);
+      return;
     }
 
+    matches.forEach(match => {
+
+      if(match.status !== "LIVE") return;
+
+      const langBtn = document.createElement("button");
+      langBtn.innerText = match.language;
+
+      const qualityDiv = document.createElement("div");
+      qualityDiv.className = "qualities";
+
+      langBtn.onclick = () => {
+
+        qualityDiv.innerHTML = "";
+
+        Object.keys(match.streams).forEach(q => {
+          const qBtn = document.createElement("button");
+          qBtn.innerText = q;
+
+          qBtn.onclick = () => {
+            document.getElementById("player").src = match.streams[q];
+          };
+
+          qualityDiv.appendChild(qBtn);
+        });
+
+      };
+
+      matchDiv.appendChild(langBtn);
+      matchDiv.appendChild(qualityDiv);
+
+    });
+
+    container.appendChild(matchDiv);
+
   });
-
-  const langSelect = document.getElementById("languageSelect");
-
-  Object.keys(streams).forEach(lang => {
-    langSelect.innerHTML += `<option value="${lang}">${lang}</option>`;
-  });
-
-})
-.catch(err=>{
-  console.log("FETCH ERROR:", err);
-  document.getElementById("matchTitle").innerText = "Error Loading JSON";
-});
 
 });
 </script>
