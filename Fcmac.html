@@ -46,132 +46,153 @@ height:100%;
 </div>
 
 <script src="https://raw.githubusercontent.com/Jitendra-unatti/fancode/refs/heads/main/data/fancode.json"></script>
+
 <script>
 
 const video = document.getElementById("video");
 const container = document.querySelector(".shaka-video-container");
 
 const player = new shaka.Player(video);
+
 const ui = new shaka.ui.Overlay(player, container, video);
 
+
+/* UI CONFIG */
+
 ui.configure({
+
 controlPanelElements:[
 'play_pause',
 'mute',
 'time_and_duration',
 'spacer',
-'settings',
-'fullscreen'
+'quality',
+'fullscreen',
+'overflow_menu'
+],
+
+overflowMenuButtons:[
+'quality',
+'language'
 ]
+
 });
 
+
+/* PLAYER CONFIG */
+
 player.configure({
+
+abr:{
+enabled:true
+},
+
 streaming:{
 bufferingGoal:10,
 rebufferingGoal:2,
 bufferBehind:30
+},
+
+manifest:{
+retryParameters:{
+timeout:30000,
+maxAttempts:2,
+baseDelay:1000,
+backoffFactor:2,
+fuzzFactor:0.5
 }
+}
+
 });
+
 
 /* HEADERS */
 
 player.getNetworkingEngine().registerRequestFilter((type,request)=>{
+
 request.headers["Referer"]="https://fancode.com/";
+
 request.headers["User-Agent"]="ReactNativeVideo/9.3.0 (Linux;Android 13) AndroidXMedia3/1.6.1";
+
 });
 
 
-/* GET MATCH ID */
+/* READ URL PARAM */
 
 const params = new URLSearchParams(window.location.search);
-const idParam = params.get("id");
+
+const idParam = params.get("id");   // example 140992_ENGLISH
+
+
+if(!idParam){
+
+alert("Invalid stream id");
+
+throw new Error("No id");
+
+}
+
 
 const matchId = idParam.split("_")[0];
-
-const match = matches.find(m=>m.match_id==matchId);
-
-const playlistText = match.auto_streams[0].auto;
+const language = idParam.split("_")[1];
 
 
-/* EXTRACT QUALITY STREAMS */
+/* FIND MATCH */
 
-const lines = playlistText.split("\n");
+const match = matches.find(m => m.match_id == matchId);
 
-let streams=[];
 
-for(let i=0;i<lines.length;i++){
+if(!match){
 
-if(lines[i].includes("RESOLUTION")){
+alert("Match not found");
 
-let quality = lines[i].match(/RESOLUTION=\d+x(\d+)/)[1];
-let url = lines[i+1];
+throw new Error("Match missing");
 
-streams.push({
-label: quality+"p",
-url:url
+}
+
+
+/* GET MASTER PLAYLIST TEXT */
+
+const autoPlaylist = match.auto_streams[0].auto;
+
+
+/* CONVERT TEXT TO M3U8 FILE */
+
+const blob = new Blob([autoPlaylist],{
+
+type:"application/vnd.apple.mpegurl"
+
 });
 
-}
-
-}
+const blobUrl = URL.createObjectURL(blob);
 
 
-/* LOAD DEFAULT QUALITY */
+/* LOAD STREAM */
 
-async function loadStream(url){
+async function startPlayer(){
 
-let currentTime = video.currentTime || 0;
+try{
 
-await player.load(url);
+console.log("Loading stream...");
 
-video.currentTime=currentTime;
+await player.load(blobUrl);
+
+console.log("Stream loaded");
 
 video.play();
 
 }
 
-loadStream(streams[4].url); // default 720p
+catch(e){
+
+console.error("Playback error",e);
+
+}
+
+}
 
 
-/* CREATE QUALITY MENU INSIDE SETTINGS */
-
-const settingsButton = document.querySelector(".shaka-settings-button");
-
-const qualityMenu = document.createElement("div");
-
-qualityMenu.style.position="absolute";
-qualityMenu.style.bottom="60px";
-qualityMenu.style.right="60px";
-qualityMenu.style.background="#111";
-qualityMenu.style.padding="10px";
-qualityMenu.style.display="none";
-
-streams.forEach(stream=>{
-
-let btn=document.createElement("div");
-
-btn.innerText=stream.label;
-
-btn.style.color="#fff";
-btn.style.padding="5px";
-btn.style.cursor="pointer";
-
-btn.onclick=()=>{
-loadStream(stream.url);
-qualityMenu.style.display="none";
-};
-
-qualityMenu.appendChild(btn);
-
-});
-
-container.appendChild(qualityMenu);
-
-
-settingsButton.onclick=()=>{
-qualityMenu.style.display=
-qualityMenu.style.display==="none"?"block":"none";
-};
+startPlayer();
 
 </script>
 
