@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SHAKA PLAYER</title>
+
 <meta name="referrer" content="no-referrer">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 
-<title>M3U8 Test Player</title>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.6/shaka-player.ui.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.6/controls.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.6.0/shaka-player.ui.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.6.0/controls.min.css">
 
 <style>
 
@@ -40,43 +40,84 @@ height:100%;
 
 <body>
 
-<div data-shaka-player-container class="shaka-video-container">
-
-<video autoplay playsinline data-shaka-player id="video"></video>
-
+<div class="shaka-video-container">
+<video id="video" playsinline autoplay></video>
 </div>
-
 
 <script>
 
-async function initPlayer(){
+const channelstreamInfo = {
 
-const video=document.getElementById("video");
+streamUrl: "https://islstream.xojiv79335.workers.dev/?id=140992_ENGLISH"
 
-const ui=video["ui"];
-const controls=ui.getControls();
-const player=controls.getPlayer();
+};
+
+let player;
+const video = document.getElementById('video');
+
+async function initializePlayer(){
+
+try{
+
+player = new shaka.Player();
+
+await player.attach(video);
 
 
-/* PUT YOUR M3U8 HERE */
+const container=document.querySelector('.shaka-video-container');
 
-const stream="https://in-mc-flive.fancode.com/mumbai/140992_english_hls_99ea6ba7a722304_1ta-di_h264/1080p.m3u8?hdntl=Expires=1772900766~_GO=Generated~acl=/mumbai/140992_english_hls_99ea6ba7a722304_1ta-di_h264/*~Signature=AQQqLwT9sBmYxZkGNTVotPERBICsHKuf9_owDuRKMfn-p9drX7BLCiXoHwmD6KKorLgYtHBFlsRwK1OxLN-9y8KME6EM";
+const ui=new shaka.ui.Overlay(player,container,video);
 
 
-/* SMOOTH STREAM CONFIG */
+const config={
+
+seekBarColors:{
+base:'rgba(255,255,255,.2)',
+buffered:'rgba(255,255,255,.4)',
+played:'rgb(255,0,0)',
+},
+
+controlPanelElements:[
+'play_pause',
+'mute',
+'time_and_duration',
+'restart',
+'spacer',
+'quality',
+'language',
+'picture_in_picture',
+'fullscreen',
+'overflow_menu'
+]
+
+};
+
+ui.configure(config);
+
 
 player.configure({
 
 streaming:{
-bufferingGoal:30,
-rebufferingGoal:15,
+bufferingGoal:10,
+rebufferingGoal:2,
 bufferBehind:30
+},
+
+manifest:{
+retryParameters:{
+timeout:30000,
+maxAttempts:2,
+baseDelay:1000,
+backoffFactor:2,
+fuzzFactor:0.5
+}
+
 }
 
 });
 
 
-/* ADD HEADERS */
+/* HEADER INJECTION */
 
 player.getNetworkingEngine().registerRequestFilter((type,request)=>{
 
@@ -87,28 +128,104 @@ request.headers["User-Agent"]="ReactNativeVideo/9.3.0 (Linux;Android 13) Android
 });
 
 
-try{
+video.autoplay=true;
+video.controls=false;
+video.volume=1;
+video.muted=false;
+video.preload='auto';
 
-await player.load(stream);
+
+console.log("Loading stream:",channelstreamInfo.streamUrl);
+
+
+await player.load(channelstreamInfo.streamUrl);
 
 console.log("Stream loaded successfully");
+
+
+const attemptAutoplay=async()=>{
+
+try{
+
+await video.play();
+
+console.log("Autoplay success");
+
+}
+
+catch(e){
+
+video.muted=true;
+
+try{
+
+await video.play();
+
+console.log("Autoplay success muted");
+
+}
+
+catch(e2){
+
+console.log("User interaction required");
+
+}
+
+}
+
+};
+
+
+if(video.readyState>=2){
+
+await attemptAutoplay();
+
+}
+
+else{
+
+video.addEventListener("canplay",attemptAutoplay,{once:true});
+
+}
+
 
 }
 
 catch(error){
 
-console.error("Error loading stream",error);
+console.error("Error initializing player:",error);
+
+video.src=channelstreamInfo.streamUrl;
+
+video.autoplay=true;
+video.muted=false;
+
+try{
+
+await video.play();
+
+}
+
+catch(e){
+
+video.muted=true;
+
+await video.play();
 
 }
 
 }
 
+}
 
-document.addEventListener("shaka-ui-loaded",initPlayer);
+
+document.addEventListener("DOMContentLoaded",()=>{
+
+initializePlayer().catch(console.error);
+
+});
 
 </script>
 
-
 </body>
-
 </html>
