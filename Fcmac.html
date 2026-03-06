@@ -4,7 +4,7 @@
 <head>
 
 <meta charset="UTF-8">
-<title>PLAYER</title>
+<title>PER</title>
 
 <meta name="referrer" content="no-referrer">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -69,53 +69,47 @@ const container=document.querySelector('.shaka-video-container');
 const ui=new shaka.ui.Overlay(player,container,video);
 
 
-const config={
-
-seekBarColors:{
-base:'rgba(255,255,255,.2)',
-buffered:'rgba(255,255,255,.4)',
-played:'rgb(255,0,0)',
-},
-
-controlPanelElements:[
-'play_pause',
-'mute',
-'time_and_duration',
-'restart',
-'spacer',
-'quality',
-'language',
-'picture_in_picture',
-'fullscreen',
-'overflow_menu'
-]
-
-};
-
-ui.configure(config);
+ui.configure({
+  addSeekBar: true,
+  controlPanelElements: [
+    'play_pause',
+    'mute',
+    'time_and_duration',
+    'spacer',
+    'quality',
+    'fullscreen',
+    'overflow_menu'
+  ],
+  overflowMenuButtons: [
+    'quality',
+    'language',
+    'captions'
+  ]
+});
 
 
 player.configure({
 
-  abr: {
-    enabled: true
-  },
+abr:{
+enabled:true,
+defaultBandwidthEstimate:5000000
+},
 
-  streaming: {
-    bufferingGoal: 10,
-    rebufferingGoal: 2,
-    bufferBehind: 30
-  },
+streaming:{
+bufferingGoal:10,
+rebufferingGoal:2,
+bufferBehind:30
+},
 
-  manifest: {
-    retryParameters: {
-      timeout: 30000,
-      maxAttempts: 2,
-      baseDelay: 1000,
-      backoffFactor: 2,
-      fuzzFactor: 0.5
-    }
-  }
+manifest:{
+retryParameters:{
+timeout:30000,
+maxAttempts:2,
+baseDelay:1000,
+backoffFactor:2,
+fuzzFactor:0.5
+}
+}
 
 });
 
@@ -141,7 +135,15 @@ console.log("Loading stream:",channelstreamInfo.streamUrl);
 
 
 await player.load(channelstreamInfo.streamUrl);
+const tracks = player.getVariantTracks();
 
+if (tracks.length > 0) {
+  console.log("Available qualities:", tracks);
+
+  tracks.forEach(track => {
+    console.log(track.height + "p");
+  });
+}
 console.log("Stream loaded successfully");
 
 
