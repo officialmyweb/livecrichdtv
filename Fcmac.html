@@ -1,200 +1,128 @@
-<!DOCTYPE html>
-<html>
-<head>
-
-<meta charset="UTF-8">
-<title>Live ayer</title>
-
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="referrer" content="no-referrer">
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.6.0/shaka-player.ui.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.6.0/controls.min.css">
-
-<style>
-
-body{
-margin:0;
-background:#000;
-height:100%;
-}
-
-html{
-height:100%;
-}
-
-.shaka-video-container{
-width:100%;
-height:100%;
-}
-
-video{
-width:100%;
-height:100%;
-}
-
-</style>
-
-</head>
-
-<body>
-
-<div class="shaka-video-container" data-shaka-player-container>
-
-<video autoplay playsinline data-shaka-player id="video"></video>
-
-</div>
-
-<script src="matches.json"></script>
-
 <script>
 
 const video = document.getElementById("video");
 const container = document.querySelector(".shaka-video-container");
 
 const player = new shaka.Player(video);
-
 const ui = new shaka.ui.Overlay(player, container, video);
 
-
-/* UI CONFIG */
-
 ui.configure({
-
 controlPanelElements:[
 'play_pause',
 'mute',
 'time_and_duration',
 'spacer',
-'quality',
-'fullscreen',
-'overflow_menu'
-],
-
-overflowMenuButtons:[
-'quality',
-'language'
+'settings',
+'fullscreen'
 ]
-
 });
 
-
-/* PLAYER CONFIG */
-
 player.configure({
-
-abr:{
-enabled:true
-},
-
 streaming:{
 bufferingGoal:10,
 rebufferingGoal:2,
 bufferBehind:30
-},
-
-manifest:{
-retryParameters:{
-timeout:30000,
-maxAttempts:2,
-baseDelay:1000,
-backoffFactor:2,
-fuzzFactor:0.5
 }
-}
-
 });
-
 
 /* HEADERS */
 
 player.getNetworkingEngine().registerRequestFilter((type,request)=>{
-
 request.headers["Referer"]="https://fancode.com/";
-
 request.headers["User-Agent"]="ReactNativeVideo/9.3.0 (Linux;Android 13) AndroidXMedia3/1.6.1";
-
 });
 
 
-/* READ URL PARAM */
+/* GET MATCH ID */
 
 const params = new URLSearchParams(window.location.search);
-
-const idParam = params.get("id");   // example 140992_ENGLISH
-
-
-if(!idParam){
-
-alert("Invalid stream id");
-
-throw new Error("No id");
-
-}
-
+const idParam = params.get("id");
 
 const matchId = idParam.split("_")[0];
-const language = idParam.split("_")[1];
+
+const match = matches.find(m=>m.match_id==matchId);
+
+const playlistText = match.auto_streams[0].auto;
 
 
-/* FIND MATCH */
+/* EXTRACT QUALITY STREAMS */
 
-const match = matches.find(m => m.match_id == matchId);
+const lines = playlistText.split("\n");
 
+let streams=[];
 
-if(!match){
+for(let i=0;i<lines.length;i++){
 
-alert("Match not found");
+if(lines[i].includes("RESOLUTION")){
 
-throw new Error("Match missing");
+let quality = lines[i].match(/RESOLUTION=\d+x(\d+)/)[1];
+let url = lines[i+1];
+
+streams.push({
+label: quality+"p",
+url:url
+});
+
+}
 
 }
 
 
-/* GET MASTER PLAYLIST TEXT */
+/* LOAD DEFAULT QUALITY */
 
-const autoPlaylist = match.auto_streams[0].auto;
+async function loadStream(url){
 
+let currentTime = video.currentTime || 0;
 
-/* CONVERT TEXT TO M3U8 FILE */
+await player.load(url);
 
-const blob = new Blob([autoPlaylist],{
-
-type:"application/vnd.apple.mpegurl"
-
-});
-
-const blobUrl = URL.createObjectURL(blob);
-
-
-/* LOAD STREAM */
-
-async function startPlayer(){
-
-try{
-
-console.log("Loading stream...");
-
-await player.load(blobUrl);
-
-console.log("Stream loaded");
+video.currentTime=currentTime;
 
 video.play();
 
 }
 
-catch(e){
-
-console.error("Playback error",e);
-
-}
-
-}
+loadStream(streams[4].url); // default 720p
 
 
-startPlayer();
+/* CREATE QUALITY MENU INSIDE SETTINGS */
+
+const settingsButton = document.querySelector(".shaka-settings-button");
+
+const qualityMenu = document.createElement("div");
+
+qualityMenu.style.position="absolute";
+qualityMenu.style.bottom="60px";
+qualityMenu.style.right="60px";
+qualityMenu.style.background="#111";
+qualityMenu.style.padding="10px";
+qualityMenu.style.display="none";
+
+streams.forEach(stream=>{
+
+let btn=document.createElement("div");
+
+btn.innerText=stream.label;
+
+btn.style.color="#fff";
+btn.style.padding="5px";
+btn.style.cursor="pointer";
+
+btn.onclick=()=>{
+loadStream(stream.url);
+qualityMenu.style.display="none";
+};
+
+qualityMenu.appendChild(btn);
+
+});
+
+container.appendChild(qualityMenu);
+
+
+settingsButton.onclick=()=>{
+qualityMenu.style.display=
+qualityMenu.style.display==="none"?"block":"none";
+};
 
 </script>
-
-</body>
-</html>
