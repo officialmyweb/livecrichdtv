@@ -1,117 +1,114 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <title>Live Stream Player</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
-  <meta name="referrer" content="no-referrer"/>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plyr@3.6.12/dist/plyr.css"/>
-  <style>
-    body { background:#000; margin:0; overflow:hidden; }
-    html, body { height:100%; }
-    video { width:100%; height:100%; }
-    .plyr { height:100%; }
-  </style>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
+
+<title>M3U8 Test Player</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.6/shaka-player.ui.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.6/controls.min.css">
+
+<style>
+
+body{
+margin:0;
+background:#000;
+height:100%;
+}
+
+html{
+height:100%;
+}
+
+.shaka-video-container{
+width:100%;
+height:100%;
+}
+
+video{
+width:100%;
+height:100%;
+}
+
+</style>
+
 </head>
+
 <body>
 
-<video id="player" autoplay muted controls crossorigin playsinline></video>
+<div data-shaka-player-container class="shaka-video-container">
 
-<script src="https://lchdxfootball.pages.dev/premium.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/hls.js@1.1.4/dist/hls.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/plyr@3.6.12/dist/plyr.min.js"></script>
+<video autoplay playsinline data-shaka-player id="video"></video>
+
+</div>
+
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
 
-  const video = document.getElementById('player');
+async function initPlayer(){
 
-  // Get stream ID from URL
-  const params = new URLSearchParams(window.location.search);
-  const streamId = params.get('id');
+const video=document.getElementById("video");
 
-  if (!streamId || !streamMap[streamId]) {
-    document.body.innerHTML = "<h2 style='color:white;text-align:center;'>Invalid Stream ID</h2>";
-    return;
-  }
+const ui=video["ui"];
+const controls=ui.getControls();
+const player=controls.getPlayer();
 
-  const source = streamMap[streamId].url;
-  const poster = streamMap[streamId].poster;
 
-  if (poster) video.setAttribute("poster", poster);
+/* PUT YOUR M3U8 HERE */
 
-  if (Hls.isSupported()) {
+const stream="https://islstream.xojiv79335.workers.dev/?id=140992_ENGLISH";
 
-    const hls = new Hls({
-      maxBufferLength: 30,
-      maxMaxBufferLength: 60,
 
-      xhrSetup: function(xhr, url) {
-        try {
-          xhr.setRequestHeader(
-            "Referer",
-            "https://fancode.com/"
-          );
+/* SMOOTH STREAM CONFIG */
 
-          xhr.setRequestHeader(
-            "User-Agent",
-            "ReactNativeVideo/9.3.0 (Linux;Android 13) AndroidXMedia3/1.6.1"
-          );
-        } catch(e) {}
-      }
-    });
+player.configure({
 
-    hls.loadSource(source);
-    hls.attachMedia(video);
-
-    hls.on(Hls.Events.MANIFEST_PARSED, () => {
-
-      const availableQualities = hls.levels.map(level => level.height);
-      availableQualities.unshift(0);
-
-      const player = new Plyr(video, {
-        controls: ['play-large','play','mute','volume','settings','fullscreen'],
-        quality: {
-          default: 0,
-          options: availableQualities,
-          forced: true,
-          onChange: (quality) => {
-            if (quality === 0) {
-              hls.currentLevel = -1;
-            } else {
-              hls.levels.forEach((level, i) => {
-                if (level.height === quality) {
-                  hls.currentLevel = i;
-                }
-              });
-            }
-          }
-        }
-      });
-
-      player.play();
-
-    });
-
-  } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-
-    video.src = source;
-    new Plyr(video);
-
-  } else {
-    document.body.innerHTML = "<h2 style='color:white;text-align:center;'>HLS not supported</h2>";
-  }
+streaming:{
+bufferingGoal:30,
+rebufferingGoal:15,
+bufferBehind:30
+}
 
 });
 
-// Auto landscape on fullscreen
-document.addEventListener('fullscreenchange', () => {
-  if (document.fullscreenElement) {
-    screen.orientation?.lock?.('landscape').catch(()=>{});
-  } else {
-    screen.orientation?.unlock?.().catch(()=>{});
-  }
+
+/* ADD HEADERS */
+
+player.getNetworkingEngine().registerRequestFilter((type,request)=>{
+
+request.headers["Referer"]="https://fancode.com/";
+
+request.headers["User-Agent"]="ReactNativeVideo/9.3.0 (Linux;Android 13) AndroidXMedia3/1.6.1";
+
 });
+
+
+try{
+
+await player.load(stream);
+
+console.log("Stream loaded successfully");
+
+}
+
+catch(error){
+
+console.error("Error loading stream",error);
+
+}
+
+}
+
+
+document.addEventListener("shaka-ui-loaded",initPlayer);
+
 </script>
 
+
 </body>
+
 </html>
