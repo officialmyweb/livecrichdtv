@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html>
-
 <head>
 
 <meta charset="UTF-8">
-<title>PER</title>
-
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="referrer" content="no-referrer">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+
+<title>Live Player</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.6.0/shaka-player.ui.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.6.0/controls.min.css">
@@ -17,10 +16,6 @@
 body{
 margin:0;
 background:#000;
-height:100%;
-}
-
-html{
 height:100%;
 }
 
@@ -34,6 +29,17 @@ width:100%;
 height:100%;
 }
 
+#qualitySelect{
+position:absolute;
+top:10px;
+right:10px;
+z-index:999;
+background:#000;
+color:#fff;
+padding:6px;
+border-radius:5px;
+}
+
 </style>
 
 </head>
@@ -41,193 +47,124 @@ height:100%;
 <body>
 
 <div class="shaka-video-container">
-<video id="video" playsinline autoplay></video>
+<video id="video" autoplay playsinline></video>
+
+<select id="qualitySelect"></select>
+
 </div>
+
+
+<script src="matches.json"></script>
 
 <script>
 
-const channelstreamInfo = {
+const params = new URLSearchParams(window.location.search);
+const idParam = params.get("id");   // example 140992_ENGLISH
 
-streamUrl: "https://islstream.xojiv79335.workers.dev/?id=140992_ENGLISH"
+const matchId = idParam.split("_")[0];
+const language = idParam.split("_")[1];
 
-};
+const match = matches.find(m => m.match_id == matchId);
 
-let player;
-const video = document.getElementById('video');
-
-async function initializePlayer(){
-
-try{
-
-player = new shaka.Player();
-
-await player.attach(video);
+const autoPlaylist = match.auto_streams[0].auto;
 
 
-const container=document.querySelector('.shaka-video-container');
+/* Extract qualities */
 
-const ui=new shaka.ui.Overlay(player,container,video);
+const lines = autoPlaylist.split("\n");
 
+let qualities = [];
+
+for(let i=0;i<lines.length;i++){
+
+if(lines[i].includes("RESOLUTION")){
+
+let resolution = lines[i].match(/RESOLUTION=\d+x(\d+)/)[1];
+
+let url = lines[i+1];
+
+qualities.push({
+label: resolution+"p",
+url: url
+});
+
+}
+
+}
+
+
+/* Setup Player */
+
+const video = document.getElementById("video");
+const container = document.querySelector(".shaka-video-container");
+
+const player = new shaka.Player(video);
+
+const ui = new shaka.ui.Overlay(player, container, video);
 
 ui.configure({
-  addSeekBar: true,
-  controlPanelElements: [
-    'play_pause',
-    'mute',
-    'time_and_duration',
-    'spacer',
-    'quality',
-    'fullscreen',
-    'overflow_menu'
-  ],
-  overflowMenuButtons: [
-    'quality',
-    'language',
-    'captions'
-  ]
+controlPanelElements:[
+'play_pause',
+'mute',
+'time_and_duration',
+'spacer',
+'fullscreen'
+]
 });
 
 
-player.configure({
-
-abr:{
-enabled:true,
-defaultBandwidthEstimate:5000000
-},
-
-streaming:{
-bufferingGoal:10,
-rebufferingGoal:2,
-bufferBehind:30
-},
-
-manifest:{
-retryParameters:{
-timeout:30000,
-maxAttempts:2,
-baseDelay:1000,
-backoffFactor:2,
-fuzzFactor:0.5
-}
-}
-
-});
-
-/* HEADER INJECTION */
+/* Headers */
 
 player.getNetworkingEngine().registerRequestFilter((type,request)=>{
 
 request.headers["Referer"]="https://fancode.com/";
-
 request.headers["User-Agent"]="ReactNativeVideo/9.3.0 (Linux;Android 13) AndroidXMedia3/1.6.1";
 
 });
 
 
-video.autoplay=true;
-video.controls=false;
-video.volume=1;
-video.muted=false;
-video.preload='auto';
+/* Load default quality */
 
+async function loadStream(url){
 
-console.log("Loading stream:",channelstreamInfo.streamUrl);
+await player.load(url);
 
-
-await player.load(channelstreamInfo.streamUrl);
-const tracks = player.getVariantTracks();
-
-if (tracks.length > 0) {
-  console.log("Available qualities:", tracks);
-
-  tracks.forEach(track => {
-    console.log(track.height + "p");
-  });
-}
-console.log("Stream loaded successfully");
-
-
-const attemptAutoplay=async()=>{
-
-try{
-
-await video.play();
-
-console.log("Autoplay success");
+video.play();
 
 }
 
-catch(e){
-
-video.muted=true;
-
-try{
-
-await video.play();
-
-console.log("Autoplay success muted");
-
-}
-
-catch(e2){
-
-console.log("User interaction required");
-
-}
-
-}
-
-};
+loadStream(qualities[4].url); // default 720p
 
 
-if(video.readyState>=2){
 
-await attemptAutoplay();
+/* Quality dropdown */
 
-}
+const select = document.getElementById("qualitySelect");
 
-else{
+qualities.forEach(q=>{
 
-video.addEventListener("canplay",attemptAutoplay,{once:true});
+const option=document.createElement("option");
 
-}
+option.value=q.url;
+option.text=q.label;
 
-
-}
-
-catch(error){
-
-console.error("Error initializing player:",error);
-
-video.src=channelstreamInfo.streamUrl;
-
-video.autoplay=true;
-video.muted=false;
-
-try{
-
-await video.play();
-
-}
-
-catch(e){
-
-video.muted=true;
-
-await video.play();
-
-}
-
-}
-
-}
-
-
-document.addEventListener("DOMContentLoaded",()=>{
-
-initializePlayer().catch(console.error);
+select.appendChild(option);
 
 });
+
+
+select.addEventListener("change",async function(){
+
+const currentTime = video.currentTime;
+
+await player.load(this.value);
+
+video.currentTime=currentTime;
+
+video.play();
+
+});
+
 
 </script>
 
