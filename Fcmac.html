@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 
 <meta charset="UTF-8">
-<title>Live Player</title>
-
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="referrer" content="no-referrer">
+
+<title>Player</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.6.0/shaka-player.ui.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.6.0/controls.min.css">
@@ -16,16 +17,11 @@
 body{
 margin:0;
 background:#000;
-height:100%;
-}
-
-html{
-height:100%;
 }
 
 .shaka-video-container{
 width:100%;
-height:100%;
+height:100vh;
 }
 
 video{
@@ -40,12 +36,8 @@ height:100%;
 <body>
 
 <div class="shaka-video-container" data-shaka-player-container>
-
 <video autoplay playsinline data-shaka-player id="video"></video>
-
 </div>
-
-<script src="https://raw.githubusercontent.com/Jitendra-unatti/fancode/refs/heads/main/data/fancode.json"></script>
 
 <script>
 
@@ -53,146 +45,90 @@ const video = document.getElementById("video");
 const container = document.querySelector(".shaka-video-container");
 
 const player = new shaka.Player(video);
-
 const ui = new shaka.ui.Overlay(player, container, video);
 
-
-/* UI CONFIG */
-
 ui.configure({
-
 controlPanelElements:[
 'play_pause',
 'mute',
 'time_and_duration',
 'spacer',
-'quality',
-'fullscreen',
-'overflow_menu'
-],
-
-overflowMenuButtons:[
-'quality',
-'language'
+'fullscreen'
 ]
-
 });
 
-
-/* PLAYER CONFIG */
-
-player.configure({
-
-abr:{
-enabled:true
-},
-
-streaming:{
-bufferingGoal:10,
-rebufferingGoal:2,
-bufferBehind:30
-},
-
-manifest:{
-retryParameters:{
-timeout:30000,
-maxAttempts:2,
-baseDelay:1000,
-backoffFactor:2,
-fuzzFactor:0.5
-}
-}
-
-});
-
-
-/* HEADERS */
 
 player.getNetworkingEngine().registerRequestFilter((type,request)=>{
-
 request.headers["Referer"]="https://fancode.com/";
-
-request.headers["User-Agent"]="ReactNativeVideo/9.3.0 (Linux;Android 13) AndroidXMedia3/1.6.1";
-
 });
 
 
-/* READ URL PARAM */
-
-const params = new URLSearchParams(window.location.search);
-
-const idParam = params.get("id");   // example 140992_ENGLISH
-
-
-if(!idParam){
-
-alert("Invalid stream id");
-
-throw new Error("No id");
-
-}
-
-
-const matchId = idParam.split("_")[0];
-const language = idParam.split("_")[1];
-
-
-/* FIND MATCH */
-
-const match = matches.find(m => m.match_id == matchId);
-
-
-if(!match){
-
-alert("Match not found");
-
-throw new Error("Match missing");
-
-}
-
-
-/* GET MASTER PLAYLIST TEXT */
-
-const autoPlaylist = match.auto_streams[0].auto;
-
-
-/* CONVERT TEXT TO M3U8 FILE */
-
-const blob = new Blob([autoPlaylist],{
-
-type:"application/vnd.apple.mpegurl"
-
-});
-
-const blobUrl = URL.createObjectURL(blob);
-
-
-/* LOAD STREAM */
-
-async function startPlayer(){
+async function start(){
 
 try{
 
-console.log("Loading stream...");
+const params = new URLSearchParams(window.location.search);
+const idParam = params.get("id");
 
-await player.load(blobUrl);
+if(!idParam){
+alert("No id in URL");
+return;
+}
 
-console.log("Stream loaded");
+const matchId = idParam.split("_")[0];
+
+const res = await fetch("https://raw.githubusercontent.com/Jitendra-unatti/fancode/refs/heads/main/data/fancode.json");
+const data = await res.json();
+
+const match = data.matches.find(m=>m.match_id==matchId);
+
+if(!match){
+alert("Match not found");
+return;
+}
+
+const playlist = match.auto_streams[0].auto;
+
+const lines = playlist.split("\n");
+
+let streams=[];
+
+for(let i=0;i<lines.length;i++){
+
+if(lines[i].includes("RESOLUTION")){
+
+let q = lines[i].match(/RESOLUTION=\d+x(\d+)/)[1];
+let url = lines[i+1];
+
+streams.push({
+quality:q,
+url:url
+});
+
+}
+
+}
+
+console.log("Streams:",streams);
+
+if(streams.length===0){
+alert("No streams found");
+return;
+}
+
+await player.load(streams[4].url); // load 720p
 
 video.play();
 
-}
+}catch(e){
 
-catch(e){
-
-console.error("Playback error",e);
+console.error("Player error:",e);
 
 }
 
 }
 
-
-startPlayer();
+start();
 
 </script>
 
