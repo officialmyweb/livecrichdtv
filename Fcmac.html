@@ -3,10 +3,10 @@
 <head>
 
 <meta charset="UTF-8">
+<title>Live ayer</title>
+
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="referrer" content="no-referrer">
-
-<title>Live Player</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.6.0/shaka-player.ui.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.6.0/controls.min.css">
@@ -16,6 +16,10 @@
 body{
 margin:0;
 background:#000;
+height:100%;
+}
+
+html{
 height:100%;
 }
 
@@ -29,71 +33,21 @@ width:100%;
 height:100%;
 }
 
-#qualitySelect{
-position:absolute;
-top:10px;
-right:10px;
-z-index:999;
-background:#000;
-color:#fff;
-padding:6px;
-border-radius:5px;
-}
-
 </style>
 
 </head>
 
 <body>
 
-<div class="shaka-video-container">
-<video id="video" autoplay playsinline></video>
+<div class="shaka-video-container" data-shaka-player-container>
 
-<select id="qualitySelect"></select>
+<video autoplay playsinline data-shaka-player id="video"></video>
 
 </div>
-
 
 <script src="matches.json"></script>
 
 <script>
-
-const params = new URLSearchParams(window.location.search);
-const idParam = params.get("id");   // example 140992_ENGLISH
-
-const matchId = idParam.split("_")[0];
-const language = idParam.split("_")[1];
-
-const match = matches.find(m => m.match_id == matchId);
-
-const autoPlaylist = match.auto_streams[0].auto;
-
-
-/* Extract qualities */
-
-const lines = autoPlaylist.split("\n");
-
-let qualities = [];
-
-for(let i=0;i<lines.length;i++){
-
-if(lines[i].includes("RESOLUTION")){
-
-let resolution = lines[i].match(/RESOLUTION=\d+x(\d+)/)[1];
-
-let url = lines[i+1];
-
-qualities.push({
-label: resolution+"p",
-url: url
-});
-
-}
-
-}
-
-
-/* Setup Player */
 
 const video = document.getElementById("video");
 const container = document.querySelector(".shaka-video-container");
@@ -102,69 +56,143 @@ const player = new shaka.Player(video);
 
 const ui = new shaka.ui.Overlay(player, container, video);
 
+
+/* UI CONFIG */
+
 ui.configure({
+
 controlPanelElements:[
 'play_pause',
 'mute',
 'time_and_duration',
 'spacer',
-'fullscreen'
+'quality',
+'fullscreen',
+'overflow_menu'
+],
+
+overflowMenuButtons:[
+'quality',
+'language'
 ]
+
 });
 
 
-/* Headers */
+/* PLAYER CONFIG */
+
+player.configure({
+
+abr:{
+enabled:true
+},
+
+streaming:{
+bufferingGoal:10,
+rebufferingGoal:2,
+bufferBehind:30
+},
+
+manifest:{
+retryParameters:{
+timeout:30000,
+maxAttempts:2,
+baseDelay:1000,
+backoffFactor:2,
+fuzzFactor:0.5
+}
+}
+
+});
+
+
+/* HEADERS */
 
 player.getNetworkingEngine().registerRequestFilter((type,request)=>{
 
 request.headers["Referer"]="https://fancode.com/";
+
 request.headers["User-Agent"]="ReactNativeVideo/9.3.0 (Linux;Android 13) AndroidXMedia3/1.6.1";
 
 });
 
 
-/* Load default quality */
+/* READ URL PARAM */
 
-async function loadStream(url){
+const params = new URLSearchParams(window.location.search);
 
-await player.load(url);
+const idParam = params.get("id");   // example 140992_ENGLISH
+
+
+if(!idParam){
+
+alert("Invalid stream id");
+
+throw new Error("No id");
+
+}
+
+
+const matchId = idParam.split("_")[0];
+const language = idParam.split("_")[1];
+
+
+/* FIND MATCH */
+
+const match = matches.find(m => m.match_id == matchId);
+
+
+if(!match){
+
+alert("Match not found");
+
+throw new Error("Match missing");
+
+}
+
+
+/* GET MASTER PLAYLIST TEXT */
+
+const autoPlaylist = match.auto_streams[0].auto;
+
+
+/* CONVERT TEXT TO M3U8 FILE */
+
+const blob = new Blob([autoPlaylist],{
+
+type:"application/vnd.apple.mpegurl"
+
+});
+
+const blobUrl = URL.createObjectURL(blob);
+
+
+/* LOAD STREAM */
+
+async function startPlayer(){
+
+try{
+
+console.log("Loading stream...");
+
+await player.load(blobUrl);
+
+console.log("Stream loaded");
 
 video.play();
 
 }
 
-loadStream(qualities[4].url); // default 720p
+catch(e){
+
+console.error("Playback error",e);
+
+}
+
+}
 
 
-
-/* Quality dropdown */
-
-const select = document.getElementById("qualitySelect");
-
-qualities.forEach(q=>{
-
-const option=document.createElement("option");
-
-option.value=q.url;
-option.text=q.label;
-
-select.appendChild(option);
-
-});
-
-
-select.addEventListener("change",async function(){
-
-const currentTime = video.currentTime;
-
-await player.load(this.value);
-
-video.currentTime=currentTime;
-
-video.play();
-
-});
-
+startPlayer();
 
 </script>
 
