@@ -97,25 +97,27 @@ ui.configure(config);
 
 player.configure({
 
-streaming:{
-bufferingGoal:10,
-rebufferingGoal:2,
-bufferBehind:30
-},
+  abr: {
+    enabled: true
+  },
 
-manifest:{
-retryParameters:{
-timeout:30000,
-maxAttempts:2,
-baseDelay:1000,
-backoffFactor:2,
-fuzzFactor:0.5
-}
+  streaming: {
+    bufferingGoal: 10,
+    rebufferingGoal: 2,
+    bufferBehind: 30
+  },
 
-}
+  manifest: {
+    retryParameters: {
+      timeout: 30000,
+      maxAttempts: 2,
+      baseDelay: 1000,
+      backoffFactor: 2,
+      fuzzFactor: 0.5
+    }
+  }
 
 });
-
 
 /* HEADER INJECTION */
 
