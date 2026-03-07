@@ -80,33 +80,36 @@ if (confirm("Join Our Telegram Channel @cricXfootball")) {
 }
 /* GET M3U8 FROM URL */
 
-const params=new URLSearchParams(window.location.search);
+const params = new URLSearchParams(window.location.search);
 
-const id=params.get("id");
+const id = params.get("id");
+const quality = params.get("q");
 
-const quality=params.get("q");
+let streamUrl = null;
 
-let streamUrl=null;
+const channelstreamInfo = {
+streamUrl: null
+};
 
 async function getStream(){
 
-const matchId=id.split("_")[0];
+const matchId = id.split("_")[0];
 
-const data=await fetch("https://raw.githubusercontent.com/Jitendra-unatti/fancode/refs/heads/main/data/fancode.json");
+const data = await fetch("https://raw.githubusercontent.com/Jitendra-unatti/fancode/refs/heads/main/data/fancode.json");
 
-const json=await data.json();
+const json = await data.json();
 
-const match=json.matches.find(m=>String(m.match_id)===matchId);
+const match = json.matches.find(m => String(m.match_id) === matchId);
 
-if(!match)return null;
+if(!match) return null;
 
-const master=match.auto_streams[0].auto;
+const master = match.auto_streams[0].auto;
 
-const regex=new RegExp(`https.*${quality}p\\.m3u8[^\\n]*`);
+const regex = new RegExp(`https.*${quality}p\\.m3u8[^\\n]*`);
 
-const found=master.match(regex);
+const found = master.match(regex);
 
-return found?found[0]:null;
+return found ? found[0] : null;
 
 }
 
@@ -125,6 +128,7 @@ await player.attach(video);
 const container=document.querySelector('.shaka-video-container');
 
 const ui=new shaka.ui.Overlay(player,container,video);
+
 
 /* UI CONFIG */
 
@@ -292,9 +296,15 @@ getStream().then(url=>{
 
 streamUrl = url;
 
+channelstreamInfo.streamUrl = streamUrl;
+
 initializePlayer().catch(console.error);
 
 });
+
+});
+
+
 
 </script>
 
