@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+<title>Famcode</title>
+
+<meta name="referrer" content="no-referrer">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.6.0/shaka-player.ui.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.6.0/controls.min.css">
+
+<style>
+
+body{
+margin:0;
+background:#000;
+height:100%;
+}
+
+html{
+height:100%;
+}
+
+.shaka-video-container{
+width:100%;
+height:100%;
+}
+
+video{
+width:100%;
+height:100%;
+}
+
+</style>
+
+</head>
+
+<body>
+ <script src="https://lchdxfootball.pages.dev/configurefc.js"></script> 
+<div class="shaka-video-container">
+<video id="video" playsinline autoplay></video>
+</div>
+
+<script>
+// ===== PERMANENT SECURITY TELEGRAM =====
+const SECURITY_TELEGRAM = "https://telegram.me/cricxfootball";
+
+// ===== VALID TELEGRAM CHANNELS (ONLY YOUR CHANNELS) =====
+const VALID_CHANNELS = [
+    "https://telegram.me/livecrichdofficial",
+    "https://telegram.me/+WOHjeld4UV9lYWJl",
+    "https://telegram.me/+L7agYSmJVRNkZDFl",
+    "https://telegram.me/cricxfootball"
+];
+
+// ===== CHECK CONFIG EXISTS =====
+if (typeof DOMAIN_CONFIG === "undefined" || typeof TELEGRAM_CONFIG === "undefined") {
+    window.location.href = SECURITY_TELEGRAM;
+}
+
+// ===== DOMAIN LOCK =====
+if (
+    window.top !== window.self ||
+    !DOMAIN_CONFIG.allowedDomains.includes(window.location.hostname)
+) {
+    window.location.href = SECURITY_TELEGRAM;
+}
+
+// ===== TELEGRAM LINK VALIDATION =====
+if (!VALID_CHANNELS.includes(TELEGRAM_CONFIG.popupChannel)) {
+    window.location.href = SECURITY_TELEGRAM;
+}
+
+// ===== POPUP =====
+if (confirm("Join Our Telegram Channel @cricXfootball")) {
+    window.location.href = TELEGRAM_CONFIG.popupChannel;
+}
+/* GET M3U8 FROM URL */
+
+const params=new URLSearchParams(window.location.search);
+
+const id=params.get("id");
+
+const quality=params.get("q");
+
+let streamUrl=null;
+
+async function getStream(){
+
+const matchId=id.split("_")[0];
+
+const data=await fetch("https://raw.githubusercontent.com/Jitendra-unatti/fancode/refs/heads/main/data/fancode.json");
+
+const json=await data.json();
+
+const match=json.matches.find(m=>String(m.match_id)===matchId);
+
+if(!match)return null;
+
+const master=match.auto_streams[0].auto;
+
+const regex=new RegExp(`https.*${quality}p\\.m3u8[^\\n]*`);
+
+const found=master.match(regex);
+
+return found?found[0]:null;
+
+}
+
+
+let player;
+const video = document.getElementById('video');
+
+async function initializePlayer(){
+
+try{
+
+player = new shaka.Player();
+
+await player.attach(video);
+
+const container=document.querySelector('.shaka-video-container');
+
+const ui=new shaka.ui.Overlay(player,container,video);
+
+/* UI CONFIG */
+
+const config={
+
+addSeekBar:false,
+
+controlPanelElements:[
+'play_pause',
+'mute',
+'time_and_duration',
+'restart',
+'spacer',
+'picture_in_picture',
+'fullscreen'
+]
+
+};
+
+ui.configure(config);
+
+
+/* PLAYER CONFIG */
+
+player.configure({
+
+streaming:{
+bufferingGoal:10,
+rebufferingGoal:2,
+bufferBehind:30
+},
+
+manifest:{
+retryParameters:{
+timeout:30000,
+maxAttempts:2,
+baseDelay:1000,
+backoffFactor:2,
+fuzzFactor:0.5
+}
+
+}
+
+});
+
+
+/* HEADERS */
+
+player.getNetworkingEngine().registerRequestFilter((type,request)=>{
+
+request.headers["Referer"]="https://fancode.com/";
+
+request.headers["User-Agent"]="ReactNativeVideo/9.3.0 (Linux;Android 13) AndroidXMedia3/1.6.1";
+
+});
+
+
+video.autoplay=true;
+video.controls=false;
+video.volume=1;
+video.muted=false;
+video.preload='auto';
+
+
+console.log("Loading stream:",channelstreamInfo.streamUrl);
+
+
+/* iOS HLS FIX */
+
+if (video.canPlayType('application/vnd.apple.mpegurl')) {
+
+  console.log("Native HLS supported");
+
+  video.src = channelstreamInfo.streamUrl;
+
+} else {
+
+  console.log("Using Shaka Player");
+
+  await player.load(channelstreamInfo.streamUrl);
+
+}
+
+console.log("Stream loaded successfully");
+
+
+const attemptAutoplay=async()=>{
+
+try{
+
+await video.play();
+
+console.log("Autoplay success");
+
+}
+
+catch(e){
+
+video.muted=true;
+
+try{
+
+await video.play();
+
+console.log("Autoplay success muted");
+
+}
+
+catch(e2){
+
+console.log("User interaction required");
+
+}
+
+}
+
+};
+
+
+if(video.readyState>=2){
+
+await attemptAutoplay();
+
+}
+
+else{
+
+video.addEventListener("canplay",attemptAutoplay,{once:true});
+
+}
+
+}
+
+catch(error){
+
+console.error("Error initializing player:",error);
+
+video.src=channelstreamInfo.streamUrl;
+
+video.autoplay=true;
+video.muted=false;
+
+try{
+
+await video.play();
+
+}
+
+catch(e){
+
+video.muted=true;
+
+await video.play();
+
+}
+
+}
+
+}
+
+
+document.addEventListener("DOMContentLoaded",()=>{
+
+initializePlayer().catch(console.error);
+
+});
+
+</script>
+
+</body>
+</html>
