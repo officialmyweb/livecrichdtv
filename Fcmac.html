@@ -138,17 +138,17 @@ console.log("Loading stream:",channelstreamInfo.streamUrl);
 
 /* iOS HLS FIX */
 
-if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+if (video.canPlayType('application/vnd.apple.mpegurl')) {
 
-console.log("iOS detected — using native HLS player");
+  console.log("Native HLS supported");
 
-video.src = channelstreamInfo.streamUrl;
+  video.src = channelstreamInfo.streamUrl;
 
 } else {
 
-console.log("Using Shaka Player");
+  console.log("Using Shaka Player");
 
-await player.load(channelstreamInfo.streamUrl);
+  await player.load(channelstreamInfo.streamUrl);
 
 }
 
