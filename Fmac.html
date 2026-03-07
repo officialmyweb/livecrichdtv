@@ -288,6 +288,10 @@ await video.play();
 
 document.addEventListener("DOMContentLoaded",()=>{
 
+getStream().then(url=>{
+
+streamUrl = url;
+
 initializePlayer().catch(console.error);
 
 });
