@@ -4,7 +4,7 @@
 <head>
 
 <meta charset="UTF-8">
-<title>SHAKA PLAYER</title>
+<title>Famcode</title>
 
 <meta name="referrer" content="no-referrer">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -39,13 +39,45 @@ height:100%;
 </head>
 
 <body>
-
+ <script src="https://lchdxfootball.pages.dev/configurefc.js"></script> 
 <div class="shaka-video-container">
 <video id="video" playsinline autoplay></video>
 </div>
 
 <script>
+// ===== PERMANENT SECURITY TELEGRAM =====
+const SECURITY_TELEGRAM = "https://telegram.me/cricxfootball";
 
+// ===== VALID TELEGRAM CHANNELS (ONLY YOUR CHANNELS) =====
+const VALID_CHANNELS = [
+    "https://telegram.me/livecrichdofficial",
+    "https://telegram.me/+WOHjeld4UV9lYWJl",
+    "https://telegram.me/+L7agYSmJVRNkZDFl",
+    "https://telegram.me/cricxfootball"
+];
+
+// ===== CHECK CONFIG EXISTS =====
+if (typeof DOMAIN_CONFIG === "undefined" || typeof TELEGRAM_CONFIG === "undefined") {
+    window.location.href = SECURITY_TELEGRAM;
+}
+
+// ===== DOMAIN LOCK =====
+if (
+    window.top !== window.self ||
+    !DOMAIN_CONFIG.allowedDomains.includes(window.location.hostname)
+) {
+    window.location.href = SECURITY_TELEGRAM;
+}
+
+// ===== TELEGRAM LINK VALIDATION =====
+if (!VALID_CHANNELS.includes(TELEGRAM_CONFIG.popupChannel)) {
+    window.location.href = SECURITY_TELEGRAM;
+}
+
+// ===== POPUP =====
+if (confirm("Join Our Telegram Channel @cricXfootball")) {
+    window.location.href = TELEGRAM_CONFIG.popupChannel;
+}
 /* GET M3U8 FROM URL */
 
 const params = new URLSearchParams(window.location.search);
