@@ -70,7 +70,7 @@ const container=document.querySelector('.shaka-video-container');
 
 const ui=new shaka.ui.Overlay(player,container,video);
 
-/* UI CONFIG (BUTTONS REMOVED AS REQUESTED) */
+/* UI CONFIG */
 
 const config={
 
@@ -136,7 +136,21 @@ video.preload='auto';
 console.log("Loading stream:",channelstreamInfo.streamUrl);
 
 
+/* iOS HLS FIX */
+
+if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+
+console.log("iOS detected — using native HLS player");
+
+video.src = channelstreamInfo.streamUrl;
+
+} else {
+
+console.log("Using Shaka Player");
+
 await player.load(channelstreamInfo.streamUrl);
+
+}
 
 console.log("Stream loaded successfully");
 
