@@ -1,43 +1,119 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Telegram-Live-Cric-Hd</title>
-
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PKL - Player</title>
+<meta name="referrer" content="no-referrer">
+<script src="https://cdn.jsdelivr.net/npm/shaka-player@4.16.2/dist/shaka-player.ui.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shaka-player@4.16.2/dist/controls.css">
+<script src="sweety.js"></script>
 <style>
-  body {
-    margin: 0;
-    background: black;
-  }
-  .player-wrap {
-    position: relative;
-    width: 100%;
-    height: 100vh;
-  }
-  iframe {
-    width: 100%;
-    height: 100%;
-    border: 0;
-  }
-  .click-blocker {
-    position: absolute;
-    inset: 0;
-    z-index: 10;
-    background: transparent;
-  }
+*{margin:0;padding:0;box-sizing:border-box}
+
+html,body{
+width:100%;
+height:100%;
+background:#000;
+overflow:hidden;
+font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif
+}
+
+.shaka-video-container{
+position:fixed;
+inset:0;
+background:#000;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+video{
+width:100%;
+height:100%;
+object-fit:contain;
+background:#000;
+}
 </style>
-</head>
-
 <body>
-
-<div class="player-wrap">
-  <iframe
-    id="player"
-    sandbox="allow-scripts"
-    allowfullscreen>
-  </iframe>
+<div id="player-container" class="shaka-video-container">
+<video id="video" autoplay playsinline></video>
 </div>
-
-<script src="https://extralive.pages.dev/stream.js"></script>
+<script>
+const params=new URLSearchParams(window.location.search)
+const streamId=params.get("id") || "M1"
+const stream=STREAMS[streamId]
+if(!stream){
+document.body.innerHTML="Invalid Stream ID"
+throw new Error("Invalid Stream")
+}
+const CONFIG={
+streamUrl:stream.mpd,
+keyId:stream.keyId,
+key:stream.key,
+cookieUrl:"https://cookies.xojiv79335.workers.dev/"
+}
+document.addEventListener("DOMContentLoaded",async()=>{
+shaka.polyfill.installAll()
+if(!shaka.Player.isBrowserSupported()) return
+const video=document.getElementById("video")
+const container=document.getElementById("player-container")
+video.muted=true
+const player=new shaka.Player()
+await player.attach(video)
+const ui=new shaka.ui.Overlay(player,container,video)
+ui.configure({
+addBigPlayButton:true,
+controlPanelElements:[
+"mute",
+"play_pause",
+"time_and_duration",
+"spacer",
+"quality",
+"picture_in_picture",
+"fullscreen"
+],
+seekBarColors:{
+base:"white",
+buffered:"red",
+played:"green"
+}
+})
+player.configure({
+drm:{clearKeys:{[CONFIG.keyId]:CONFIG.key}},
+manifest:{defaultPresentationDelay:5},
+streaming:{
+lowLatencyMode:true,
+bufferingGoal:10,
+rebufferingGoal:2,
+safeSeekOffset:5
+}
+})
+let cookieValue=""
+try{
+const response=await fetch(CONFIG.cookieUrl,{cache:"no-store"})
+const data=await response.json()
+cookieValue=data.cookie || ""
+}catch(e){}
+if(cookieValue){
+player.getNetworkingEngine().registerRequestFilter((type,request)=>{
+request.headers["Referer"]="https://www.jiotv.com/"
+request.headers["User-Agent"]="plaYtv/7.1.5 (Linux;Android 13) ExoPlayerLib/2.11.6"
+request.headers["Cookie"]=cookieValue
+let urlCookie=cookieValue.startsWith("__hdnea__=")?cookieValue.substring(10):cookieValue
+if((type===shaka.net.NetworkingEngine.RequestType.MANIFEST ||
+type===shaka.net.NetworkingEngine.RequestType.SEGMENT) &&
+!request.uris[0].includes("__hdnea__")){
+const sep=request.uris[0].includes("?")?"&":"?"
+request.uris[0]+=sep+"__hdnea__="+urlCookie
+}
+})
+}
+try{
+await player.load(CONFIG.streamUrl)
+video.play().catch(()=>{})
+}catch(e){}
+video.addEventListener("play",()=>{
+video.muted=false
+})
+})
+</script>
 </body>
 </html>
