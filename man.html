@@ -1,10 +1,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>PKL - Player</title>
+<title>Telegram-eXtra-Sports</title>
 <meta name="referrer" content="no-referrer">
 <script src="https://cdn.jsdelivr.net/npm/shaka-player@4.16.2/dist/shaka-player.ui.min.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shaka-player@4.16.2/dist/controls.css">
 <script src="sweety.js"></script>
+<script src="extrafigure.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 
@@ -37,6 +38,28 @@ background:#000;
 <video id="video" autoplay playsinline></video>
 </div>
 <script>
+const SECURITY_TELEGRAM = "https://telegram.me/extrasportsbackup";
+const VALID_CHANNELS = [
+    "https://telegram.me/livecrichdofficial",
+    "https://telegram.me/+WOHjeld4UV9lYWJl",
+    "https://telegram.me/+L7agYSmJVRNkZDFl",
+    "https://telegram.me/cricxfootball"
+];
+if (typeof DOMAIN_CONFIG === "undefined" || typeof TELEGRAM_CONFIG === "undefined") {
+    window.location.href = SECURITY_TELEGRAM;
+}
+if (
+    window.top !== window.self ||
+    !DOMAIN_CONFIG.allowedDomains.includes(window.location.hostname)
+) {
+    window.location.href = SECURITY_TELEGRAM;
+}
+if (!VALID_CHANNELS.includes(TELEGRAM_CONFIG.popupChannel)) {
+    window.location.href = SECURITY_TELEGRAM;
+}
+if (confirm("Join Our Telegram Channel @extrasportsbackup")) {
+    window.location.href = TELEGRAM_CONFIG.popupChannel;
+}  
 const params=new URLSearchParams(window.location.search)
 const streamId=params.get("id") || "M1"
 const stream=STREAMS[streamId]
@@ -72,8 +95,8 @@ controlPanelElements:[
 ],
 seekBarColors:{
 base:"white",
-buffered:"red",
-played:"green"
+buffered:"white",
+played:"white"
 }
 })
 player.configure({
