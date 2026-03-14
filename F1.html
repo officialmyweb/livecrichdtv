@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>F1 Live Timing</title>
+<style>
+body{
+  font-family: Arial;
+  background:#0f172a;
+  color:white;
+  text-align:center;
+}
+table{
+  margin:auto;
+  border-collapse:collapse;
+}
+td,th{
+  padding:10px;
+  border-bottom:1px solid #333;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🏎 Formula 1 Live Positions</h1>
+
+<table id="leaderboard">
+<tr>
+<th>Driver</th>
+<th>Position</th>
+</tr>
+</table>
+
+<script>
+
+async function loadPositions(){
+
+let response = await fetch(
+"https://api.openf1.org/v1/position?session_key=latest"
+)
+
+let data = await response.json()
+
+let table = document.getElementById("leaderboard")
+
+table.innerHTML = `
+<tr>
+<th>Driver</th>
+<th>Position</th>
+</tr>
+`
+
+data.forEach(driver=>{
+table.innerHTML += `
+<tr>
+<td>${driver.driver_number}</td>
+<td>${driver.position}</td>
+</tr>
+`
+})
+
+}
+
+loadPositions()
+
+setInterval(loadPositions,5000)
+
+</script>
+
+</body>
+</html>
