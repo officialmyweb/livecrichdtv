@@ -1,71 +1,109 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>F1 Live Timing</title>
-<style>
-body{
-  font-family: Arial;
-  background:#0f172a;
-  color:white;
-  text-align:center;
-}
-table{
-  margin:auto;
-  border-collapse:collapse;
-}
-td,th{
-  padding:10px;
-  border-bottom:1px solid #333;
-}
-</style>
+
+<meta charset="UTF-8">
+<title>OpenF1 Ultimate Dashboard</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="style.css">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
 
 <body>
 
-<h1>🏎 Formula 1 Live Positions</h1>
+<header>
+🏁 OpenF1 Ultimate Timing Dashboard
+</header>
 
-<table id="leaderboard">
-<tr>
-<th>Driver</th>
-<th>Position</th>
-</tr>
-</table>
+<div class="grid">
 
-<script>
+<div class="card">
+<h3>Meetings</h3>
+<div id="meetings"></div>
+</div>
 
-async function loadPositions(){
+<div class="card">
+<h3>Sessions</h3>
+<div id="sessions"></div>
+</div>
 
-let response = await fetch(
-"https://api.openf1.org/v1/position?session_key=latest"
-)
+<div class="card">
+<h3>Weather</h3>
+<div id="weather"></div>
+</div>
 
-let data = await response.json()
+<div class="card">
+<h3>Drivers</h3>
+<table id="drivers"></table>
+</div>
 
-let table = document.getElementById("leaderboard")
+<div class="card">
+<h3>Leaderboard</h3>
+<table id="position"></table>
+</div>
 
-table.innerHTML = `
-<tr>
-<th>Driver</th>
-<th>Position</th>
-</tr>
-`
+<div class="card">
+<h3>Intervals</h3>
+<table id="intervals"></table>
+</div>
 
-data.forEach(driver=>{
-table.innerHTML += `
-<tr>
-<td>${driver.driver_number}</td>
-<td>${driver.position}</td>
-</tr>
-`
-})
+<div class="card">
+<h3>Laps</h3>
+<table id="laps"></table>
+</div>
 
-}
+<div class="card">
+<h3>Pit Stops</h3>
+<table id="pit"></table>
+</div>
 
-loadPositions()
+<div class="card">
+<h3>Tyre Stints</h3>
+<table id="stints"></table>
+</div>
 
-setInterval(loadPositions,5000)
+<div class="card">
+<h3>Overtakes</h3>
+<div id="overtakes"></div>
+</div>
 
-</script>
+<div class="card">
+<h3>Race Control</h3>
+<div id="racecontrol"></div>
+</div>
+
+<div class="card">
+<h3>Starting Grid</h3>
+<table id="grid"></table>
+</div>
+
+<div class="card">
+<h3>Session Results</h3>
+<table id="results"></table>
+</div>
+
+<div class="card">
+<h3>Telemetry</h3>
+<canvas id="speedChart"></canvas>
+</div>
+
+<div class="card">
+<h3>Car Location</h3>
+<div id="track"></div>
+</div>
+
+<div class="card">
+<h3>Team Radio</h3>
+<div id="radio"></div>
+</div>
+
+</div>
+
+<script src="app.js"></script>
 
 </body>
 </html>
