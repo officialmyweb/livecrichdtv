@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Telegram-cricXfootball</title>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.11/shaka-player.ui.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.11/controls.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.6/shaka-player.ui.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.6/controls.min.css">
 
 <style>
 html, body {
@@ -40,7 +40,7 @@ video {
 <script>
 
 // ✅ CONFIRM POPUP (same logic)
-if (confirm("Join Our Telegram Channel @livecrichdofficial")) {
+if (confirm("Join Our Telegram Channel @cricXfootball")) {
   window.location.href = "https://telegram.me/+L7agYSmJVRNkZDFl";
 } else {
   initializePlayer(); // only start when Cancel
@@ -52,7 +52,7 @@ async function initializePlayer() {
   shaka.polyfill.installAll();
   if (!shaka.Player.isBrowserSupported()) return;
 
-  const tvgId = new URLSearchParams(window.location.search).get('tvid');
+  const tvgId = new URLSearchParams(window.location.search).get('id');
   if (!tvgId) return;
 
   const COOKIE = "__hdnea__=st=1773844261~exp=1773865861~acl=/*~hmac=5a47de28e8c4964b93c1609443db1f34df10d3fce1ecc2e09e6a1d62e283c593";
