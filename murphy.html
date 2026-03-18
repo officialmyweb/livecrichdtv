@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Telegram-cricXfootball</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.6/shaka-player.ui.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.6/controls.min.css">
+
+<style>
+html, body {
+  margin:0;
+  padding:0;
+  height:100%;
+  width:100%;
+  background:black;
+  overflow:hidden;
+}
+.shaka-video-container {
+  position:absolute;
+  inset:0;
+}
+video {
+  width:100%;
+  height:100%;
+  object-fit:contain;
+}
+
+  .shaka-spinner-container { display: none; }
+</style>
+</head>
+
+<body>
+
+<div class="shaka-video-container">
+  <video autoplay playsinline></video>
+</div>
+  <script src="https://lchdxfootball.pages.dev/configurecxf.js"></script>
+<script src="https://lchdxfootball.pages.dev/jantv.js"></script>
+
+<script>
+const SECURITY_TELEGRAM = "https://telegram.me/cricxfootball";
+  
+const VALID_CHANNELS = [
+    "https://telegram.me/livecrichdofficial",
+    "https://telegram.me/cricxfootball",
+    "https://telegram.me/+L7agYSmJVRNkZDFl",
+    "https://telegram.me/+WOHjeld4UV9lYWJl"
+];
+
+if (typeof DOMAIN_CONFIG === "undefined" || typeof TELEGRAM_CONFIG === "undefined") {
+    window.location.href = SECURITY_TELEGRAM;
+}
+
+if (
+    window.top !== window.self ||
+    !DOMAIN_CONFIG.allowedDomains.includes(window.location.hostname)
+) {
+    window.location.href = SECURITY_TELEGRAM;
+}
+
+if (!VALID_CHANNELS.includes(TELEGRAM_CONFIG.popupChannel)) {
+    window.location.href = SECURITY_TELEGRAM;
+}
+
+if (confirm("Join Our Telegram Channel @cricXfootball")) {
+    window.location.href = TELEGRAM_CONFIG.popupChannel;
+}
+  
+initializePlayer();
+
+async function initializePlayer() {
+
+  shaka.polyfill.installAll();
+  if (!shaka.Player.isBrowserSupported()) return;
+
+  const tvgId = new URLSearchParams(window.location.search).get('id');
+  if (!tvgId) return;
+
+  const COOKIE = window.STREAM_DATA?.COOKIE;
+  const sonyLivSports = window.STREAM_DATA?.sonyLivSports;
+
+  if (!sonyLivSports || !sonyLivSports[tvgId]) return;
+
+  const channelData = Object.assign({ cookie: COOKIE }, sonyLivSports[tvgId]);
+
+  document.title = channelData.name + ' - Player';
+
+  const video = document.querySelector('video');
+  const player = new shaka.Player();
+
+  await player.attach(video);
+
+  const ui = new shaka.ui.Overlay(player, document.querySelector('.shaka-video-container'), video);
+
+  let drmConfig = {};
+  if (channelData.clearKey) {
+    drmConfig = {
+      clearKeys: {
+        [channelData.clearKey.keyId]: channelData.clearKey.key
+      }
+    };
+  }
+
+  player.configure({ drm: drmConfig });
+
+  ui.configure({
+    controlPanelElements: [
+      'play_pause','mute','spacer','time_and_duration',
+      'quality','fullscreen','picture_in_picture','overflow_menu'
+    ],
+    overflowMenuButtons: ['captions','cast','quality','language']
+  });
+
+  player.getNetworkingEngine().registerRequestFilter((type, request) => {
+
+    request.headers['Referer'] = 'https://www.jiotv.com/';
+    request.headers['User-Agent'] = 'plaYtv/7.1.3 (Linux;Android 13) ygx/69.1 ExoPlayerLib/824.0';
+
+    if (channelData.cookie) {
+      request.headers['Cookie'] = channelData.cookie;
+    }
+
+    if (
+      channelData.cookie &&
+      (type === shaka.net.NetworkingEngine.RequestType.MANIFEST ||
+       type === shaka.net.NetworkingEngine.RequestType.SEGMENT) &&
+      request.uris[0] &&
+      !request.uris[0].includes('__hdnea__=')
+    ) {
+      const sep = request.uris[0].includes('?') ? '&' : '?';
+      request.uris[0] += sep + channelData.cookie;
+    }
+  });
+
+  try {
+    await player.load(channelData.streamUrl);
+    await video.play();
+  } catch (e) {
+    console.log("Playback failed:", e);
+  }
+}
+
+</script>
+
+</body>
+</html>
