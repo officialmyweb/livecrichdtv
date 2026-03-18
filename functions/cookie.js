@@ -1,26 +1,12 @@
 export async function onRequest() {
-  try {
-    const url = "https://pkll.xojiv79335.workers.dev/";
 
-    const res = await fetch(url);
-    const data = await res.json();
+  const cookie = "__hdnea__=st=1773844261~exp=1773865861~acl=/*~hmac=5a47de28e8c4964b93c1609443db1f34df10d3fce1ecc2e09e6a1d62e283c593";
 
-    // Agar array hai toh first item le lo
-    const firstItem = Array.isArray(data) ? data[0] : data;
-
-    const cookie = firstItem.cookie;
-
-    return new Response(JSON.stringify({
-      cookie: cookie
-    }), {
-      headers: {
-        "Content-Type": "application/json"
-      }
-    });
-
-  } catch (err) {
-    return new Response(JSON.stringify({
-      error: err.toString()
-    }), { status: 500 });
-  }
+  return new Response(JSON.stringify({
+    cookie: cookie
+  }), {
+    headers: {
+      "Content-Type": "application/json"
+    }
+  });
 }
