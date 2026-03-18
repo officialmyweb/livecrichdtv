@@ -90,6 +90,15 @@ async function initializePlayer() {
 
   player.configure({ drm: drmConfig });
 
+     ui.configure({
+            controlPanelElements: [
+                'play_pause', 'mute', 'spacer', 'time_and_duration', 
+                'quality', 'fullscreen', 'picture_in_picture', 
+                'overflow_menu'
+            ],
+            overflowMenuButtons: ['captions', 'cast', 'quality', 'language']
+        });
+  
   // Headers + Cookie
   player.getNetworkingEngine().registerRequestFilter((type, request) => {
 
