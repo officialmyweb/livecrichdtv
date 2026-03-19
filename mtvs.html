@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Movies - Blockbuster</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.11/shaka-player.compiled.min.js"></script>
+
+  <style>
+    body { margin: 0; background: black; }
+    video { width: 100%; height: 100vh; background: black; }
+  </style>
+</head>
+
+<body>
+  <video id="video" controls autoplay></video>
+
+  <script>
+    function getParam(name) {
+      return new URLSearchParams(window.location.search).get(name);
+    }
+
+    const streamUrl = getParam("id");
+
+    if (!streamUrl) {
+      alert("No M3U8 URL provided");
+      throw new Error("Missing stream URL");
+    }
+
+    const FIXED_REFERER = "https://vegamovies.actor/";
+    const FIXED_ORIGIN = "https://vegamovies.actor/";
+
+    shaka.polyfill.installAll();
+
+    if (!shaka.Player.isBrowserSupported()) {
+      alert("Browser not supported");
+      throw new Error("Browser not supported");
+    }
+
+    const video = document.getElementById("video");
+    const player = new shaka.Player(video);
+
+    player.getNetworkingEngine().registerRequestFilter((type, request) => {
+      if (type === shaka.net.NetworkingEngine.RequestType.MANIFEST ||
+          type === shaka.net.NetworkingEngine.RequestType.SEGMENT) {
+
+        request.headers["Referer"] = FIXED_REFERER;
+        request.headers["Origin"] = FIXED_ORIGIN;
+      }
+    });
+
+    player.load(streamUrl).catch(error => {
+      console.error("Shaka Error", error);
+      alert("Playback failed");
+    });
+  </script>
+</body>
+</html>
