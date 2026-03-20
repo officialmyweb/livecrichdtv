@@ -1,12 +1,29 @@
-export async function onRequest() {
+export async function onRequest(context) {
+  const url = "https://sony.thecricsters.workers.dev/?tvid=s1";
 
-  const cookie = "__hdnea__=st=1773844261~exp=1773865861~acl=/*~hmac=5a47de28e8c4964b93c1609443db1f34df10d3fce1ecc2e09e6a1d62e283c593";
+  try {
+    const res = await fetch(url);
+    const text = await res.text();
 
-  return new Response(JSON.stringify({
-    cookie: cookie
-  }), {
-    headers: {
-      "Content-Type": "application/json"
-    }
-  });
+    const match = text.match(/const COOKIE = "(.*?)"/);
+
+    const cookie = match ? match[1] : "";
+
+    return new Response(JSON.stringify({
+      cookie
+    }), {
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+        "Cache-Control": "public, max-age=3600" // 1 hour
+      }
+    });
+
+  } catch (err) {
+    return new Response(JSON.stringify({
+      error: err.message
+    }), {
+      headers: { "Content-Type": "application/json" }
+    });
+  }
 }
