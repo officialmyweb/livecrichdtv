@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<title>ISL 2025-26 - Matches</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<link rel="shortcut icon" href="#"/>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+<style>
+body{background:#0f0f0f;color:#fff;}
+
+.match-card{
+transition:.3s;
+background:linear-gradient(145deg,#1a1a1a,#1f1f1f);
+}
+
+.match-card:hover{
+transform:translateY(-6px);
+box-shadow:0 25px 35px rgba(0,0,0,.45);
+}
+
+.live-badge{animation:pulse 1.5s infinite;}
+
+@keyframes pulse{
+0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.7);}
+50%{box-shadow:0 0 15px 10px rgba(239,68,68,0);}
+}
+
+.match-img{transition:transform .3s;}
+
+.match-card:hover .match-img{transform:scale(1.03);}
+
+</style>
+</head>
+<body class="bg-gray-950 min-h-screen">
+<div class="max-w-7xl mx-auto px-4 py-8 sm:py-10">
+<h1 class="text-3xl sm:text-4xl font-bold text-center text-white mb-8 tracking-wide">
+ISL 2025-26 Live
+</h1>
+<div id="matches-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+</div>
+<script>
+const container=document.getElementById("matches-container");
+const DATA_URL="https://raw.githubusercontent.com/Jitendra-unatti/fancode/refs/heads/main/data/fancode.json";
+const PLAY_BASE="https://famcodexwebs.pages.dev/play";
+
+function makeBtn(label,href){
+const a=document.createElement("a");
+a.href=href;
+a.target="_blank";
+a.className="px-4 py-2 rounded-lg text-sm flex items-center justify-center shadow-md transition-all bg-red-600 hover:bg-red-700 text-white";
+a.innerHTML=`<i class="fas fa-play mr-2"></i>${label}`;
+return a;
+}
+
+fetch(DATA_URL)
+.then(r=>r.json())
+.then(data=>{
+let matches=Array.isArray(data.matches)?data.matches:[];
+
+// ✅ FILTER ONLY ISL 2025-26
+matches = matches.filter(m => (m.tournament || "").includes("ISL 2025-26"));
+
+matches.sort((a,b)=>{
+const aLive=(a.status||"").toUpperCase()==="LIVE"||(a.streamingStatus||"").toUpperCase()==="STARTED";
+const bLive=(b.status||"").toUpperCase()==="LIVE"||(b.streamingStatus||"").toUpperCase()==="STARTED";
+return(bLive?1:0)-(aLive?1:0);
+});
+
+matches.forEach(match=>{
+const isLive=(match.status||"").toUpperCase()==="LIVE"||(match.streamingStatus||"").toUpperCase()==="STARTED";
+const imgSrc=match.image||(match.image_cdn&&(match.image_cdn.APP||match.image_cdn.BG_IMAGE))||"https://www.fancode.com/skillup-uploads/cms-media/Cricket_Fallback_Old_match-card.jpg";
+const card=document.createElement("div");
+card.className=`rounded-2xl overflow-hidden shadow-xl match-card border border-gray-800 ${isLive?"ring-2 ring-red-600":""}`;
+const headerHTML=`
+<div class="relative">
+<img src="${imgSrc}" class="w-full h-48 sm:h-60 md:h-64 lg:h-72 object-cover object-top match-img">
+${isLive?`<span class="absolute top-3 left-3 bg-red-600 text-white text-xs font-semibold px-3 py-1 rounded-full shadow-md live-badge">LIVE</span>`:""}
+</div>
+`;
+
+const btnWrap=document.createElement("div");
+btnWrap.className="flex flex-col sm:flex-row sm:flex-wrap gap-3 hidden mt-4";
+
+if(isLive && match.auto_streams && match.auto_streams.length){
+const master=match.auto_streams[0].auto;
+const qualities=[...master.matchAll(/(\d+)p\.m3u8/g)];
+const lang=(match.language||"ENGLISH").toUpperCase();
+
+qualities.forEach(q=>{
+const quality=q[1];
+const href=`${PLAY_BASE}?id=${match.match_id}_${lang}&q=${quality}`;
+btnWrap.appendChild(makeBtn(`${quality}p`,href));
+});
+}
+
+const body=document.createElement("div");
+body.className="p-5 sm:p-6";
+body.innerHTML=`
+<h2 class="text-xl sm:text-2xl font-semibold text-white mb-1">${match.title||"Match"}</h2>
+<p class="text-gray-400 text-sm mb-1">${match.tournament||""}</p>
+<p class="text-sm text-gray-500 mb-2">${match.startTime||""}</p>
+<p class="text-sm text-gray-500 mb-3">${match.language}</p>
+`;
+
+if(isLive){
+const toggleBtn=document.createElement("button");
+toggleBtn.className="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white font-semibold py-2 px-4 rounded-lg mt-3";
+toggleBtn.innerHTML=`<i class="fas fa-tv mr-2"></i>Watch Now`;
+toggleBtn.onclick=()=>{
+btnWrap.classList.toggle("hidden");
+};
+
+body.appendChild(toggleBtn);
+body.appendChild(btnWrap);
+}
+else{
+const noStream=document.createElement("div");
+noStream.className="w-full bg-gray-800 text-gray-400 py-2 px-4 rounded-lg mt-3 text-center";
+noStream.innerHTML=`<i class="fas fa-clock mr-2"></i>No stream available yet`;
+body.appendChild(noStream);
+}
+
+card.innerHTML=headerHTML;
+card.appendChild(body);
+container.appendChild(card);
+});
+});
+</script>
+
+</body>
+</html>
