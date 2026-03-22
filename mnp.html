@@ -45,6 +45,10 @@ const container=document.getElementById("matches-container");
 const DATA_URL="https://raw.githubusercontent.com/Jitendra-unatti/fancode/refs/heads/main/data/fancode.json";
 const PLAY_BASE="https://famcodexwebs.pages.dev/play";
 
+// ✅ GET ID FROM URL
+const params = new URLSearchParams(window.location.search);
+const tournamentId = params.get("id");
+
 function makeBtn(label,href){
 const a=document.createElement("a");
 a.href=href;
@@ -54,13 +58,26 @@ a.innerHTML=`<i class="fas fa-play mr-2"></i>${label}`;
 return a;
 }
 
+// ✅ FUNCTION TO MATCH TOURNAMENT
+function matchTournament(name,id){
+if(!id) return true;
+
+name = (name || "").toLowerCase();
+
+if(id==="I26") return name.includes("isl") && name.includes("2025");
+if(id==="A26") return name.includes("actors") && name.includes("2026");
+if(id==="Aur") return name.includes("ayodhya");
+
+return false;
+}
+
 fetch(DATA_URL)
 .then(r=>r.json())
 .then(data=>{
 let matches=Array.isArray(data.matches)?data.matches:[];
 
-// ✅ FILTER ONLY ISL 2025-26
-matches = matches.filter(m => (m.tournament || "").includes("ISL 2025-26"));
+// ✅ APPLY FILTER BASED ON URL
+matches = matches.filter(m => matchTournament(m.tournament, tournamentId));
 
 matches.sort((a,b)=>{
 const aLive=(a.status||"").toUpperCase()==="LIVE"||(a.streamingStatus||"").toUpperCase()==="STARTED";
@@ -128,6 +145,5 @@ container.appendChild(card);
 });
 });
 </script>
-
 </body>
 </html>
