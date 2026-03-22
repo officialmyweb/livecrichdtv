@@ -1,264 +1,76 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <title>Live Stream</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Telegram-Live-Cric-Hd</title>
-<meta name="referrer" content="no-referrer">
+  <style>
+    body {
+      margin: 0;
+      background: #000;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
 
-<script src="https://cdn.jsdelivr.net/npm/shaka-player@4.16.2/dist/shaka-player.ui.min.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shaka-player@4.16.2/dist/controls.css">
+    .header {
+      color: #fff;
+      text-align: center;
+      padding: 12px;
+      font-size: 18px;
+      background: #111;
+      letter-spacing: 1px;
+    }
 
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif}
+    .iframe-container {
+      flex: 1;
+      position: relative;
+    }
 
-.shaka-video-container{
-position:fixed;
-inset:0;
-background:#000;
-display:flex;
-align-items:center;
-justify-content:center;
-}
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
 
-video{
-width:100%;
-height:100%;
-object-fit:contain;
-background:#000;
-}
+    .overlay-block {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: transparent;
+      z-index: 10;
+    }
 
-.custom-watermark{
-position:absolute;
-z-index:40;
-pointer-events:none;
-top:65%;
-left:6%;
-transform:translateY(-50%);
-font-size:11px;
-font-weight:600;
-color:rgba(255,255,255,0.12);
-}
-
-.block-overlay{
-position:fixed;
-inset:0;
-z-index:99999;
-display:flex;
-align-items:center;
-justify-content:center;
-background:radial-gradient(circle at center,#1a1a1a 0%,#000 100%);
-text-align:center;
-}
-
-.block-box{
-padding:40px;
-max-width:500px;
-width:90%;
-background:rgba(20,20,20,.95);
-border-radius:16px;
-border:1px solid rgba(255,255,255,.1);
-box-shadow:0 20px 50px rgba(0,0,0,.5);
-}
-
-.block-title{
-font-size:42px;
-font-weight:800;
-color:#fff;
-margin-bottom:20px;
-}
-
-.block-sub{
-font-size:14px;
-color:rgba(255,255,255,.6);
-}
-</style>
-
+    .footer {
+      text-align: center;
+      color: #aaa;
+      font-size: 12px;
+      padding: 6px;
+      background: #111;
+    }
+  </style>
 </head>
 
 <body>
 
-<div id="player-container" class="shaka-video-container">
-<video id="video" autoplay playsinline></video>
-</div>
+  <div class="header">LIVE STREAM</div>
 
-<script>
-(function(){
+  <div class="iframe-container">
+    <!-- Click blocker (reduces popup triggers) -->
+    <div class="overlay-block"></div>
 
-function getParam(name){
-const url=new URL(window.location.href);
-return url.searchParams.get(name);
-}
+    <iframe 
+      src="https://latamvidz1.com/canal.php?stream=event3"
+      allow="fullscreen; autoplay"
+      referrerpolicy="no-referrer">
+    </iframe>
+  </div>
 
-async function getChannelData(){
-
-const id=getParam("id")||"1108";
-
-try{
-
-const res=await fetch("https://pkll.xojiv79335.workers.dev/");
-const data=await res.json();
-
-const channel=data.find(c=>c.channel_id==id);
-
-if(!channel) throw "Channel not found";
-
-let mpd=channel.channel_url;
-
-if(mpd.includes(".mpd")){
-mpd=mpd.substring(0,mpd.indexOf(".mpd")+4);
-}
-
-return{
-streamUrl:mpd,
-keyId:channel.keyId,
-key:channel.key,
-cookie:channel.cookie
-};
-
-}catch(e){
-return null;
-}
-}
-
-function isSandboxedEnv(){
-try{
-if(window.self===window.top) return false;
-if(window.frameElement && window.frameElement.hasAttribute("sandbox")) return true;
-
-try{
-document.domain=document.domain;
-}catch(e){return true;}
-
-return false;
-
-}catch(e){return true;}
-}
-
-function triggerBlockScreen(title,message){
-
-const container=document.getElementById("player-container");
-const video=document.getElementById("video");
-
-try{
-video.pause();
-video.removeAttribute("src");
-video.load();
-}catch(e){}
-
-const overlay=document.createElement("div");
-overlay.className="block-overlay";
-
-overlay.innerHTML=`
-<div class="block-box">
-<div class="block-title">${title}</div>
-<div class="block-sub">${message}</div>
-</div>
-`;
-
-document.body.appendChild(overlay);
-
-if(container) container.style.display="none";
-}
-
-if(isSandboxedEnv()){
-triggerBlockScreen("Disable Sandbox","Opening Chrome Browser Only & Disable Ad blocker");
-return;
-}
-
-document.addEventListener("DOMContentLoaded",async()=>{
-
-const CONFIG=await getChannelData();
-
-if(!CONFIG) return;
-
-shaka.polyfill.installAll();
-
-if(!shaka.Player.isBrowserSupported()) return;
-
-const video=document.getElementById("video");
-const container=document.getElementById("player-container");
-
-video.muted=true;
-
-const player=new shaka.Player(video);
-
-const ui=new shaka.ui.Overlay(player,container,video);
-
-ui.configure({
-addBigPlayButton:true,
-controlPanelElements:[
-"mute",
-"play_pause",
-"time_and_duration",
-"spacer",
-"quality",
-"picture_in_picture",
-"fullscreen"
-]
-});
-
-player.configure({
-drm:{clearKeys:{[CONFIG.keyId]:CONFIG.key}},
-manifest:{defaultPresentationDelay:5},
-streaming:{
-lowLatencyMode:true,
-bufferingGoal:10,
-rebufferingGoal:2,
-safeSeekOffset:5
-}
-});
-
-const cookieValue=CONFIG.cookie||"";
-
-if(cookieValue){
-
-player.getNetworkingEngine().registerRequestFilter((type,request)=>{
-
-request.headers["Referer"]="https://www.jiotv.com/";
-request.headers["User-Agent"]="plaYtv/7.1.5 (Linux;Android 13) ExoPlayerLib/2.11.6";
-request.headers["Cookie"]=cookieValue;
-
-let urlCookie=cookieValue.startsWith("__hdnea__=")
-?cookieValue.substring(10)
-:cookieValue;
-
-if(
-(type===shaka.net.NetworkingEngine.RequestType.MANIFEST||
-type===shaka.net.NetworkingEngine.RequestType.SEGMENT)
-&& !request.uris[0].includes("__hdnea__")
-){
-
-const sep=request.uris[0].includes("?")?"&":"?";
-
-request.uris[0]+=sep+"__hdnea__="+urlCookie;
-
-}
-
-});
-
-}
-
-try{
-
-await player.load(CONFIG.streamUrl);
-
-video.play().catch(()=>{});
-
-}catch(e){
-console.log(e);
-}
-
-video.addEventListener("play",()=>{
-video.muted=false;
-});
-
-});
-
-})();
-</script>
+  <div class="footer">If stream doesn't load, refresh the page.</div>
 
 </body>
 </html>
