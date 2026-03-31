@@ -108,145 +108,149 @@ gtag('config', 'G-FMP9REY96D');
 <body>
 
 <div class="shaka-video-container shaka-mobile" id="player-container" shaka-controls="true">
-  
   <video id="video" autoplay muted playsinline preload="metadata" class="shaka-video"></video>
-  
   <div class="custom-watermark"></div>
-
 </div>
 
 <script>
 (function(){
-  
-  function isSandboxedEnv(){
-    try {
-      if (window.self === window.top) return false;
-      if (window.frameElement && window.frameElement.hasAttribute("sandbox")) return true;
 
-      try {
-        document.domain = document.domain;
-      } catch (e) {
-        return true;
-      }
-      return false;
-    } catch(e) {
-      return true;
-    }
-  }
+function isSandboxedEnv(){
+  try {
+    if (window.self === window.top) return false;
+    if (window.frameElement && window.frameElement.hasAttribute("sandbox")) return true;
+    try { document.domain = document.domain; } catch (e) { return true; }
+    return false;
+  } catch(e) { return true; }
+}
 
-  function triggerBlockScreen(title, message){
-    const container = document.getElementById("player-container");
-    const video = document.getElementById("video");
-    
-    try {
-      video.pause();
-      video.removeAttribute('src');
-      video.load();
-    } catch(e){}
+function triggerBlockScreen(title, message){
+  const container = document.getElementById("player-container");
+  const video = document.getElementById("video");
 
-    const overlay = document.createElement("div");
-    overlay.className = "block-overlay";
-    overlay.innerHTML = `
-      <div class="block-box">
-        <div class="block-title">${title}</div>
-        <div class="block-sub">${message}</div>
-      </div>
-    `;
-    document.body.appendChild(overlay);
-    container.style.display = 'none';
-  }
+  try {
+    video.pause();
+    video.removeAttribute('src');
+    video.load();
+  } catch(e){}
 
-  if(isSandboxedEnv()){
-    triggerBlockScreen('Disable Sandbox', 'Opening Chrome Browser Only & Disable Ad blocker');
-    return;
-  }
+  const overlay = document.createElement("div");
+  overlay.className = "block-overlay";
+  overlay.innerHTML = `
+    <div class="block-box">
+      <div class="block-title">${title}</div>
+      <div class="block-sub">${message}</div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  container.style.display = 'none';
+}
 
-  const CONFIG={
-    streamUrl:"https://jiotvmblive.cdn.jio.com//bpk-tv/Star_Sports_HD1_BTS/output/index.mpd",
-    keyId:"965dc2ddb1d85138ad787999a7f30ca5",
-    key:"859695076e67fe961836b564db6d689c",
-    cookieUrl:"https://allrounder-live2.pages.dev/api/cookie.json"
-  };
+if(isSandboxedEnv()){
+  triggerBlockScreen('Disable Sandbox', 'Opening Chrome Browser Only & Disable Ad blocker');
+  return;
+}
 
-  document.addEventListener("DOMContentLoaded",async()=>{
 
-    shaka.polyfill.installAll();
-    if(!shaka.Player.isBrowserSupported()) return;
+// 🔥 STREAM DATABASE
+const STREAMS = [
+{id:"SSS1HD", url:"https://jiotvmblive.cdn.jio.com/bpk-tv/Star_Sports_Select_HD_1_BTS/output/index.mpd", keyId:"c2c048e439d65316beeda6ef64d5d0f8", key:"e2fdc132cbdee65501b845ce414fce39"},
+{id:"SSS1", url:"https://jiotvmblive.cdn.jio.com/bpk-tv/Star_Sports_Select_1_BTS/output/index.mpd", keyId:"ea7985dacbb95f1c9d62e5a1675142e5", key:"39d5910ca04841b5f32bf24623cdae58"},
+{id:"SSS2HD", url:"https://jiotvmblive.cdn.jio.com/bpk-tv/Star_Sports_Select_HD_2_BTS/output/index.mpd", keyId:"6017d0514d425fa38f6e80ba6dcc852f", key:"0018944b00adf2078f62386f30c68b74"},
+{id:"SSS2", url:"https://jiotvmblive.cdn.jio.com/bpk-tv/Star_Sports_Select_2_BTS/output/index.mpd", keyId:"ec7d009d07aa5cbc81a441880530dfa5", key:"8147983ad7402ebfc222d28b667a196f"},
+{id:"SS1HD", url:"https://jiotvmblive.cdn.jio.com/bpk-tv/Star_Sports_HD1_BTS/output/index.mpd", keyId:"965dc2ddb1d85138ad787999a7f30ca5", key:"859695076e67fe961836b564db6d689c"},
+{id:"SS1", url:"https://jiotvmblive.cdn.jio.com/bpk-tv/Star_Sports_1_BTS/output/index.mpd", keyId:"df20894ec30954d3b28097c138f4cfda", key:"ff9b6292b1cddbd11a046029cb314634"},
+{id:"SS1HINHD", url:"https://jiotvmblive.cdn.jio.com/bpk-tv/Star_Sports_HD1_Hindi_BTS/output/index.mpd", keyId:"400131994b445d8c8817202248760fda", key:"2d56cb6f07a75b9aff165d534ae2bfc4"},
+{id:"SS1HIN", url:"https://jiotvmblive.cdn.jio.com/bpk-tv/Star_Sports_1_Hindi_BTS/output/index.mpd", keyId:"8ea9b607549252068e260a5f4d7dd321", key:"350c0aaffedf51cc1502e9543c7c885e"},
+{id:"SS2HD", url:"https://jiotvmblive.cdn.jio.com/bpk-tv/Star_Sports_HD2_BTS/output/index.mpd", keyId:"9457eb90129456fa8ea95e10ba4ac51e", key:"e620a970cea474c491ac78ae71a4d764"},
+{id:"SS2", url:"https://jiotvmblive.cdn.jio.com/bpk-tv/Star_Sports_2_BTS/output/index.mpd", keyId:"fc3aafe80845584199a637249fad2ffa", key:"ca4474972fdb4bf8ecb164482853c692"},
+{id:"SS2HINHD", url:"https://jiotvmblive.cdn.jio.com/bpk-tv/StarSportsHD2Hin_BTS/output/index.mpd", keyId:"bd1ea6a1c1fb5dcdb709434e0826bbc0", key:"f57f22cba32739ce7beb1fab3f3d060b"},
+{id:"SS2HIN", url:"https://jiotvmblive.cdn.jio.com/bpk-tv/StarSports2Hin_BTS/output/index.mpd", keyId:"a3ed8dc0e0cb5d238da80ee0a85bd2e1", key:"67a96992e6406606f3480ab58d7f540c"},
+{id:"SS3", url:"https://jiotvmblive.cdn.jio.com/bpk-tv/Star_Sports_3_BTS/output/index.mpd", keyId:"e4e8647eaf0659ac85f61765a5abcdc1", key:"d749c9b27505beb0e1a8b6c30ca65de6"},
+{id:"SSKHEL", url:"https://jiotvmblive.cdn.jio.com/bpk-tv/StarSportsKhel_BTS/output/index.mpd", keyId:"ab947ddbb9795d38bff35597b4f73108", key:"2671e22eb7dc174c35b6aad4b113f7b0"}
+];
 
-    const video=document.getElementById("video");
-    const container=document.getElementById("player-container");
+// 🔍 GET ID
+function getStream(){
+  const id = new URLSearchParams(location.search).get("id") || "SS1HD";
+  return STREAMS.find(s=>s.id===id) || STREAMS[0];
+}
 
-    video.muted=true;
+const selected = getStream();
 
-    const player=new shaka.Player();
-    await player.attach(video);
+const CONFIG={
+  streamUrl:selected.url,
+  keyId:selected.keyId,
+  key:selected.key,
+  cookieUrl:"https://allrounder-live2.pages.dev/api/cookie.json"
+};
 
-    const ui=new shaka.ui.Overlay(player,container,video);
 
-    ui.configure({
-      addBigPlayButton: true,
-      controlPanelElements: [
-        "mute",
-        "play_pause",
-        "time_and_duration",
-        "spacer",
-        "quality",
-        "picture_in_picture",
-        "fullscreen"
-      ],
-      seekBarColors: {
-        base: "white",
-        buffered: "red", 
-        played: "green"
-      }
-    });
+document.addEventListener("DOMContentLoaded",async()=>{
 
-    player.configure({
-      drm:{clearKeys:{[CONFIG.keyId]:CONFIG.key}},
-      manifest:{defaultPresentationDelay:5},
-      streaming:{
-        lowLatencyMode:true,
-        bufferingGoal:10,
-        rebufferingGoal:2,
-        safeSeekOffset:5
-      }
-    });
+  shaka.polyfill.installAll();
+  if(!shaka.Player.isBrowserSupported()) return;
 
-    let cookieValue="";
+  const video=document.getElementById("video");
+  const container=document.getElementById("player-container");
 
-    try{
-      const response=await fetch(CONFIG.cookieUrl,{cache:"no-store"});
-      const data=await response.json();
-      cookieValue=data.cookie||"";
-    }catch(e){}
+  const player=new shaka.Player();
+  await player.attach(video);
 
-    if(cookieValue){
-      player.getNetworkingEngine().registerRequestFilter((type,request)=>{
-        request.headers["Referer"]="https://www.jiotv.com/";
-        request.headers["User-Agent"]="plaYtv/7.1.5 (Linux;Android 13) ExoPlayerLib/2.11.6";
-        request.headers["Cookie"]=cookieValue;
+  const ui=new shaka.ui.Overlay(player,container,video);
 
-        let urlCookie=cookieValue.startsWith("__hdnea__=")?cookieValue.substring(10):cookieValue;
-
-        if((type===shaka.net.NetworkingEngine.RequestType.MANIFEST||
-        type===shaka.net.NetworkingEngine.RequestType.SEGMENT)&&
-        !request.uris[0].includes("__hdnea__")){
-          const sep=request.uris[0].includes("?")?"&":"?";
-          request.uris[0]+=sep+"__hdnea__="+urlCookie;
-        }
-      });
-    }
-
-    try{
-      await player.load(CONFIG.streamUrl);
-      video.play().catch(()=>{});
-    }catch(e){}
-
-    video.addEventListener("play",()=>{
-      video.muted=false;
-    });
-
+  ui.configure({
+    addBigPlayButton:true,
+    controlPanelElements:[
+      "mute","play_pause","time_and_duration","spacer","quality","picture_in_picture","fullscreen"
+    ],
+    seekBarColors:{base:"white",buffered:"red",played:"green"}
   });
+
+  player.configure({
+    drm:{clearKeys:{[CONFIG.keyId]:CONFIG.key}},
+    manifest:{defaultPresentationDelay:5},
+    streaming:{
+      lowLatencyMode:true,
+      bufferingGoal:10,
+      rebufferingGoal:2,
+      safeSeekOffset:5
+    }
+  });
+
+  let cookie="";
+
+  try{
+    const res=await fetch(CONFIG.cookieUrl,{cache:"no-store"});
+    const data=await res.json();
+    cookie=data.cookie||"";
+  }catch(e){}
+
+  if(cookie){
+    player.getNetworkingEngine().registerRequestFilter((type,request)=>{
+      request.headers["Referer"]="https://www.jiotv.com/";
+      request.headers["User-Agent"]="plaYtv/7.1.5 (Linux;Android 13) ExoPlayerLib/2.11.6";
+      request.headers["Cookie"]=cookie;
+
+      let c=cookie.startsWith("__hdnea__=")?cookie.substring(10):cookie;
+
+      if((type===shaka.net.NetworkingEngine.RequestType.MANIFEST||
+      type===shaka.net.NetworkingEngine.RequestType.SEGMENT)&&
+      !request.uris[0].includes("__hdnea__")){
+        const sep=request.uris[0].includes("?")?"&":"?";
+        request.uris[0]+=sep+"__hdnea__="+c;
+      }
+    });
+  }
+
+  try{
+    await player.load(CONFIG.streamUrl);
+    video.play().catch(()=>{});
+  }catch(e){}
+
+  video.addEventListener("play",()=>{ video.muted=false; });
+
+});
 
 })();
 </script>
