@@ -5,24 +5,31 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex" />
 <title>Telegram-Live-Cric-Hd</title>
-<script src="//cdn.jsdelivr.net/npm/@clappr/player@0.4.0/dist/clappr.min.js"></script>
-<script src="//cdn.jsdelivr.net/npm/mux.js@5.6.7/dist/mux.min.js"></script>
-<script src='//cdn.jsdelivr.net/npm/level-selector@latest/dist/level-selector.min.js'></script>
-<script src='//cdn.jsdelivr.net/npm/clappr-chromecast-plugin@latest/dist/clappr-chromecast-plugin.min.js'></script>
-<script src='//cdn.jsdelivr.net/npm/clappr-pip@latest/dist/clappr-pip.min.js'></script>
-<script src="//cdn.jsdelivr.net/npm/shaka-player@2.5.10/dist/shaka-player.compiled.min.js"></script>
-<script src="//cdn.jsdelivr.net/gh/clappr/dash-shaka-playback@latest/dist/dash-shaka-playback.external.min.js"></script>
-<script src="//cdn.jsdelivr.net/npm/cdnbye-shaka@latest"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@clappr/player@0.4.0/dist/clappr.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mux.js@5.6.7/dist/mux.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/level-selector@latest/dist/level-selector.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/clappr-chromecast-plugin@latest/dist/clappr-chromecast-plugin.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/clappr-pip@latest/dist/clappr-pip.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/shaka-player@2.5.10/dist/shaka-player.compiled.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/clappr/dash-shaka-playback@latest/dist/dash-shaka-playback.external.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/cdnbye-shaka@latest"></script>
+
 <script src="https://lchdxfootball.pages.dev/sknzx.js"></script>
 <script src="https://lchdxfootball.pages.dev/configure.js"></script>
 
 <style>
-.player-poster[data-poster] {
-  background-size: cover;
+body {
+  margin: 0;
+  padding: 0;
+  background: black;
 }
-body{
-  margin:0;
-  padding:0;
+
+#player {
+  width: 100%;
+  height: 100vh;
 }
 
 .logo {
@@ -33,7 +40,7 @@ body{
   z-index: 9999;
   cursor: pointer;
 }
-  
+
 #error {
   text-align: center;
   color: red;
@@ -41,9 +48,11 @@ body{
 }
 </style>
 </head>
+
 <body>
 <div id="player"></div>
 <div id="error"></div>
+
 <script>
 const SECURITY_TELEGRAM = "https://telegram.me/cricxfootball";
 
@@ -54,29 +63,34 @@ const VALID_CHANNELS = [
     "https://telegram.me/cricxfootball"
 ];
 
+// SAFE CHECK (fix white screen crash)
 if (typeof DOMAIN_CONFIG === "undefined" || typeof TELEGRAM_CONFIG === "undefined") {
-    window.location.href = SECURITY_TELEGRAM;
+    location.href = SECURITY_TELEGRAM;
 }
 
+// DOMAIN CHECK
 if (
     window.top !== window.self ||
     !DOMAIN_CONFIG.allowedDomains.includes(window.location.hostname)
 ) {
-    window.location.href = SECURITY_TELEGRAM;
+    location.href = SECURITY_TELEGRAM;
 }
 
+// TELEGRAM VALIDATION
 if (!VALID_CHANNELS.includes(TELEGRAM_CONFIG.popupChannel)) {
-    window.location.href = SECURITY_TELEGRAM;
+    location.href = SECURITY_TELEGRAM;
 }
 
-if (confirm("Join Our Telegram Channel @livecrichdofficial")) {
-    window.location.href = TELEGRAM_CONFIG.popupChannel;
-}
+// TELEGRAM POPUP
+setTimeout(() => {
+    if (confirm("Join Our Telegram Channel @livecrichdofficial")) {
+        window.location.href = TELEGRAM_CONFIG.popupChannel;
+    }
+}, 1000);
 
 try {
 
   const TELEGRAM_URL = "https://telegram.me/livecrichdofficial";
-
   const decryptionKey = "gf676rc7gr4grg76r6ag56gg8f76713f";
 
   function decryptBase64(encodedStr, key) {
@@ -96,8 +110,7 @@ try {
   const channel = params.get("id");
 
   if (!channel) {
-      alert("No ID provided. Redirecting to Telegram...");
-      window.location.href = TELEGRAM_URL;
+      location.href = TELEGRAM_URL;
       throw new Error("No ID");
   }
 
@@ -106,12 +119,16 @@ try {
   }
 
   if (!encodedChannelData[channel]) {
-      alert("Wrong ID. Redirecting to Telegram...");
-      window.location.href = TELEGRAM_URL;
+      location.href = TELEGRAM_URL;
       throw new Error("Invalid ID");
   }
 
   const decodedData = decryptBase64(encodedChannelData[channel], decryptionKey);
+
+  // IMPORTANT FIX → ensure DRMKeys exists
+  if (!decodedData.ManifestURI || !decodedData.DRMKeys) {
+      throw new Error("Invalid stream data");
+  }
 
   const player = new Clappr.Player({
       source: decodedData.ManifestURI,
@@ -124,8 +141,7 @@ try {
           DashShakaPlayback,
           ChromecastPlugin,
           ClapprPip.PipButton,
-          ClapprPip.PipPlugin,
-          Clappr.MediaControl
+          ClapprPip.PipPlugin
       ],
 
       chromecast: {
@@ -143,28 +159,25 @@ try {
   });
 
   player.on(Clappr.Events.PLAYER_READY, function() {
-      setTimeout(() => {
-          const container = document.querySelector("#player");
+      const container = document.querySelector("#player");
 
-          if (container) {
-              const logo = document.createElement("img");
-              logo.src = "https://i.ibb.co/7VF2dfy/1000000077-removebg-preview.png";
-              logo.className = "logo";
+      if (container) {
+          const logo = document.createElement("img");
+          logo.src = "https://i.ibb.co/7VF2dfy/1000000077-removebg-preview.png";
+          logo.className = "logo";
 
-              logo.onclick = function() {
-                  window.location.href = TELEGRAM_URL;
-              };
+          logo.onclick = function() {
+              window.location.href = TELEGRAM_URL;
+          };
 
-              container.appendChild(logo);
-          }
-      }, 1000);
+          container.appendChild(logo);
+      }
   });
 
 } catch (err) {
   console.error(err);
   document.getElementById("error").innerText = "ERROR: " + err.message;
 }
-
 </script>
 
 </body>
