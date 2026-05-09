@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer">
+    <title>Telegram-eXtra-Sports</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.6/shaka-player.ui.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.6/controls.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://livecrichdofficial.pages.dev/livecrichd2.css">  
+    <script src="https://lchdxfootball.pages.dev/cricxfootball.js"></script>
+  <script src="https://lchdxfootball.pages.dev/configurefc.js"></script>
+</head>
+<body>
+<div id="player-container">
+    <div data-shaka-player-container class="shaka-video-container">
+        <video autoplay data-shaka-player id="video" poster="#"></video>
+    </div>
+</div>
+
+<script>
+const SECURITY_TELEGRAM = "https://telegram.me/extrasportsbackup";
+
+const VALID_CHANNELS = [
+    "https://telegram.me/extrasportsbackup",
+    "https://telegram.me/+9Ueyh8bfyl9kNmY1",
+    "
+];
+
+if (typeof DOMAIN_CONFIG === "undefined" || typeof TELEGRAM_CONFIG === "undefined") {
+    window.location.href = SECURITY_TELEGRAM;
+}
+
+if (
+    window.top !== window.self ||
+    !DOMAIN_CONFIG.allowedDomains.includes(window.location.hostname)
+) {
+    window.location.href = SECURITY_TELEGRAM;
+}
+
+if (!VALID_CHANNELS.includes(TELEGRAM_CONFIG.popupChannel)) {
+    window.location.href = SECURITY_TELEGRAM;
+}
+
+if (confirm("Join Our Telegram Channel")) {
+    window.location.href = TELEGRAM_CONFIG.popupChannel;
+}
+
+    const decryptionKey = "gf676rc7gr4grg76r6ag56gg8f76713f";
+
+    function decryptBase64(encodedStr, key) {
+        const decodedBytes = atob(encodedStr);
+        let decryptedStr = '';
+        for (let i = 0; i < decodedBytes.length; i++) {
+            decryptedStr += String.fromCharCode(decodedBytes.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+        }
+        return JSON.parse(decryptedStr);
+    }
+
+    function getURLParameter(name) {
+        const params = new URLSearchParams(window.location.search);
+        return params.get(name);
+    }
+
+    const id = getURLParameter("id");
+
+    if (!encodedChannelData[id]) {
+        alert("Invalid ID! Redirecting...");
+        window.location.href = SECURITY_TELEGRAM;
+    }
+
+    const selectedData = decryptBase64(encodedChannelData[id], decryptionKey);
+</script>
+
+<script>
+    async function initPlayer() {
+        const video = document.getElementById("video");
+        const ui = video['ui'];
+        const controls = ui.getControls();
+        const player = controls.getPlayer();
+
+        ui.configure({
+            controlPanelElements: [
+                'play_pause', 'mute', 'spacer', 'time_and_duration', 
+                'quality', 'fullscreen', 'picture_in_picture', 
+                'overflow_menu'
+            ],
+            overflowMenuButtons: ['captions', 'cast', 'quality', 'language']
+        });
+
+        player.configure({
+            drm: {
+                clearKeys: selectedData.DRMKeys
+            }
+        });
+
+        try {
+            console.log("Fetching ManifestURI:", selectedData.ManifestURI);
+            await player.load(selectedData.ManifestURI);
+            console.log('Video loaded successfully!');
+        } catch (error) {
+            console.error('Error loading video', error);
+        }
+    }
+
+    function configureDRMAndAddLogo() {
+        const logo = document.createElement("img");
+        logo.src = "https://i.ibb.co/rRZPThqq/1000205969.png";
+        logo.alt = "Logo";
+        logo.className = "logo";
+        logo.addEventListener("click", function() {
+            window.location.href = SECURITY_TELEGRAM;
+        });
+
+        const videoContainer = document.querySelector(".shaka-video-container");
+        videoContainer.appendChild(logo);
+    }
+
+    document.addEventListener('shaka-ui-loaded', function() {
+        initPlayer();
+        configureDRMAndAddLogo();
+    });
+</script>
+</body>
+</html>
